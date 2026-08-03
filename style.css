@@ -6,16 +6,21 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+:root {
+    --primary-color: #4f46e5;
+    --primary-gradient: linear-gradient(135deg, #4f46e5, #4338ca);
+}
+
 body {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     color: #1e293b;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    padding-bottom: 70px; /* مساحة لشريط التنقل السفلي في الهاتف */
+    padding-bottom: 70px;
 }
 
-/* الهيدر العلوي العصري */
+/* الهيدر العلوي العصري مع زر القائمة والبحث */
 .app-header {
     background: #ffffff;
     padding: 15px 20px;
@@ -28,6 +33,20 @@ body {
     z-index: 1000;
 }
 
+.menu-burger-btn, .icon-header-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #0f172a;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+}
+
+.menu-burger-btn:hover, .icon-header-btn:hover {
+    color: var(--primary-color);
+}
+
 .app-logo {
     font-size: 18px;
     font-weight: bold;
@@ -38,22 +57,105 @@ body {
 }
 
 .app-logo i {
-    color: #4f46e5;
+    color: var(--primary-color);
     font-size: 22px;
 }
 
-.app-logo span {
-    color: #4f46e5;
+/* قائمة الإعدادات الجانبية (Drawer Menu) */
+.settings-drawer {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1);
+    z-index: 2000;
+    transition: left 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
 }
 
-.badge-pro {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 20px;
-    box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3);
+.settings-drawer.open {
+    left: 0;
+}
+
+.drawer-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.drawer-header h3 {
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.drawer-header button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.drawer-content {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.setting-group h4 {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.color-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.color-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-dot:hover {
+    transform: scale(1.1);
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1500;
+    display: none;
+}
+
+.drawer-overlay.active {
+    display: block;
 }
 
 /* المحتوى الرئيسي */
@@ -94,7 +196,7 @@ body {
     width: 60px;
     height: 60px;
     background: #eef2ff;
-    color: #4f46e5;
+    color: var(--primary-color);
     font-size: 24px;
     display: flex;
     align-items: center;
@@ -120,7 +222,7 @@ body {
 /* الأزرار الرئيسية */
 .primary-btn {
     width: 100%;
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    background: var(--primary-gradient);
     color: white;
     border: none;
     padding: 14px;
@@ -176,7 +278,7 @@ body {
 }
 
 .input-group input:focus, .input-group select:focus {
-    border-color: #4f46e5;
+    border-color: var(--primary-color);
     background: #fff;
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
 }
@@ -187,7 +289,69 @@ body {
     justify-content: center;
 }
 
-/* بطاقات الأسعار (Pricing / Pro) */
+/* تصميم عارض الماسح الضوئي (Scanner) وأزراره */
+.scanner-viewport {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: #0f172a;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#scanner-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scanner-laser {
+    position: absolute;
+    width: 80%;
+    height: 2px;
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+    animation: scanMove 2s infinite ease-in-out;
+    z-index: 10;
+}
+
+@keyframes scanMove {
+    0%, 100% { top: 20%; }
+    50% { top: 80%; }
+}
+
+.scanner-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.control-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: none;
+    color: #334155;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.control-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* بطاقات الأسعار (Pricing) */
 .pricing-cards {
     display: flex;
     flex-direction: column;
@@ -206,7 +370,7 @@ body {
 }
 
 .price-card.popular {
-    border-color: #4f46e5;
+    border-color: var(--primary-color);
     background: #fdfdff;
     box-shadow: 0 6px 20px rgba(79, 70, 229, 0.08);
 }
@@ -215,7 +379,7 @@ body {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #4f46e5;
+    background: var(--primary-color);
     color: white;
     font-size: 10px;
     font-weight: bold;
@@ -233,7 +397,7 @@ body {
 .price {
     font-size: 22px;
     font-weight: bold;
-    color: #4f46e5;
+    color: var(--primary-color);
     margin-bottom: 8px;
 }
 
@@ -243,10 +407,20 @@ body {
     font-weight: normal;
 }
 
-.price-card p {
-    font-size: 12px;
-    color: #64748b;
+.features-list {
+    list-style: none;
+    text-align: left;
     margin-bottom: 15px;
+    font-size: 13px;
+    color: #475569;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.features-list i {
+    color: #10b981;
+    margin-right: 6px;
 }
 
 .plan-btn {
@@ -256,20 +430,18 @@ body {
     background: #e2e8f0;
     color: #334155;
     text-decoration: none;
+    border: none;
     border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
+    cursor: pointer;
     transition: background 0.2s;
 }
 
 .plan-btn.active-plan {
-    background: #4f46e5;
+    background: var(--primary-color);
     color: white;
     box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
-}
-
-.plan-btn:hover {
-    opacity: 0.9;
 }
 
 .empty-text {
@@ -279,7 +451,7 @@ body {
     font-size: 14px;
 }
 
-/* شريط التنقل السفلي (Bottom Navbar بحال التطبيقات الحقيقية) */
+/* شريط التنقل السفلي */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -313,9 +485,5 @@ body {
 }
 
 .nav-item.active {
-    color: #4f46e5;
-}
-
-.nav-item.active i {
-    transform: translateY(-2px);
+    color: var(--primary-color);
 }

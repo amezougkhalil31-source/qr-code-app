@@ -8,18 +8,62 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
 </head>
-<body>
+<body data-theme-color="blue">
 
+    <!-- الهيدر العلوي المحدث مع زر القائمة (3 شرطات) -->
     <header class="app-header">
+        <button id="menu-toggle-btn" class="menu-burger-btn" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
         <div class="app-logo">
-            <i class="fa-solid fa-qrcode"></i> QR Master <span>Pro</span>
+            <i class="fa-solid fa-qrcode"></i> QR Master
         </div>
-        <div class="badge-pro">PRO V2.0</div>
+        <div class="header-actions">
+            <button id="share-app-btn" class="icon-header-btn" title="Partager">
+                <i class="fa-solid fa-share-nodes"></i>
+            </button>
+        </div>
     </header>
+
+    <!-- قائمة الجانب أو الإعدادات المندمجة (Menu Drawer) -->
+    <div id="settings-drawer" class="settings-drawer">
+        <div class="drawer-header">
+            <h3>Paramètres</h3>
+            <button id="close-drawer-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-content">
+            <div class="setting-group">
+                <h4>Schéma de couleur</h4>
+                <div class="color-picker-grid">
+                    <button class="color-dot" data-color="blue" style="background: #4f46e5;"></button>
+                    <button class="color-dot" data-color="red" style="background: #dc2626;"></button>
+                    <button class="color-dot" data-color="orange" style="background: #ea580c;"></button>
+                    <button class="color-dot" data-color="yellow" style="background: #ca8a04;"></button>
+                    <button class="color-dot" data-color="green" style="background: #16a34a;"></button>
+                    <button class="color-dot" data-color="emerald" style="background: #0d9488;"></button>
+                    <button class="color-dot" data-color="purple" style="background: #9333ea;"></button>
+                    <button class="color-dot" data-color="pink" style="background: #db2777;"></button>
+                </div>
+            </div>
+            <div class="setting-item">
+                <span>Bip sonore</span>
+                <input type="checkbox" id="setting-bip" checked>
+            </div>
+            <div class="setting-item">
+                <span>Vibreur</span>
+                <input type="checkbox" id="setting-vibrate">
+            </div>
+            <div class="setting-item">
+                <span>Copier dans le presse-papiers</span>
+                <input type="checkbox" id="setting-copy">
+            </div>
+        </div>
+    </div>
+    <div id="drawer-overlay" class="drawer-overlay"></div>
 
     <main class="main-content">
         
-        <!-- واجهة الاستقبال الرئيسية -->
+        <!-- 1. واجهة الاستقبال الرئيسية -->
         <section id="home-section" class="page-section active">
             <div class="hero-box">
                 <div class="hero-icon">
@@ -30,17 +74,49 @@
             </div>
         </section>
 
-        <!-- واجهة مولد الكود -->
+        <!-- 2. واجهة مولد الكود -->
         <section id="generator-section" class="page-section">
-            <div class="generator-box">
-                <h2>Créer votre QR Code</h2>
-                <input type="text" id="qr-input" placeholder="Entrez votre lien ou texte ici...">
-                <button id="generate-btn" class="btn-primary">Générer</button>
-                <div id="qrcode-output"></div>
+            <div class="card-box">
+                <h2><i class="fa-solid fa-qrcode"></i> Créer votre QR Code</h2>
+                <div class="input-group">
+                    <label>Contenu du QR Code (Lien ou Texte)</label>
+                    <input type="text" id="qr-input" placeholder="Entrez votre lien ici...">
+                </div>
+                <div class="input-group">
+                    <label>Taille du QR Code</label>
+                    <select id="qr-size">
+                        <option value="150">Petit (150x150)</option>
+                        <option value="200" selected>Moyen (200x200)</option>
+                        <option value="300">Grand (300x300)</option>
+                    </select>
+                </div>
+                <button id="generate-btn" class="primary-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Générer
+                </button>
+                <div id="qr-result" class="result-area"></div>
             </div>
         </section>
 
-        <!-- واجهة البريميوم والأسعار (بدون مدى الحياة - شهري وسنوي فقط) -->
+        <!-- 3. واجهة الماسح الضوئي (Scanner) مع أزرار الفلاش، الكاميرا والمعرض -->
+        <section id="scanner-section" class="page-section">
+            <div class="card-box">
+                <h2><i class="fa-solid fa-camera"></i> Scanner un QR Code</h2>
+                <p class="section-desc">Pointez votre caméra vers un QR code ou importez une image.</p>
+                <div class="scanner-viewport">
+                    <div class="scanner-laser"></div>
+                    <video id="scanner-video" autoplay playsinline></video>
+                </div>
+                <div class="scanner-controls">
+                    <button id="flash-btn" class="control-btn" title="Flash"><i class="fa-solid fa-bolt"></i></button>
+                    <button id="flip-camera-btn" class="control-btn" title="Changer Caméra"><i class="fa-solid fa-camera-rotate"></i></button>
+                    <button id="gallery-btn" class="control-btn" title="Ouvrir la Galerie"><i class="fa-solid fa-image"></i></button>
+                    <input type="file" id="gallery-file-input" accept="image/*" style="display: none;">
+                </div>
+                <div id="scanner-result" class="result-area"></div>
+            </div>
+        </section>
+
+        <!-- 4. واجهة البريميوم والأسعار (شهري وسنوي فقط) -->
         <section id="premium-section" class="page-section">
             <div class="pricing-container">
                 <h2>Passez à la version Pro</h2>
@@ -55,11 +131,11 @@
                             <li><i class="fa-solid fa-check"></i> Sans publicité</li>
                             <li><i class="fa-solid fa-check"></i> Support prioritaire</li>
                         </ul>
-                        <button class="btn-subscribe">Choisir Mensuel</button>
+                        <button class="plan-btn">Choisir Mensuel</button>
                     </div>
 
                     <div class="price-card popular">
-                        <div class="tag-popular">Populaire</div>
+                        <div class="pop-tag">Populaire</div>
                         <h3>Chaque Année</h3>
                         <p class="price">39.99€ <span>/ an</span></p>
                         <ul class="features-list">
@@ -67,40 +143,45 @@
                             <li><i class="fa-solid fa-check"></i> Économisez 30%</li>
                             <li><i class="fa-solid fa-check"></i> Mises à jour en avant-première</li>
                         </ul>
-                        <button class="btn-subscribe primary">Choisir Annuel</button>
+                        <button class="plan-btn active-plan">Choisir Annuel</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- واجهة السجل أو التاريخ -->
+        <!-- 5. واجهة السجل والتاريخ -->
         <section id="history-section" class="page-section">
-            <div class="history-container">
-                <h2>Historique</h2>
-                <p>Vos QR Codes générés récemment apparaîtront ici.</p>
-                <ul id="history-list"></ul>
+            <div class="card-box" style="text-align: left;">
+                <h2 style="justify-content: flex-start;"><i class="fa-solid fa-clock-rotate-left"></i> Historique</h2>
+                <p class="section-desc">Vos QR Codes générés récemment :</p>
+                <div id="history-list"></div>
             </div>
         </section>
 
     </main>
 
+    <!-- شريط التنقل السفلي المحدث -->
     <nav class="bottom-nav">
-        <a href="#home" class="nav-item active" data-target="home-section">
+        <button class="nav-item active" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
             <span>Accueil</span>
-        </a>
-        <a href="#generator" class="nav-item" data-target="generator-section">
+        </button>
+        <button class="nav-item" onclick="switchTab('generator')">
             <i class="fa-solid fa-qrcode"></i>
             <span>Générer</span>
-        </a>
-        <a href="#premium" class="nav-item" data-target="premium-section">
+        </button>
+        <button class="nav-item" onclick="switchTab('scanner')">
+            <i class="fa-solid fa-camera"></i>
+            <span>Scanner</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('premium')">
             <i class="fa-solid fa-gem"></i>
             <span>Premium</span>
-        </a>
-        <a href="#history" class="nav-item" data-target="history-section">
+        </button>
+        <button class="nav-item" onclick="switchTab('history')">
             <i class="fa-solid fa-clock-rotate-left"></i>
             <span>Historique</span>
-        </a>
+        </button>
     </nav>
 
     <script src="script.js"></script>
