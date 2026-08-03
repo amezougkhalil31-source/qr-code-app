@@ -3,6 +3,7 @@ let historyData = JSON.parse(localStorage.getItem('qr_history')) || [];
 let videoStream = null;
 let currentFacingMode = 'environment';
 let flashOn = false;
+let html5QrCode = null;
 
 // دالة الانتقال بين الصفحات الأساسية
 function switchTab(tabId) {
@@ -33,7 +34,7 @@ function switchTab(tabId) {
     }
 }
 
-// تشغيل الأكواد فور تحميل الصفحة لمنع أي تجميد
+// تشغيل الأكواد فور تحميل الصفحة
 document.addEventListener('DOMContentLoaded', () => {
     
     // 1. ربط أزرار الشريط السفلي بالكامل
@@ -233,6 +234,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 9. تفعيل أزرار الماسح (قلب الكاميرا واستيراد الصور)
+    const flipCamBtn = document.getElementById('flip-camera-btn');
+    if (flipCamBtn) {
+        flipCamBtn.addEventListener('click', async () => {
+            currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+            await stopCamera();
+            await startCamera();
+        });
+    }
+
+    const galleryBtn = document.getElementById('gallery-btn');
+    const galleryInput = document.getElementById('gallery-file-input');
+    if (galleryBtn && galleryInput) {
+        galleryBtn.addEventListener('click', () => galleryInput.click());
+        galleryInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const scannerResult = document.getElementById('scanner-result');
+            if (scannerResult) scannerResult.innerHTML = `<p style="color: var(--accent-color);">Analyse de l'image...</p>`;
+
+            try {
+                const scannerScan = new Html5Qrcode("scanner-video");
+                const decodedText = await scannerScan.scanFile(file, true);
+                if (scannerResult) {
+                    scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold;">QR Trouvé : ${decodedText}</p>`;
+                }
+                historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
+                localStorage.setItem('qr_history', JSON.stringify(historyData));
+            } catch (err) {
+                if (scannerResult) {
+                    scannerResult.innerHTML = `<p style="color: #ef4444;">Aucun QR code détecté.</p>`;
+                }
+            }
+        });
+    }
+
     loadHistory();
 });
 
@@ -304,22 +341,52 @@ function openTypeForm(type) {
     if (container) container.innerHTML = html;
 }
 
-// دوال الكاميرا والسجل
+// دوال الكاميرا المتقدمة
 async function startCamera() {
-    const video = document.getElementById('scanner-video');
-    if (!video) return;
-    if (videoStream) {
-        videoStream.getTracks().forEach(t => t.stop());
+    const scannerResult = document.getElementById('scanner-result');
+    if (scannerResult) scannerResult.innerHTML = '';
+
+    if (typeof Html5Qrcode === 'undefined') {
+        const video = document.getElementById('scanner-video');
+        if (video) {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
+                video.srcObject = videoStream;
+            } catch (e) {
+                console.log("Caméra non disponible");
+            }
+        }
+        return;
     }
+
     try {
-        videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
-        video.srcObject = videoStream;
-    } catch (e) {
-        console.log("Caméra non disponible");
+        if (!html5QrCode) {
+            html5QrCode = new Html5Qrcode("scanner-video");
+        }
+        
+        await html5QrCode.start(
+            { facingMode: currentFacingMode },
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            (decodedText) => {
+                if (scannerResult) {
+                    scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold;">Résultat : ${decodedText}</p>`;
+                }
+                historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
+                localStorage.setItem('qr_history', JSON.stringify(historyData));
+            },
+            (errorMessage) => {}
+        );
+    } catch (err) {
+        console.log("Erreur démarrage scanner:", err);
     }
 }
 
-function stopCamera() {
+async function stopCamera() {
+    if (html5QrCode && html5QrCode.isScanning) {
+        try {
+            await html5QrCode.stop();
+        } catch (e) {}
+    }
     if (videoStream) {
         videoStream.getTracks().forEach(t => t.stop());
         videoStream = null;
