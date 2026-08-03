@@ -1,0 +1,20 @@
+{
+  "name": "QR Master Pro",
+  "short_name": "QR Master",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=QR",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=QR",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
