@@ -1,97 +1,54 @@
-const qrText = document.getElementById('qr-text');
-const qrSize = document.getElementById('qr-size');
-const generateBtn = document.getElementById('generate-btn');
-const resultCard = document.getElementById('result-card');
-const qrCodeContainer = document.getElementById('qr-code');
-const downloadBtn = document.getElementById('download-btn');
-const clearInputBtn = document.getElementById('clear-input-btn');
-const themeToggleBtn = document.getElementById('theme-toggle-btn');
-const toastNotification = document.getElementById('toast-notification');
-const toastMessage = document.getElementById('toast-message');
-const htmlElement = document.documentElement;
+// دالة لتغيير الأقسام عند الضغط على أزرار شريط التنقل
+function switchSection(sectionId) {
+    // إخفاء جميع الأقسام
+    const sections = document.querySelectorAll('.content-section');
+    sections.forEach(sec => sec.classList.remove('active'));
 
-let qrCodeInstance = null;
+    // إزالة الصبغة النشطة من جميع الأزرار
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(btn => btn.classList.remove('active'));
 
-// Function to show live toast notifications
-function showToast(message) {
-    toastMessage.textContent = message;
-    toastNotification.classList.remove('hidden');
-    setTimeout(() => {
-        toastNotification.classList.add('show');
-    }, 10);
+    // إظهار القسم المطلوب
+    const targetSection = document.getElementById(sectionId + '-section');
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
 
-    setTimeout(() => {
-        toastNotification.classList.remove('show');
-        setTimeout(() => {
-            toastNotification.classList.add('hidden');
-        }, 300);
-    }, 3000);
+    // تفعيل الزر المناسب في القائمة
+    // (نبحث عن الزر الذي يحتوي على دالة تبديل تخص نفس القسم)
+    navButtons.forEach(btn => {
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(sectionId)) {
+            btn.classList.add('active');
+        }
+    });
 }
 
-// Theme Switcher Logic
-themeToggleBtn.addEventListener('click', () => {
-    const currentTheme = htmlElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    htmlElement.setAttribute('data-theme', newTheme);
-    
-    const icon = themeToggleBtn.querySelector('i');
-    if (newTheme === 'light') {
-        icon.className = 'fa-solid fa-sun';
-        showToast('Switched to Light Mode');
-    } else {
-        icon.className = 'fa-solid fa-moon';
-        showToast('Switched to Dark Mode');
-    }
-});
+// برمجة زر توليد الـ QR Code
+const generateBtn = document.getElementById('generate-btn');
+if (generateBtn) {
+    generateBtn.addEventListener('click', function() {
+        const inputVal = document.getElementById('qr-input').value.trim();
+        const qrSize = document.getElementById('qr-size').value;
+        const resultContainer = document.getElementById('qr-result');
 
-// Clear Input Text
-clearInputBtn.addEventListener('click', () => {
-    qrText.value = '';
-    qrText.focus();
-});
+        if (!inputVal) {
+            alert('المرجو إدخال رابط أو نص صالح أولاً!');
+            return;
+        }
 
-// Generate QR Code Logic
-generateBtn.addEventListener('click', () => {
-    const text = qrText.value.trim();
-    if (!text) {
-        showToast('Please enter a valid text or URL!');
-        return;
-    }
+        // مسح النتيجة القديمة إن وجدت
+        resultContainer.innerHTML = '';
 
-    const size = parseInt(qrSize.value);
+        // استخدام مكتبة توليد الـ QR Code عبر رابط خارجي مباشر (API)
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(inputVal)}`;
 
-    // Clear previous QR if exists
-    qrCodeContainer.innerHTML = '';
+        // إنشاء عنصر الصورة وعرضه
+        const qrImage = document.createElement('img');
+        qrImage.src = qrApiUrl;
+        qrImage.alt = 'Generated QR Code';
+        qrImage.style.borderRadius = '8px';
+        qrImage.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
 
-    // Create new QR Code instance
-    qrCodeInstance = new QRCode(qrCodeContainer, {
-        text: text,
-        width: size,
-        height: size,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
+        resultContainer.appendChild(qrImage);
     });
-
-    // Show result card smoothly
-    resultCard.classList.remove('hidden');
-    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    showToast('QR Code generated successfully!');
-});
-
-// Download QR Code Image Logic
-downloadBtn.addEventListener('click', () => {
-    const img = qrCodeContainer.querySelector('img');
-    if (img) {
-        const imageUrl = img.src;
-        const downloadLink = document.createElement('a');
-        downloadLink.href = imageUrl;
-        downloadLink.download = 'qrcode-master-pro.png';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        showToast('QR Code downloaded successfully!');
-    } else {
-        showToast('No QR code found to download.');
-    }
-});
+}
