@@ -1,6 +1,10 @@
 let currentFormType = '';
 let historyData = JSON.parse(localStorage.getItem('qr_history')) || [];
+let videoStream = null;
+let currentFacingMode = 'environment';
+let flashOn = false;
 
+// دالة الانتقال بين الصفحات الرئيسية
 function switchTab(tabId) {
     document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -11,8 +15,7 @@ function switchTab(tabId) {
     }
 
     document.querySelectorAll('.nav-item').forEach(item => {
-        const onclickAttr = item.getAttribute('onclick');
-        if (onclickAttr && onclickAttr.includes(`'${tabId}'`)) {
+        if (item.getAttribute('data-target') === tabId) {
             item.classList.add('active');
         }
     });
@@ -28,18 +31,43 @@ function switchTab(tabId) {
     }
 }
 
+// ربط أزرار التنقل السفلية
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const target = this.getAttribute('data-target');
+        if (target) {
+            switchTab(target);
+        }
+    });
+});
+
+// ربط أزرار الواجهة الرئيسية (Accueil)
+const gotoGenBtn = document.getElementById('goto-generator-btn');
+if (gotoGenBtn) {
+    gotoGenBtn.addEventListener('click', () => switchTab('generator'));
+}
+
+const gotoScanBtn = document.getElementById('goto-scanner-btn');
+if (gotoScanBtn) {
+    gotoScanBtn.addEventListener('click', () => switchTab('scanner'));
+}
+
+// دالة فتح نموذج النوع المختار
 function openTypeForm(type) {
     currentFormType = type;
-    document.getElementById('types-menu-view').style.display = 'none';
+    const menuView = document.getElementById('types-menu-view');
     const formView = document.getElementById('dynamic-form-view');
-    formView.style.display = 'block';
+    
+    if (menuView) menuView.style.display = 'none';
+    if (formView) formView.style.display = 'block';
 
     const titleText = document.getElementById('form-title-text');
     const titleIcon = document.getElementById('form-title-icon');
     const container = document.getElementById('form-inputs-container');
     
-    container.innerHTML = '';
-    document.getElementById('qr-result').innerHTML = '';
+    if (container) container.innerHTML = '';
+    const resultArea = document.getElementById('qr-result');
+    if (resultArea) resultArea.innerHTML = '';
 
     let html = '';
 
@@ -121,85 +149,135 @@ function openTypeForm(type) {
             break;
     }
 
-    container.innerHTML = html;
+    if (container) container.innerHTML = html;
 }
 
-function backToTypesMenu() {
-    document.getElementById('dynamic-form-view').style.display = 'none';
-    document.getElementById('types-menu-view').style.display = 'block';
-    document.getElementById('qr-result').innerHTML = '';
-}
-
-document.getElementById('generate-custom-btn').addEventListener('click', function() {
-    let qrData = '';
-    const size = document.getElementById('qr-size').value;
-    const resultContainer = document.getElementById('qr-result');
-
-    if (currentFormType === 'clipboard' || currentFormType === 'text' || currentFormType === 'url') {
-        qrData = document.getElementById('input-field-1').value.trim();
-    } else if (currentFormType === 'phone') {
-        const phoneNum = document.getElementById('input-field-1').value.trim();
-        qrData = phoneNum ? `tel:${phoneNum}` : '';
-    } else if (currentFormType === 'email') {
-        const email = document.getElementById('input-field-1').value.trim();
-        const subject = document.getElementById('input-field-2').value.trim();
-        const body = document.getElementById('input-field-3').value.trim();
-        qrData = email ? `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` : '';
-    } else if (currentFormType === 'wifi') {
-        const ssid = document.getElementById('input-field-1').value.trim();
-        const pass = document.getElementById('input-field-2').value.trim();
-        const sec = document.getElementById('input-field-3').value;
-        qrData = `WIFI:S:${ssid};T:${sec};P:${pass};;`;
-    } else {
-        qrData = document.getElementById('input-field-1') ? document.getElementById('input-field-1').value.trim() : 'QR Code';
-    }
-
-    if (!qrData) {
-        alert('Veuillez remplir les informations requises !');
-        return;
-    }
-
-    resultContainer.innerHTML = '<p style="color: var(--accent-color);">Génération du QR Code...</p>';
-    const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(qrData)}`;
-
-    historyData.unshift({ text: qrData, url: apiUrl, date: new Date().toLocaleDateString() });
-    localStorage.setItem('qr_history', JSON.stringify(historyData));
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = apiUrl;
-    img.onload = function() {
-        resultContainer.innerHTML = '';
-        resultContainer.appendChild(img);
-        
-        const downloadBtn = document.createElement('button');
-        downloadBtn.className = 'download-btn';
-        downloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Télécharger le QR Code';
-        
-        downloadBtn.onclick = async function() {
-            try {
-                const response = await fetch(apiUrl);
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = 'qrcode.png';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(blobUrl);
-            } catch (err) {
-                const a = document.createElement('a');
-                a.href = apiUrl;
-                a.target = '_blank';
-                a.download = 'qrcode.png';
-                a.click();
-            }
-        };
-        resultContainer.appendChild(downloadBtn);
-    };
+// ربط أزرار اختيار أنواع الـ QR
+document.querySelectorAll('.type-item-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const type = this.getAttribute('data-type');
+        if (type) {
+            openTypeForm(type);
+        }
+    });
 });
 
+// العودة للقائمة في المولد
+const backMenuBtn = document.getElementById('back-to-menu-btn');
+if (backMenuBtn) {
+    backMenuBtn.addEventListener('click', () => {
+        const formView = document.getElementById('dynamic-form-view');
+        const menuView = document.getElementById('types-menu-view');
+        if (formView) formView.style.display = 'none';
+        if (menuView) menuView.style.display = 'block';
+        const resultArea = document.getElementById('qr-result');
+        if (resultArea) resultArea.innerHTML = '';
+    });
+}
+
+// توليد الـ QR Code
+const generateCustomBtn = document.getElementById('generate-custom-btn');
+if (generateCustomBtn) {
+    generateCustomBtn.addEventListener('click', function() {
+        let qrData = '';
+        const sizeElem = document.getElementById('qr-size');
+        const size = sizeElem ? sizeElem.value : 300;
+        const resultContainer = document.getElementById('qr-result');
+
+        if (currentFormType === 'clipboard' || currentFormType === 'text' || currentFormType === 'url') {
+            const field = document.getElementById('input-field-1');
+            qrData = field ? field.value.trim() : '';
+        } else if (currentFormType === 'phone') {
+            const phoneNum = document.getElementById('input-field-1');
+            qrData = phoneNum && phoneNum.value.trim() ? `tel:${phoneNum.value.trim()}` : '';
+        } else if (currentFormType === 'email') {
+            const email = document.getElementById('input-field-1');
+            const subject = document.getElementById('input-field-2');
+            const body = document.getElementById('input-field-3');
+            qrData = email && email.value.trim() ? `mailto:${email.value.trim()}?subject=${encodeURIComponent(subject ? subject.value : '')}&body=${encodeURIComponent(body ? body.value : '')}` : '';
+        } else if (currentFormType === 'wifi') {
+            const ssid = document.getElementById('input-field-1');
+            const pass = document.getElementById('input-field-2');
+            const sec = document.getElementById('input-field-3');
+            qrData = `WIFI:S:${ssid ? ssid.value.trim() : ''};T:${sec ? sec.value : 'WPA'};P:${pass ? pass.value.trim() : ''};;`;
+        } else if (currentFormType === 'contact') {
+            const name = document.getElementById('input-field-1')?.value || '';
+            const org = document.getElementById('input-field-2')?.value || '';
+            const addr = document.getElementById('input-field-3')?.value || '';
+            const tel = document.getElementById('input-field-4')?.value || '';
+            const mail = document.getElementById('input-field-5')?.value || '';
+            qrData = `MECARD:N:${name};ORG:${org};ADR:${addr};TEL:${tel};EMAIL:${mail};;`;
+        } else if (currentFormType === 'sms') {
+            const tel = document.getElementById('input-field-1')?.value || '';
+            const msg = document.getElementById('input-field-2')?.value || '';
+            qrData = `SMSTO:${tel}:${msg}`;
+        } else if (currentFormType === 'coordinates') {
+            const lat = document.getElementById('input-field-1')?.value || '';
+            const lng = document.getElementById('input-field-2')?.value || '';
+            qrData = `geo:${lat},${lng}`;
+        } else if (currentFormType === 'agenda') {
+            const title = document.getElementById('input-field-1')?.value || '';
+            const loc = document.getElementById('input-field-2')?.value || '';
+            const desc = document.getElementById('input-field-3')?.value || '';
+            qrData = `BEGIN:VEVENT\nSUMMARY:${title}\nLOCATION:${loc}\nDESCRIPTION:${desc}\nEND:VEVENT`;
+        } else {
+            const field = document.getElementById('input-field-1');
+            qrData = field && field.value.trim() ? field.value.trim() : 'QR Code';
+        }
+
+        if (!qrData) {
+            alert('Veuillez remplir les informations requises !');
+            return;
+        }
+
+        if (resultContainer) {
+            resultContainer.innerHTML = '<p style="color: var(--accent-color);">Génération du QR Code...</p>';
+        }
+        
+        const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(qrData)}`;
+
+        historyData.unshift({ text: qrData, url: apiUrl, date: new Date().toLocaleDateString() });
+        localStorage.setItem('qr_history', JSON.stringify(historyData));
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = apiUrl;
+        img.onload = function() {
+            if (resultContainer) {
+                resultContainer.innerHTML = '';
+                resultContainer.appendChild(img);
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'download-btn';
+                downloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Télécharger le QR Code';
+                
+                downloadBtn.onclick = async function() {
+                    try {
+                        const response = await fetch(apiUrl);
+                        const blob = await response.blob();
+                        const blobUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = 'qrcode.png';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(blobUrl);
+                    } catch (err) {
+                        const a = document.createElement('a');
+                        a.href = apiUrl;
+                        a.target = '_blank';
+                        a.download = 'qrcode.png';
+                        a.click();
+                    }
+                };
+                resultContainer.appendChild(downloadBtn);
+            }
+        };
+    });
+}
+
+// عرض السجل
 function renderHistory() {
     const historyList = document.getElementById('history-list');
     if (!historyList) return;
@@ -221,6 +299,7 @@ function renderHistory() {
     historyList.innerHTML = html;
 }
 
+// إعدادات القائمة الجانبية (Drawer)
 const menuToggleBtn = document.getElementById('menu-toggle-btn');
 const settingsDrawer = document.getElementById('settings-drawer');
 const drawerOverlay = document.getElementById('drawer-overlay');
@@ -230,19 +309,20 @@ if (menuToggleBtn) menuToggleBtn.addEventListener('click', () => { settingsDrawe
 if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', () => { settingsDrawer.classList.remove('open'); drawerOverlay.classList.remove('active'); });
 if (drawerOverlay) drawerOverlay.addEventListener('click', () => { settingsDrawer.classList.remove('open'); drawerOverlay.classList.remove('active'); });
 
+// تبديل الثيم والألوان
 const darkModeBtn = document.getElementById('dark-mode-btn');
 const lightModeBtn = document.getElementById('light-mode-btn');
 
 if (darkModeBtn) darkModeBtn.addEventListener('click', () => {
     document.documentElement.setAttribute('data-theme', 'dark');
     darkModeBtn.classList.add('active');
-    lightModeBtn.classList.remove('active');
+    if (lightModeBtn) lightModeBtn.classList.remove('active');
 });
 
 if (lightModeBtn) lightModeBtn.addEventListener('click', () => {
     document.documentElement.setAttribute('data-theme', 'light');
     lightModeBtn.classList.add('active');
-    darkModeBtn.classList.remove('active');
+    if (darkModeBtn) darkModeBtn.classList.remove('active');
 });
 
 document.querySelectorAll('.color-dot').forEach(dot => {
@@ -254,6 +334,7 @@ document.querySelectorAll('.color-dot').forEach(dot => {
     });
 });
 
+// مشاركة التطبيق
 const shareAppBtn = document.getElementById('share-app-btn');
 if (shareAppBtn) {
     shareAppBtn.addEventListener('click', () => {
@@ -267,12 +348,9 @@ if (shareAppBtn) {
             alert("Le partage n'est pas supporté sur ce navigateur.");
         }
     });
-}
+});
 
-let videoStream = null;
-let currentFacingMode = 'environment';
-let flashOn = false;
-
+// الكاميرا والماسح الضوئي
 async function startCamera() {
     const video = document.getElementById('scanner-video');
     if (!video) return;

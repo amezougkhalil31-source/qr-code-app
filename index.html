@@ -25,7 +25,6 @@
             <button id="close-drawer-btn"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="drawer-content">
-            <!-- ألوان التطبيق -->
             <div class="setting-group">
                 <h4>Couleurs</h4>
                 <div class="color-picker-grid">
@@ -36,7 +35,6 @@
                 </div>
             </div>
 
-            <!-- تيم التطبيق (Dark / Light) -->
             <div class="setting-group" style="margin-top: 20px;">
                 <h4>Thème de l'application</h4>
                 <div class="theme-switch-buttons">
@@ -57,8 +55,8 @@
                 <h1>Générez des QR Codes Ultra-Puissants</h1>
                 <p>La solution professionnelle complète pour générer et scanner vos QR codes en toute simplicité.</p>
                 <div class="home-quick-actions">
-                    <button class="primary-btn" onclick="switchTab('generator')"><i class="fa-solid fa-plus-circle"></i> Créer un QR Code</button>
-                    <button class="primary-btn dark-btn" onclick="switchTab('scanner')"><i class="fa-solid fa-camera"></i> Scanner un QR Code</button>
+                    <button class="primary-btn" id="goto-generator-btn"><i class="fa-solid fa-plus-circle"></i> Créer un QR Code</button>
+                    <button class="primary-btn dark-btn" id="goto-scanner-btn"><i class="fa-solid fa-camera"></i> Scanner un QR Code</button>
                 </div>
             </div>
         </section>
@@ -70,51 +68,21 @@
                 <p class="section-desc">Choisissez le type de contenu à générer</p>
                 
                 <div class="qr-types-list">
-                    <button class="type-item-btn" onclick="openTypeForm('clipboard')">
-                        <i class="fa-solid fa-clipboard"></i>
-                        <span>Contenu du presse-papiers</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('url')">
-                        <i class="fa-solid fa-link"></i>
-                        <span>URL</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('text')">
-                        <i class="fa-solid fa-font"></i>
-                        <span>Texte en clair</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('contact')">
-                        <i class="fa-solid fa-user"></i>
-                        <span>Contact</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('email')">
-                        <i class="fa-solid fa-envelope"></i>
-                        <span>Adresse courriel</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('sms')">
-                        <i class="fa-solid fa-comment-sms"></i>
-                        <span>Adresse SMS</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('coordinates')">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <span>Coordonnées géographiques</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('phone')">
-                        <i class="fa-solid fa-phone"></i>
-                        <span>Numéro de téléphone</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('agenda')">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <span>Agenda</span>
-                    </button>
-                    <button class="type-item-btn" onclick="openTypeForm('wifi')">
-                        <i class="fa-solid fa-wifi"></i>
-                        <span>Wi-Fi</span>
-                    </button>
+                    <button class="type-item-btn" data-type="clipboard"><i class="fa-solid fa-clipboard"></i><span>Contenu du presse-papiers</span></button>
+                    <button class="type-item-btn" data-type="url"><i class="fa-solid fa-link"></i><span>URL</span></button>
+                    <button class="type-item-btn" data-type="text"><i class="fa-solid fa-font"></i><span>Texte en clair</span></button>
+                    <button class="type-item-btn" data-type="contact"><i class="fa-solid fa-user"></i><span>Contact</span></button>
+                    <button class="type-item-btn" data-type="email"><i class="fa-solid fa-envelope"></i><span>Adresse courriel</span></button>
+                    <button class="type-item-btn" data-type="sms"><i class="fa-solid fa-comment-sms"></i><span>Adresse SMS</span></button>
+                    <button class="type-item-btn" data-type="coordinates"><i class="fa-solid fa-location-dot"></i><span>Coordonnées géographiques</span></button>
+                    <button class="type-item-btn" data-type="phone"><i class="fa-solid fa-phone"></i><span>Numéro de téléphone</span></button>
+                    <button class="type-item-btn" data-type="agenda"><i class="fa-solid fa-calendar-days"></i><span>Agenda</span></button>
+                    <button class="type-item-btn" data-type="wifi"><i class="fa-solid fa-wifi"></i><span>Wi-Fi</span></button>
                 </div>
             </div>
 
             <div class="card-box" id="dynamic-form-view" style="display: none;">
-                <button class="back-to-menu-btn" onclick="backToTypesMenu()"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                <button class="back-to-menu-btn" id="back-to-menu-btn"><i class="fa-solid fa-arrow-left"></i> Retour</button>
                 <div class="form-header-title">
                     <i id="form-title-icon" class="fa-solid fa-qrcode"></i>
                     <h2 id="form-title-text">Création</h2>
@@ -172,13 +140,11 @@
                 <h2><i class="fa-solid fa-crown" style="color: #eab308;"></i> QR Master Pro</h2>
                 <p class="section-desc">Débloquez toutes les fonctionnalités avancées sans publicité.</p>
                 <div class="pricing-cards" style="display: flex; flex-direction: column; gap: 15px;">
-                    <!-- الاشتراك الشهري -->
                     <div class="price-card">
                         <h3>Abonnement Mensuel</h3>
                         <div class="price">4.99$ <span>/ mois</span></div>
                         <button class="plan-btn">Choisir ce plan</button>
                     </div>
-                    <!-- الاشتراك السنوي -->
                     <div class="price-card popular">
                         <div class="pop-tag">Populaire</div>
                         <h3>Abonnement Annuel</h3>
@@ -193,11 +159,11 @@
 
     <!-- شريط التنقل السفلي -->
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
-        <button class="nav-item" onclick="switchTab('generator')"><i class="fa-solid fa-qrcode"></i><span>Générer</span></button>
-        <button class="nav-item" onclick="switchTab('scanner')"><i class="fa-solid fa-camera"></i><span>Scanner</span></button>
-        <button class="nav-item" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>Historique</span></button>
-        <button class="nav-item" onclick="switchTab('premium')"><i class="fa-solid fa-gem"></i><span>Premium</span></button>
+        <button class="nav-item active" data-target="home"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
+        <button class="nav-item" data-target="generator"><i class="fa-solid fa-qrcode"></i><span>Générer</span></button>
+        <button class="nav-item" data-target="scanner"><i class="fa-solid fa-camera"></i><span>Scanner</span></button>
+        <button class="nav-item" data-target="history"><i class="fa-solid fa-clock-rotate-left"></i><span>Historique</span></button>
+        <button class="nav-item" data-target="premium"><i class="fa-solid fa-gem"></i><span>Premium</span></button>
     </nav>
 
     <script src="script.js"></script>

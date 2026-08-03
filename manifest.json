@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#121826",
   "theme_color": "#4f46e5",
-  "description": "La solution professionnelle complète pour générer et scanner vos QR codes en toute simplicité.",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
