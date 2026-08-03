@@ -17,7 +17,6 @@ function switchTab(tabId) {
         }
     });
 
-    // إيقاف الكاميرا في حال مغادرة صفحة الماسح الضوئي
     if (tabId !== 'scanner') {
         stopCamera();
     } else {
@@ -52,7 +51,6 @@ colorDots.forEach(dot => {
         const colorName = this.getAttribute('data-color');
         document.body.setAttribute('data-theme-color', colorName);
         
-        // تخصيص اللون الرئيسي حسب الاختيار
         let hexColor = '#4f46e5';
         if (colorName === 'red') hexColor = '#dc2626';
         else if (colorName === 'orange') hexColor = '#ea580c';
@@ -71,7 +69,6 @@ colorDots.forEach(dot => {
     });
 });
 
-// استرجاع اللون المحفوظ عند إعادة التشغيل
 window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('app_theme_color');
     const savedHex = localStorage.getItem('app_primary_hex');
@@ -167,7 +164,7 @@ function loadHistory() {
 
 // التحكم في الكاميرا والماسح الضوئي (Scanner)
 let videoStream = null;
-let currentFacingMode = 'environment'; // الكاميرا الخلفية افتراضياً
+let currentFacingMode = 'environment';
 const scannerVideo = document.getElementById('scanner-video');
 
 async function startCamera() {
@@ -192,7 +189,6 @@ function stopCamera() {
     }
 }
 
-// زر قلب الكاميرا (Flip)
 const flipCameraBtn = document.getElementById('flip-camera-btn');
 if (flipCameraBtn) {
     flipCameraBtn.addEventListener('click', () => {
@@ -201,7 +197,6 @@ if (flipCameraBtn) {
     });
 }
 
-// زر الفلاش (Flash / Torch)
 let torchOn = false;
 const flashBtn = document.getElementById('flash-btn');
 if (flashBtn) {
@@ -221,7 +216,6 @@ if (flashBtn) {
     });
 }
 
-// زر المعرض (Galerie) لرفع صورة QR Code
 const galleryBtn = document.getElementById('gallery-btn');
 const galleryFileInput = document.getElementById('gallery-file-input');
 if (galleryBtn && galleryFileInput) {

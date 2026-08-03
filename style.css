@@ -20,7 +20,7 @@ body {
     padding-bottom: 70px;
 }
 
-/* الهيدر العلوي العصري مع زر القائمة والبحث */
+/* الهيدر العلوي العصري مع زر القائمة */
 .app-header {
     background: #ffffff;
     padding: 15px 20px;
@@ -183,7 +183,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* البطاقات العامة */
+/* البطاقات العامة والأزرار السريعة */
 .hero-box, .card-box {
     background: #ffffff;
     padding: 30px 25px;
@@ -219,7 +219,13 @@ body {
     line-height: 1.5;
 }
 
-/* الأزرار الرئيسية */
+.home-quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 25px;
+}
+
 .primary-btn {
     width: 100%;
     background: var(--primary-gradient);
@@ -289,7 +295,7 @@ body {
     justify-content: center;
 }
 
-/* تصميم عارض الماسح الضوئي (Scanner) وأزراره */
+/* تصميم الماسح الضوئي (Scanner) */
 .scanner-viewport {
     position: relative;
     width: 100%;
