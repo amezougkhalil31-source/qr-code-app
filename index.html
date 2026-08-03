@@ -3,78 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Master Pro</title>
+    <title>QR Master Pro - Ultimate Edition</title>
     <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome icons for modern mobile UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- شريط التنقل العلوي لاختيار الأقسام -->
-    <header class="navbar">
-        <div class="logo">QR Master Pro</div>
-        <nav class="nav-links">
-            <button class="nav-btn active" onclick="switchSection('home')">Accueil</button>
-            <button class="nav-btn" onclick="switchSection('generator')">Générateur</button>
-            <button class="nav-btn" onclick="switchSection('history')">Historique</button>
-        </nav>
+    <!-- الواجهة العليا الترحيبية -->
+    <header class="app-header">
+        <div class="app-logo">
+            <i class="fa-solid fa-qrcode"></i> QR Master <span>Pro</span>
+        </div>
+        <div class="badge-pro">PRO V2.0</div>
     </header>
 
-    <!-- المحتوى الرئيسي -->
-    <main class="main-container">
+    <!-- المحتوى الرئيسي (مقسم لصفحات تتحكم فيها عبر القائمة السفلية) -->
+    <main class="main-content">
 
-        <!-- القسم الأول: الواجهة الرئيسية -->
-        <section id="home-section" class="content-section active">
-            <div class="hero-card">
-                <h1>Bienvenue sur QR Master Pro</h1>
-                <p>La solution ultime pour créer et gérer vos codes QR haute performance pour le web et le Play Store.</p>
-                <button class="cta-btn" onclick="switchSection('generator')">Commencer à créer</button>
+        <!-- 1. واجهة الاستقبال الرئيسية -->
+        <section id="home-section" class="page-section active">
+            <div class="hero-box">
+                <div class="hero-icon">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h1>Générez des QR Codes Ultra-Puissants</h1>
+                <p>La solution professionnelle pour booster votre visibilité sur le web et le Google Play Store avec style.</p>
+                <button class="primary-btn" onclick="switchTab('generator')">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Commencer maintenant
+                </button>
             </div>
         </section>
 
-        <!-- القسم الثاني: توليد الـ QR Code -->
-        <section id="generator-section" class="content-section">
-            <div class="generator-card">
-                <div class="card-header">
-                    <span class="icon">⚡</span>
-                    <h2>Generator Hub</h2>
-                </div>
-                <p>Create high-performance QR codes for production & store deployment</p>
+        <!-- 2. قسم توليد QR Code -->
+        <section id="generator-section" class="page-section">
+            <div class="card-box">
+                <h2><i class="fa-solid fa-qrcode"></i> QR Generator Hub</h2>
+                <p class="section-desc">Entrez votre lien ou texte sécurisé</p>
                 
                 <div class="input-group">
-                    <label for="qr-input">Target URL or Secure Text</label>
-                    <input type="text" id="qr-input" placeholder="https://yourwebsite.com">
+                    <label><i class="fa-solid fa-link"></i> URL ou Texte</label>
+                    <input type="text" id="qr-input" placeholder="https://votre-site.com">
                 </div>
 
                 <div class="input-group">
-                    <label for="qr-size">Resolution Size</label>
+                    <label><i class="fa-solid fa-sliders"></i> Résolution</label>
                     <select id="qr-size">
-                        <option value="250">High Definition (250 x 250 px)</option>
-                        <option value="500">Ultra Definition (500 x 500 px)</option>
+                        <option value="250">HD Standard (250x250 px)</option>
+                        <option value="500">Ultra HD (500x500 px) - Pro</option>
                     </select>
                 </div>
 
-                <button id="generate-btn" class="submit-btn">Generate QR Code</button>
+                <button id="generate-btn" class="primary-btn">
+                    <i class="fa-solid fa-gear"></i> Générer le Code
+                </button>
                 
-                <!-- مكان ظهور الـ QR Code بعد توليده -->
-                <div id="qr-result" class="qr-result-container"></div>
+                <div id="qr-result" class="result-area"></div>
             </div>
         </section>
 
-        <!-- القسم الثالث: السجل (History) -->
-        <section id="history-section" class="content-section">
-            <div class="history-card">
-                <h2>Historique de vos QR Codes</h2>
-                <p>Retrouvez ici tous les codes que vous avez générés précédemment.</p>
-                <div id="history-list" class="history-list">
-                    <p class="empty-msg">Aucun historique pour le moment.</p>
+        <!-- 3. قسم الأسعار والنسخ المدفوعة (Pricing / Premium) -->
+        <section id="pricing-section" class="page-section">
+            <div class="card-box">
+                <h2><i class="fa-solid fa-crown" style="color: #f59e0b;"></i> Offres Premium & Pro</h2>
+                <p class="section-desc">Débloquez toutes les fonctionnalités avancées</p>
+                
+                <div class="pricing-cards">
+                    <!-- خطة الشهر -->
+                    <div class="price-card">
+                        <h3>Mensuel</h3>
+                        <div class="price">4.99€ <span>/ mois</span></div>
+                        <p>Idéal pour les projets en cours.</p>
+                        <a href="رابط_سترايب_الشهر_هنا" target="_blank" class="plan-btn">Choisir Mensuel</a>
+                    </div>
+
+                    <!-- خطة مدى الحياة -->
+                    <div class="price-card popular">
+                        <span class="pop-tag">Populaire</span>
+                        <h3>À Vie (Lifetime)</h3>
+                        <div class="price">19.99€ <span>/ unique</span></div>
+                        <p>Accès illimité à vie sans abonnement.</p>
+                        <a href="رابط_سترايب_مدى_الحياة_هنا" target="_blank" class="plan-btn active-plan">Acheter à Vie</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. قسم السجل -->
+        <section id="history-section" class="page-section">
+            <div class="card-box">
+                <h2><i class="fa-solid fa-clock-rotate-left"></i> Historique</h2>
+                <p class="section-desc">Vos derniers QR codes générés</p>
+                <div id="history-list">
+                    <p class="empty-text">Aucun historique pour le moment.</p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="footer">
-        <p>QR Master Pro • Production Ready for Google Play</p>
-    </footer>
+    <!-- شريط التنقل السفلي (بحال التطبيقات الحقيقية في الهاتف) -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Accueil</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('generator')">
+            <i class="fa-solid fa-qrcode"></i>
+            <span>Générer</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('pricing')">
+            <i class="fa-solid fa-gem"></i>
+            <span>Premium</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('history')">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Historique</span>
+        </button>
+    </nav>
 
     <script src="script.js"></script>
 </body>
