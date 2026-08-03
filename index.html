@@ -63,14 +63,23 @@
 
     <main class="main-content">
         
-        <!-- 1. واجهة الاستقبال الرئيسية -->
+        <!-- 1. واجهة الاستقبال الرئيسية مع أزرار الانتقال السريع -->
         <section id="home-section" class="page-section active">
             <div class="hero-box">
                 <div class="hero-icon">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
-                <h1>Générez des QR Codes Ultra-Puissants</h1>
-                <p>La solution professionnelle pour booster votre visibilité sur le web et le Google Play Store.</p>
+                <h1>Bienvenue sur QR Master</h1>
+                <p>Générez et scannez vos QR codes instantanément et en toute simplicité.</p>
+                
+                <div class="home-quick-actions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                    <button onclick="switchTab('generator')" class="primary-btn">
+                        <i class="fa-solid fa-qrcode"></i> Créer un QR Code
+                    </button>
+                    <button onclick="switchTab('scanner')" class="primary-btn" style="background: linear-gradient(135deg, #0f172a, #334155); box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);">
+                        <i class="fa-solid fa-camera"></i> Scanner un QR Code
+                    </button>
+                </div>
             </div>
         </section>
 
