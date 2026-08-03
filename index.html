@@ -105,7 +105,7 @@
             </div>
         </section>
 
-        <!-- 3. واجهة الماسح الضوئي (Scanner) -->
+        <!-- 3. واجهة الماسح الضوئي (Scanner) - تم إزالة زر الفلاش نهائياً -->
         <section id="scanner-section" class="page-section">
             <div class="card-box">
                 <h2><i class="fa-solid fa-camera"></i> Scanner QR</h2>
@@ -114,7 +114,6 @@
                     <div class="scanner-laser"></div>
                 </div>
                 <div class="scanner-controls">
-                    <button class="control-btn" id="flash-btn" title="Flash"><i class="fa-solid fa-bolt"></i></button>
                     <button class="control-btn" id="flip-camera-btn" title="Changer Caméra"><i class="fa-solid fa-camera-rotate"></i></button>
                     <button class="control-btn" id="gallery-btn" title="Importer Image"><i class="fa-solid fa-image"></i></button>
                 </div>
@@ -166,6 +165,8 @@
         <button class="nav-item" data-target="premium"><i class="fa-solid fa-gem"></i><span>Premium</span></button>
     </nav>
 
+    <!-- تضمين مكتبة قراءة الباركود والكاميرا عبر الإنترنت لتشغيل الماسح والجاليري بدقة -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="script.js"></script>
 </body>
 </html>
