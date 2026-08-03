@@ -6,10 +6,13 @@ function switchTab(tabId) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
     const targetSection = document.getElementById(tabId + '-section');
-    if (targetSection) targetSection.classList.add('active');
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
 
     document.querySelectorAll('.nav-item').forEach(item => {
-        if (item.getAttribute('onclick') && item.getAttribute('onclick'].includes(tabId)) {
+        const onclickAttr = item.getAttribute('onclick');
+        if (onclickAttr && onclickAttr.includes(`'${tabId}'`)) {
             item.classList.add('active');
         }
     });
@@ -159,7 +162,6 @@ document.getElementById('generate-custom-btn').addEventListener('click', functio
     resultContainer.innerHTML = '<p style="color: var(--accent-color);">Génération du QR Code...</p>';
     const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(qrData)}`;
 
-    // إضافة الكود إلى السجل وحفظه نهائياً
     historyData.unshift({ text: qrData, url: apiUrl, date: new Date().toLocaleDateString() });
     localStorage.setItem('qr_history', JSON.stringify(historyData));
 
@@ -198,9 +200,10 @@ document.getElementById('generate-custom-btn').addEventListener('click', functio
     };
 });
 
-// عرض السجل
 function renderHistory() {
     const historyList = document.getElementById('history-list');
+    if (!historyList) return;
+    
     if (historyData.length === 0) {
         historyList.innerHTML = `<p class="empty-msg">Aucun élément enregistré dans l'historique.</p>`;
         return;
@@ -218,33 +221,30 @@ function renderHistory() {
     historyList.innerHTML = html;
 }
 
-// إعدادات القائمة الجانبية
 const menuToggleBtn = document.getElementById('menu-toggle-btn');
 const settingsDrawer = document.getElementById('settings-drawer');
 const drawerOverlay = document.getElementById('drawer-overlay');
 const closeDrawerBtn = document.getElementById('close-drawer-btn');
 
-menuToggleBtn.addEventListener('click', () => { settingsDrawer.classList.add('open'); drawerOverlay.classList.add('active'); });
-closeDrawerBtn.addEventListener('click', () => { settingsDrawer.classList.remove('open'); drawerOverlay.classList.remove('active'); });
-drawerOverlay.addEventListener('click', () => { settingsDrawer.classList.remove('open'); drawerOverlay.classList.remove('active'); });
+if (menuToggleBtn) menuToggleBtn.addEventListener('click', () => { settingsDrawer.classList.add('open'); drawerOverlay.classList.add('active'); });
+if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', () => { settingsDrawer.classList.remove('open'); drawerOverlay.classList.remove('active'); });
+if (drawerOverlay) drawerOverlay.addEventListener('click', () => { settingsDrawer.classList.remove('open'); drawerOverlay.classList.remove('active'); });
 
-// تيم التطبيق (Dark / Light)
 const darkModeBtn = document.getElementById('dark-mode-btn');
 const lightModeBtn = document.getElementById('light-mode-btn');
 
-darkModeBtn.addEventListener('click', () => {
+if (darkModeBtn) darkModeBtn.addEventListener('click', () => {
     document.documentElement.setAttribute('data-theme', 'dark');
     darkModeBtn.classList.add('active');
     lightModeBtn.classList.remove('active');
 });
 
-lightModeBtn.addEventListener('click', () => {
+if (lightModeBtn) lightModeBtn.addEventListener('click', () => {
     document.documentElement.setAttribute('data-theme', 'light');
     lightModeBtn.classList.add('active');
     darkModeBtn.classList.remove('active');
 });
 
-// ألوان التطبيق
 document.querySelectorAll('.color-dot').forEach(dot => {
     dot.addEventListener('click', function() {
         document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
@@ -254,20 +254,21 @@ document.querySelectorAll('.color-dot').forEach(dot => {
     });
 });
 
-// زر المشاركة الشامل عبر السوشيال ميديا
-document.getElementById('share-app-btn').addEventListener('click', () => {
-    if (navigator.share) {
-        navigator.share({
-            title: 'QR Master Pro',
-            text: 'Découvrez cette application incroyable pour générer et scanner des QR codes !',
-            url: window.location.href
-        }).catch(() => {});
-    } else {
-        alert("Le partage n'est pas supporté sur ce navigateur.");
-    }
-});
+const shareAppBtn = document.getElementById('share-app-btn');
+if (shareAppBtn) {
+    shareAppBtn.addEventListener('click', () => {
+        if (navigator.share) {
+            navigator.share({
+                title: 'QR Master Pro',
+                text: 'Découvrez cette application incroyable pour générer et scanner des QR codes !',
+                url: window.location.href
+            }).catch(() => {});
+        } else {
+            alert("Le partage n'est pas supporté sur ce navigateur.");
+        }
+    });
+}
 
-// الكاميرا، الفلاش، قلب الكاميرا، والمعرض
 let videoStream = null;
 let currentFacingMode = 'environment';
 let flashOn = false;
@@ -297,46 +298,53 @@ function stopCamera() {
     }
 }
 
-// زر الفلاش
-document.getElementById('flash-btn').addEventListener('click', async () => {
-    if (!videoStream) return;
-    const track = videoStream.getVideoTracks()[0];
-    const capabilities = track.getCapabilities ? track.getCapabilities() : {};
-    
-    if (capabilities.torch) {
-        flashOn = !flashOn;
-        try {
-            await track.applyConstraints({ advanced: [{ torch: flashOn }] });
-            document.getElementById('flash-btn').classList.toggle('active-flash', flashOn);
-        } catch (e) {
-            console.log(e);
+const flashBtn = document.getElementById('flash-btn');
+if (flashBtn) {
+    flashBtn.addEventListener('click', async () => {
+        if (!videoStream) return;
+        const track = videoStream.getVideoTracks()[0];
+        const capabilities = track.getCapabilities ? track.getCapabilities() : {};
+        
+        if (capabilities.torch) {
+            flashOn = !flashOn;
+            try {
+                await track.applyConstraints({ advanced: [{ torch: flashOn }] });
+                flashBtn.classList.toggle('active-flash', flashOn);
+            } catch (e) {
+                console.log(e);
+            }
+        } else {
+            alert("Le flash n'est pas disponible sur cet appareil.");
         }
-    } else {
-        alert("Le flash n'est pas disponible sur cet appareil.");
-    }
-});
+    });
+}
 
-// زر قلب الكاميرا (Avant / Arrière)
-document.getElementById('flip-camera-btn').addEventListener('click', () => {
-    currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
-    startCamera();
-});
+const flipCameraBtn = document.getElementById('flip-camera-btn');
+if (flipCameraBtn) {
+    flipCameraBtn.addEventListener('click', () => {
+        currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+        startCamera();
+    });
+}
 
-// زر استيراد صورة من المعرض
 const galleryBtn = document.getElementById('gallery-btn');
 const galleryFileInput = document.getElementById('gallery-file-input');
 
-galleryBtn.addEventListener('click', () => {
-    galleryFileInput.click();
-});
+if (galleryBtn && galleryFileInput) {
+    galleryBtn.addEventListener('click', () => {
+        galleryFileInput.click();
+    });
 
-galleryFileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const resultArea = document.getElementById('scanner-result');
-        resultArea.innerHTML = `<p style="color: var(--accent-color);">Image importée avec succès !</p>`;
-    };
-    reader.readAsDataURL(file);
-});
+    galleryFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const resultArea = document.getElementById('scanner-result');
+            if (resultArea) {
+                resultArea.innerHTML = `<p style="color: var(--accent-color);">Image importée avec succès !</p>`;
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
