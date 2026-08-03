@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="fr" dir="ltr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,13 +25,23 @@
             <button id="close-drawer-btn"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="drawer-content">
+            <!-- ألوان التطبيق -->
             <div class="setting-group">
-                <h4>Thème de l'application</h4>
+                <h4>Couleurs</h4>
                 <div class="color-picker-grid">
                     <div class="color-dot active" data-color="indigo" style="background: #4f46e5;"></div>
                     <div class="color-dot" data-color="red" style="background: #dc2626;"></div>
                     <div class="color-dot" data-color="orange" style="background: #ea580c;"></div>
                     <div class="color-dot" data-color="green" style="background: #16a34a;"></div>
+                </div>
+            </div>
+
+            <!-- تيم التطبيق (Dark / Light) -->
+            <div class="setting-group" style="margin-top: 20px;">
+                <h4>Thème de l'application</h4>
+                <div class="theme-switch-buttons">
+                    <button class="theme-btn active" id="dark-mode-btn"><i class="fa-solid fa-moon"></i> Mode Sombre</button>
+                    <button class="theme-btn" id="light-mode-btn"><i class="fa-solid fa-sun"></i> Mode Lumière</button>
                 </div>
             </div>
         </div>
@@ -55,8 +65,6 @@
 
         <!-- 2. واجهة مولد الـ QR -->
         <section id="generator-section" class="page-section">
-            
-            <!-- قائمة الخيارات الشاملة -->
             <div class="card-box" id="types-menu-view">
                 <h2>Créer QR</h2>
                 <p class="section-desc">Choisissez le type de contenu à générer</p>
@@ -105,7 +113,6 @@
                 </div>
             </div>
 
-            <!-- واجهة النموذج الديناميكي -->
             <div class="card-box" id="dynamic-form-view" style="display: none;">
                 <button class="back-to-menu-btn" onclick="backToTypesMenu()"><i class="fa-solid fa-arrow-left"></i> Retour</button>
                 <div class="form-header-title">
@@ -154,7 +161,7 @@
                 <h2><i class="fa-solid fa-clock-rotate-left"></i> Historique</h2>
                 <p class="section-desc">Vos QR Codes créés et scannés récemment</p>
                 <div id="history-list" class="history-container">
-                    <p class="empty-msg">Aucun élément enregistrer dans l'historique.</p>
+                    <p class="empty-msg">Aucun élément enregistré dans l'historique.</p>
                 </div>
             </div>
         </section>
@@ -164,7 +171,14 @@
             <div class="card-box">
                 <h2><i class="fa-solid fa-crown" style="color: #eab308;"></i> QR Master Pro</h2>
                 <p class="section-desc">Débloquez toutes les fonctionnalités avancées sans publicité.</p>
-                <div class="pricing-cards">
+                <div class="pricing-cards" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- الاشتراك الشهري -->
+                    <div class="price-card">
+                        <h3>Abonnement Mensuel</h3>
+                        <div class="price">4.99$ <span>/ mois</span></div>
+                        <button class="plan-btn">Choisir ce plan</button>
+                    </div>
+                    <!-- الاشتراك السنوي -->
                     <div class="price-card popular">
                         <div class="pop-tag">Populaire</div>
                         <h3>Abonnement Annuel</h3>
