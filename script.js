@@ -2,7 +2,6 @@ let currentFormType = '';
 let historyData = JSON.parse(localStorage.getItem('qr_history')) || [];
 let videoStream = null;
 let currentFacingMode = 'environment';
-let flashOn = false;
 let html5QrCode = null;
 
 // دالة الانتقال بين الصفحات الأساسية
@@ -234,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 9. تفعيل أزرار الماسح (قلب الكاميرا واستيراد الصور)
+    // 9. تفعيل أزرار الماسح (قلب الكاميرا واستيراد الصور من الجاليري)
     const flipCamBtn = document.getElementById('flip-camera-btn');
     if (flipCamBtn) {
         flipCamBtn.addEventListener('click', async () => {
@@ -341,7 +340,7 @@ function openTypeForm(type) {
     if (container) container.innerHTML = html;
 }
 
-// دوال الكاميرا المتقدمة
+// دوال الكاميرا
 async function startCamera() {
     const scannerResult = document.getElementById('scanner-result');
     if (scannerResult) scannerResult.innerHTML = '';
