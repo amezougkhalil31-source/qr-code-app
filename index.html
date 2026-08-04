@@ -194,7 +194,8 @@
                     <h3 id="scan-result-type-title">Lien Web</h3>
                     <p id="scan-result-text" class="result-text-box"></p>
                     <div class="scan-modal-actions">
-                        <button id="scan-main-action-btn" class="primary-btn">Ouvrir</button>
+                        <!-- الزر الذكي الجديد عوض زر النسخ القديم -->
+                        <button id="smart-open-link-btn" class="primary-btn"><i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien</button>
                         <div class="secondary-actions">
                             <button id="scan-action-copy" class="secondary-btn"><i class="fa-solid fa-copy"></i> Copier</button>
                             <button id="scan-action-share" class="secondary-btn"><i class="fa-solid fa-share-nodes"></i> Partager</button>
@@ -268,9 +269,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 
-    <!-- سكربت آمن جداً لإضافة أزرار "Ouvrir" و "Copier" في التاريخ بدون أي تجميد -->
+    <!-- سكربت مخصص للزر الذكي الجديد في الماسح الضوئي + أزرار التاريخ -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // تفعيل الزر الذكي بناءً على نوع النص الممسوح
+            const scanResultTextElem = document.getElementById('scan-result-text');
+            const smartOpenBtn = document.getElementById('smart-open-link-btn');
+
+            if (smartOpenBtn && scanResultTextElem) {
+                // مراقبة التغييرات في نافذة النتيجة لتحديث وظيفة الزر الذكي
+                const observer = new MutationObserver(() => {
+                    updateSmartButton(scanResultTextElem.innerText.trim());
+                });
+                observer.observe(scanResultTextElem, { childList: true, characterData: true, subtree: true });
+            }
+
+            // تفعيل أزرار التاريخ
             const historyNavBtn = document.querySelector('[data-target="history"]');
             if (historyNavBtn) {
                 historyNavBtn.addEventListener('click', () => {
@@ -278,6 +292,32 @@
                 });
             }
         });
+
+        function updateSmartButton(text) {
+            const smartOpenBtn = document.getElementById('smart-open-link-btn');
+            if (!smartOpenBtn) return;
+
+            // إزالة الأحداث القديمة لمنع التكرار
+            let newBtn = smartOpenBtn.cloneNode(true);
+            smartOpenBtn.parentNode.replaceChild(newBtn, smartOpenBtn);
+
+            if (text.startsWith('tel:') || /^\+?[0-9\s\-]{8,}/.test(text)) {
+                let phoneNumber = text.replace('tel:', '').trim();
+                newBtn.innerHTML = '<i class="fa-solid fa-phone"></i> Appeler le numéro';
+                newBtn.onclick = () => window.location.href = `tel:${phoneNumber}`;
+            } else if (text.startsWith('mailto:') || text.includes('@')) {
+                let email = text.replace('mailto:', '').trim();
+                newBtn.innerHTML = '<i class="fa-solid fa-envelope"></i> Envoyer un e-mail';
+                newBtn.onclick = () => window.location.href = `mailto:${email}`;
+            } else if (text.startsWith('http://') || text.startsWith('https://') || text.includes('.')) {
+                let url = text.startsWith('http') ? text : `https://${text}`;
+                newBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien';
+                newBtn.onclick = () => window.open(url, '_blank');
+            } else {
+                newBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Rechercher sur Google';
+                newBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
+            }
+        }
 
         function safeAddHistoryButtons() {
             const container = document.getElementById('history-list-container');
@@ -293,13 +333,11 @@
                     let actionDiv = document.createElement('div');
                     actionDiv.className = 'history-custom-actions';
 
-                    // زر فتح كود QR
                     let openBtn = document.createElement('button');
                     openBtn.className = 'history-custom-btn';
                     openBtn.innerHTML = '<i class="fa-solid fa-qrcode"></i> Ouvrir QR';
                     openBtn.onclick = () => showQrModalSafe(text);
 
-                    // زر النسخ
                     let copyBtn = document.createElement('button');
                     copyBtn.className = 'history-custom-btn';
                     copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier';

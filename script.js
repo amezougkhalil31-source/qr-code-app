@@ -219,57 +219,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // التعامل مع نتائج السكان
+    // التعامل مع نتائج السكان (الزر الذكي الجديد كلياً)
     const scanResultScreen = document.getElementById('scan-result-screen');
     const closeScanResultBtn = document.getElementById('close-scan-result-btn');
     const scanResultText = document.getElementById('scan-result-text');
     const scanResultTypeTitle = document.getElementById('scan-result-type-title');
     const scanResultCategory = document.getElementById('scan-result-category');
-    const scanMainActionBtn = document.getElementById('scan-main-action-btn');
+    const smartOpenLinkBtn = document.getElementById('smart-open-link-btn');
 
     function handleScanResult(text) {
         if (!scanResultScreen) return;
         scanResultText.textContent = text;
         scanResultScreen.classList.add('active');
 
-        let typeName = "Texte";
-        let category = "TXT";
-        let mainActionText = "Ouvrir";
-        let isLink = false;
+        let typeName = "Texte en clair";
+        let category = "TEXT";
 
-        if (text.startsWith('http://') || text.startsWith('https://')) {
-            typeName = "Lien Web";
-            category = "URL";
-            mainActionText = "Ouvrir le lien";
-            isLink = true;
-        } else if (text.startsWith('mailto:')) {
-            typeName = "Adresse courriel";
-            category = "EMAIL";
-            mainActionText = "Envoyer un courriel";
-            isLink = true;
-        } else if (text.startsWith('tel:')) {
-            typeName = "Numéro de téléphone";
-            category = "PHONE";
-            mainActionText = "Appeler ce numéro";
-            isLink = true;
-        } else {
-            typeName = "Texte en clair";
-            category = "TEXT";
-            mainActionText = "Copier le texte";
+        // تنظيف الأحداث القديمة للزر الذكي لتجنب التكرار
+        if (smartOpenLinkBtn) {
+            let newBtn = smartOpenLinkBtn.cloneNode(true);
+            smartOpenLinkBtn.parentNode.replaceChild(newBtn, smartOpenLinkBtn);
+            
+            // إعادة ربط المتغير بالعنصر الجديد
+            const activeSmartBtn = document.getElementById('smart-open-link-btn');
+
+            if (text.startsWith('http://') || text.startsWith('https://')) {
+                typeName = "Lien Web";
+                category = "URL";
+                activeSmartBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien';
+                activeSmartBtn.onclick = () => window.open(text, '_blank');
+            } else if (text.startsWith('mailto:') || text.includes('@')) {
+                typeName = "Adresse courriel";
+                category = "EMAIL";
+                let email = text.startsWith('mailto:') ? text : `mailto:${text}`;
+                activeSmartBtn.innerHTML = '<i class="fa-solid fa-envelope"></i> Envoyer un e-mail';
+                activeSmartBtn.onclick = () => window.location.href = email;
+            } else if (text.startsWith('tel:') || /^\+?[0-9\s\-]{8,}/.test(text)) {
+                typeName = "Numéro de téléphone";
+                category = "PHONE";
+                let phone = text.startsWith('tel:') ? text : `tel:${text}`;
+                activeSmartBtn.innerHTML = '<i class="fa-solid fa-phone"></i> Appeler ce numéro';
+                activeSmartBtn.onclick = () => window.location.href = phone;
+            } else {
+                typeName = "Texte en clair";
+                category = "TEXT";
+                activeSmartBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Rechercher sur Google';
+                activeSmartBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
+            }
         }
 
         scanResultTypeTitle.textContent = typeName;
         scanResultCategory.textContent = category;
-        scanMainActionBtn.textContent = mainActionText;
-
-        scanMainActionBtn.onclick = () => {
-            if (isLink || text.startsWith('tel:') || text.startsWith('mailto:')) {
-                window.open(text, '_blank');
-            } else {
-                navigator.clipboard.writeText(text);
-                alert('Copié dans le presse-papiers !');
-            }
-        };
     }
 
     if (closeScanResultBtn) {
