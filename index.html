@@ -194,7 +194,7 @@
                     <h3 id="scan-result-type-title">Lien Web</h3>
                     <p id="scan-result-text" class="result-text-box"></p>
                     <div class="scan-modal-actions">
-                        <!-- الزر الذكي الجديد عوض زر النسخ القديم -->
+                        <!-- الزر الذكي الجديد -->
                         <button id="smart-open-link-btn" class="primary-btn"><i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien</button>
                         <div class="secondary-actions">
                             <button id="scan-action-copy" class="secondary-btn"><i class="fa-solid fa-copy"></i> Copier</button>
@@ -269,22 +269,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 
-    <!-- سكربت مخصص للزر الذكي الجديد في الماسح الضوئي + أزرار التاريخ -->
+    <!-- سكربت مخصص لمعالجة النص الممسوح وتوجيه الزر بالطريقة الصحيحة -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // تفعيل الزر الذكي بناءً على نوع النص الممسوح
             const scanResultTextElem = document.getElementById('scan-result-text');
             const smartOpenBtn = document.getElementById('smart-open-link-btn');
 
             if (smartOpenBtn && scanResultTextElem) {
-                // مراقبة التغييرات في نافذة النتيجة لتحديث وظيفة الزر الذكي
                 const observer = new MutationObserver(() => {
                     updateSmartButton(scanResultTextElem.innerText.trim());
                 });
                 observer.observe(scanResultTextElem, { childList: true, characterData: true, subtree: true });
             }
 
-            // تفعيل أزرار التاريخ
             const historyNavBtn = document.querySelector('[data-target="history"]');
             if (historyNavBtn) {
                 historyNavBtn.addEventListener('click', () => {
@@ -293,29 +290,46 @@
             }
         });
 
-        function updateSmartButton(text) {
+        function updateSmartButton(rawText) {
             const smartOpenBtn = document.getElementById('smart-open-link-btn');
             if (!smartOpenBtn) return;
 
-            // إزالة الأحداث القديمة لمنع التكرار
+            // تنظيف النص من أي كلمات مخربقة بحال undefined أو التواريخ الملاصقة
+            let cleanText = rawText.replace(/^undefined\s*/i, '').trim();
+            // استخراج الرقم أو الإيميل إذا كان مدمجاً مع نص أطول
+            let phoneMatch = cleanText.match(/(?:tel:)?(\+?[0-9\s\-]{8,})/i);
+            let emailMatch = cleanText.match(/(?:mailto:)?([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i);
+            let urlMatch = cleanText.match(/(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}[^\s]*)/i);
+
             let newBtn = smartOpenBtn.cloneNode(true);
             smartOpenBtn.parentNode.replaceChild(newBtn, smartOpenBtn);
 
-            if (text.startsWith('tel:') || /^\+?[0-9\s\-]{8,}/.test(text)) {
-                let phoneNumber = text.replace('tel:', '').trim();
+            // التحقق الدقيق: هل هو رقم هاتف؟
+            if (cleanText.startsWith('tel:') || (phoneMatch && cleanText.replace(/[\s\-\+\(\)]/g, '').length >= 8 && !cleanText.includes('http') && !cleanText.includes('@'))) {
+                let phoneNumber = phoneMatch ? phoneMatch[1].trim() : cleanText.replace('tel:', '').trim();
                 newBtn.innerHTML = '<i class="fa-solid fa-phone"></i> Appeler le numéro';
                 newBtn.onclick = () => window.location.href = `tel:${phoneNumber}`;
-            } else if (text.startsWith('mailto:') || text.includes('@')) {
-                let email = text.replace('mailto:', '').trim();
+                newBtn.style.display = "flex";
+            } 
+            // التحقق: هل هو إيميل؟
+            else if (cleanText.startsWith('mailto:') || emailMatch) {
+                let email = emailMatch ? emailMatch[1].trim() : cleanText.replace('mailto:', '').trim();
                 newBtn.innerHTML = '<i class="fa-solid fa-envelope"></i> Envoyer un e-mail';
                 newBtn.onclick = () => window.location.href = `mailto:${email}`;
-            } else if (text.startsWith('http://') || text.startsWith('https://') || text.includes('.')) {
-                let url = text.startsWith('http') ? text : `https://${text}`;
+                newBtn.style.display = "flex";
+            } 
+            // التحقق: هل هو رابط ويب (URL)؟
+            else if (cleanText.startsWith('http://') || cleanText.startsWith('https://') || urlMatch) {
+                let url = cleanText.startsWith('http') ? cleanText : (urlMatch ? `https://${urlMatch[1]}` : `https://${cleanText}`);
                 newBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien';
                 newBtn.onclick = () => window.open(url, '_blank');
-            } else {
+                newBtn.style.display = "flex";
+            } 
+            // إذا كان نص عادي جداً (Text) لا علاقة له بالهاتف أو الإيميل أو الرابط
+            else {
                 newBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Rechercher sur Google';
-                newBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
+                newBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(cleanText)}`, '_blank');
+                newBtn.style.display = "flex";
             }
         }
 
