@@ -4,6 +4,37 @@ let videoStream = null;
 let currentFacingMode = 'environment';
 let html5QrCode = null;
 
+// ==========================================
+// إعدادات Google Play Billing (الاشتراكات)
+// ==========================================
+// تعريف Product IDs اللي غادي تقادهم نفسهم في لوحة التحكم ديال جوجل بلاي
+const SUBSCRIPTION_PRODUCTS = {
+    MONTHLY: 'qr_master_monthly',
+    YEARLY: 'qr_master_yearly'
+};
+
+// دالة الاتصال بنظام الدفع ديال قوقل بلاي (تستدعى عند الضغط على أزرار الاشتراك)
+function handleSubscriptionClick(productId) {
+    console.log(`محاولة الاشتراك في المنتج: ${productId}`);
+    
+    // التحقق واش التطبيق خدام داخل بيئة أندرويد الرسمية ومع Google Play Billing Library
+    if (window.google && window.google.payments && window.google.payments.inapp) {
+        // الكود التقني الفعلي لفتح نافذة الدفع الرسمية الخاصة بقوقل بلاي
+        try {
+            google.payments.inapp.buy({
+                sku: productId,
+                // يمكنك إضافة دوال الاستجابة للنجاح أو الفشل هنا مستقبلاً
+            });
+        } catch (error) {
+            console.error("خطأ في فتح نافذة الدفع:", error);
+            alert("حدث خطأ أثناء الاتصال بنظام الدفع لجوجل بلاي.");
+        }
+    } else {
+        // رسالة تنبيه إذا كان المستخدم كيجرّب التطبيق من متصفح عادٍ أو خارج المتجر
+        alert("خدمة الدفع عبر Google Play متاح فقط داخل التطبيق الرسمي على متجر جوجل بلاي.");
+    }
+}
+
 // دالة الانتقال بين الصفحات الأساسية
 function switchTab(tabId) {
     document.querySelectorAll('.page-section').forEach(sec => {
@@ -56,6 +87,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const gotoScan = document.getElementById('goto-scanner-btn');
     if (gotoScan) {
         gotoScan.addEventListener('click', () => switchTab('scanner'));
+    }
+
+    // ==========================================
+    // ربط أزرار الاشتراكات الشهرية والسنوية بـ Google Play
+    // ==========================================
+    const monthlyBtn = document.getElementById('subscribe-monthly-btn'); // تأكد من أن زر الاشتراك الشهري عنده هاد الإيد في الواجهة
+    if (monthlyBtn) {
+        monthlyBtn.addEventListener('click', () => {
+            handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.MONTHLY);
+        });
+    }
+
+    const yearlyBtn = document.getElementById('subscribe-yearly-btn'); // تأكد من أن زر الاشتراك السنوي عنده هاد الإيد في الواجهة
+    if (yearlyBtn) {
+        yearlyBtn.addEventListener('click', () => {
+            handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.YEARLY);
+        });
     }
 
     // 3. ربط قائمة أنواع الـ QR
