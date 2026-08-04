@@ -13,9 +13,9 @@
     <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
     
-    <!-- التعديلات الجذرية والنهائية (خاصة بـ index.html فقط) -->
+    <!-- التعديلات الأساسية (خاصة بـ index.html فقط) -->
     <style>
-        /* 1. منع تحديد النصوص في التطبيق كاملاً (بحال التطبيقات الحقيقية) */
+        /* 1. منع تحديد النصوص في التطبيق كاملاً */
         body, html, * {
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
@@ -24,7 +24,7 @@
             -webkit-touch-callout: none !important;
         }
 
-        /* 2. فرض نزول الشريط السفلي للأسفل في البيسي وفي الهاتف معاً وبصفة قطعية */
+        /* 2. فرض ثبات الشريط السفلي للأسفل بصفة قطعية */
         .app-nav-bar {
             position: fixed !important;
             bottom: 0 !important;
@@ -41,12 +41,12 @@
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4) !important;
         }
 
-        /* 3. ترك مساحة في أسفل المحتوى باش مايتحجبش ورا الشريط */
+        /* 3. ترك مساحة في أسفل المحتوى */
         .app-main {
             padding-bottom: 100px !important;
         }
 
-        /* 4. تنسيق أزرار التاريخ (Copier و Ouvrir) */
+        /* 4. تنسيق أزرار التاريخ */
         .history-btn-container {
             display: flex;
             gap: 8px;
@@ -285,21 +285,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 
-    <!-- سكربت لضبط زري Copier و Ouvrir بشكل منفصل في كل كارد -->
+    <!-- سكربت خفيف وآمن بدون حلقات تكرار لضمان عدم تجمد الصفحة -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const historyBtn = document.querySelector('[data-target="history"]');
             if (historyBtn) {
                 historyBtn.addEventListener('click', () => {
-                    setTimeout(enhanceHistoryItems, 100);
+                    setTimeout(enhanceHistoryItems, 150);
                 });
-            }
-            const observer = new MutationObserver(() => {
-                enhanceHistoryItems();
-            });
-            const container = document.getElementById('history-list-container');
-            if (container) {
-                observer.observe(container, { childList: true, subtree: true });
             }
         });
 
@@ -316,11 +309,9 @@
                     let lines = textContent.split('\n');
                     let rawText = lines.find(l => l.startsWith('http') || l.includes('tel:') || l.includes('mailto:')) || lines[1] || "";
 
-                    // إنشاء حاوية للأزرار
                     let btnContainer = document.createElement('div');
                     btnContainer.className = 'history-btn-container';
 
-                    // زر النسخ (Copier)
                     let copyBtn = document.createElement('button');
                     copyBtn.className = 'history-copy-btn';
                     copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier';
@@ -329,7 +320,6 @@
                         alert('Copié dans le presse-papiers !');
                     };
 
-                    // زر الفتح والعرض (Ouvrir)
                     let openBtn = document.createElement('button');
                     openBtn.className = 'history-open-btn';
                     openBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Ouvrir';
