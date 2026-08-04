@@ -15,7 +15,7 @@
 </head>
 <body>
 
-    <!-- الهيدر العلوي -->
+    <!-- الهيدر العلوي (زر 3 شراط في الجنب وزر البارطاج) -->
     <header class="app-header">
         <button id="menu-toggle-btn" class="icon-btn" aria-label="Menu">
             <i class="fa-solid fa-bars"></i>
@@ -26,32 +26,14 @@
         </button>
     </header>
 
-    <!-- القائمة الجانبية (الإعدادات، البريميوم، والسجل) -->
+    <!-- القائمة الجانبية (الإعدادات والثيمات والألوان) -->
     <div id="drawer-overlay" class="drawer-overlay"></div>
     <aside id="settings-drawer" class="settings-drawer">
         <div class="drawer-header">
-            <h2>Paramètres & Premium</h2>
+            <h2>Paramètres</h2>
             <button id="close-drawer-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="drawer-content">
-            <!-- واجهة البريميوم والاشتراكات (بالأورو) -->
-            <div class="premium-box" style="background: linear-gradient(135deg, #4f46e5, #9333ea); padding: 16px; border-radius: 12px; margin-bottom: 20px; color: #fff;">
-                <h3 style="font-size: 1rem; margin-bottom: 6px;"><i class="fa-solid fa-crown"></i> QR Master Premium</h3>
-                <p style="font-size: 0.8rem; opacity: 0.9; margin-bottom: 12px;">Débloquez toutes les fonctionnalités illimitées.</p>
-                <div style="display: flex; gap: 8px;">
-                    <button class="primary-btn" style="flex: 1; font-size: 0.75rem; padding: 8px; background: #fff; color: #4f46e5;">Mensuel (4.99 €)</button>
-                    <button class="primary-btn" style="flex: 1; font-size: 0.75rem; padding: 8px; background: rgba(255,255,255,0.2);">Annuel (39.99 €)</button>
-                </div>
-            </div>
-
-            <!-- زر الوصول السريع للسجل (Historique) حدا البريميوم في القائمة -->
-            <div class="setting-item" style="margin-bottom: 20px;">
-                <span>Accès rapide à l'historique</span>
-                <button id="drawer-history-btn" class="secondary-btn" style="font-size: 0.8rem; padding: 8px 12px;">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Voir Historique
-                </button>
-            </div>
-
             <div class="setting-item">
                 <span>Thème</span>
                 <div class="theme-buttons">
@@ -177,11 +159,35 @@
             </div>
         </section>
 
+        <!-- 5. واجهة البريميوم (Premium) حدا السجل في الشريط السفلي -->
+        <section id="premium-section" class="page-section">
+            <div class="section-header">
+                <h2>QR Master Premium</h2>
+            </div>
+            <div style="max-width: 500px; margin: 20px auto; background: linear-gradient(135deg, #4f46e5, #9333ea); padding: 24px; border-radius: 16px; color: #fff; text-align: center;">
+                <i class="fa-solid fa-crown" style="font-size: 3rem; margin-bottom: 15px; color: #facc15;"></i>
+                <h3 style="font-size: 1.4rem; margin-bottom: 10px;">Débloquez toutes les fonctionnalités</h3>
+                <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 25px;">Profitez d'un accès illimité à la génération avancée, sans aucune restriction.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="primary-btn" onclick="alert('Redirection vers le paiement mensuel (4.99 €)...')" style="background: #fff; color: #4f46e5; padding: 14px; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-calendar-days"></i> Abonnement Mensuel</span>
+                        <span style="background: #4f46e5; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem;">4.99 € / mois</span>
+                    </button>
+                    
+                    <button class="primary-btn" onclick="alert('Redirection vers le paiement annuel (39.99 €)...')" style="background: rgba(255,255,255,0.2); color: #fff; padding: 14px; font-weight: 600; border-radius: 10px; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-star"></i> Abonnement Annuel (Économisez)</span>
+                        <span style="background: #facc15; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: bold;">39.99 € / an</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- الشريط السفلي للتنقل -->
+    <!-- الشريط السفلي للتنقل (فيه Accueil, Créer, Scanner, Historique, ولصقها Premium) -->
     <nav class="app-nav-bar">
-        <button class="nav-item" data-target="home">
+        <button class="nav-item active" data-target="home">
             <i class="fa-solid fa-house"></i>
             <span>Accueil</span>
         </button>
@@ -196,6 +202,10 @@
         <button class="nav-item" data-target="history">
             <i class="fa-solid fa-clock-rotate-left"></i>
             <span>Historique</span>
+        </button>
+        <button class="nav-item" data-target="premium">
+            <i class="fa-solid fa-crown" style="color: #facc15;"></i>
+            <span>Premium</span>
         </button>
     </nav>
 
