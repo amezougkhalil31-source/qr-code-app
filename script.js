@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main JavaScript Logic
+   QR Master Pro - Main JavaScript Logic (Updated)
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetSection.classList.add('active');
             }
 
-            // إيقاف الكاميرا تلقائياً إذا خرجنا من واجهة السكان لتفادي المشاكل والشاشة السوداء
+            // إيقاف الكاميرا تلقائياً إذا خرجنا من واجهة السكان لتفادي المشاكل
             if (target !== 'scanner' && html5QrCode && isScanning) {
                 stopScanner();
             }
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // منطق الكاميرا والماسح الضوئي (Scanner)
     let html5QrCode = null;
     let isScanning = false;
+    let currentFacingMode = "environment"; // تبدأ بالكاميرا الخلفية
 
     function startScanner() {
         const readerElement = document.getElementById('reader');
@@ -127,14 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!isScanning) {
             html5QrCode.start(
-                { facingMode: "environment" },
+                { facingMode: currentFacingMode },
                 { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText) => {
                     stopScanner();
                     handleScanResult(decodedText);
                 },
                 (errorMessage) => {
-                    // الأخطاء البسيطة أثناء المسح نتجاهلها لكي لا تتسبب في توقف التطبيق
+                    // تجاهل الأخطاء العادية أثناء المسح المستمر
                 }
             ).then(() => {
                 isScanning = true;
@@ -162,12 +163,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // زر قلب الكاميرا (أمامية / خلفية)
     const flipCameraBtn = document.getElementById('flip-camera-btn');
     if (flipCameraBtn) {
         flipCameraBtn.addEventListener('click', () => {
+            currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
             if (html5QrCode) {
                 stopScanner();
-                setTimeout(startScanner, 500);
+                setTimeout(() => {
+                    startScanner();
+                }, 400);
+            }
+        });
+    }
+
+    // زر اختيار صورة من المعرض (Gallery)
+    const galleryBtn = document.getElementById('gallery-btn');
+    const galleryFileInput = document.getElementById('gallery-file-input');
+
+    if (galleryBtn && galleryFileInput) {
+        galleryBtn.addEventListener('click', () => {
+            galleryFileInput.click();
+        });
+
+        galleryFileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                const imageFile = e.target.files[0];
+                
+                // إيقاف الكاميرا المؤقتة أثناء قراءة الصورة من الملف
+                if (html5QrCode && isScanning) {
+                    stopScanner();
+                }
+
+                if (!html5QrCode) {
+                    html5QrCode = new Html5Qrcode("reader");
+                }
+
+                html5QrCode.scanFile(imageFile, true)
+                    .then(decodedText => {
+                        handleScanResult(decodedText);
+                    })
+                    .catch(err => {
+                        console.error("Erreur de scan du fichier:", err);
+                        alert("Impossible de trouver un QR Code valide dans cette image.");
+                        startScanner();
+                    });
             }
         });
     }
@@ -300,7 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
         switch(type) {
             case 'clipboard':
                 formTitleText.textContent = "Contenu du presse-papiers";
-                navigator.clipboard.readText().clipText = "";
                 html = `<div class="input-group"><label>Valeur lue</label><input type="text" id="input-val" placeholder="Texte récupéré automatiquement..."></div>`;
                 navigator.clipboard.readText().then(clipText => {
                     const inputEl = document.getElementById('input-val');
