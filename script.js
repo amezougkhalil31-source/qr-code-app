@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main JavaScript (Full & Ultimate Production Ready)
+   QR Master Pro - Main JavaScript (Optimized & Smart Scanner)
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetId !== 'scanner' && html5QrCode && html5QrCode.isScanning) {
             html5QrCode.stop().catch(() => {});
         } else if (targetId === 'scanner') {
-            startScanner();
+            // فتح سريع وفوري بدون تأخير
+            setTimeout(startScanner, 50);
         }
 
         if (targetId === 'history') {
@@ -35,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // أزرار الاختصار في الهيدر
     const gotoGenBtn = document.getElementById('goto-generator-btn');
     const gotoScanBtn = document.getElementById('goto-scanner-btn');
     const headerPremiumBtn = document.getElementById('header-premium-btn');
@@ -94,9 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const savedTheme = localStorage.getItem('qr_theme');
-        if (savedTheme === 'light') {
-            lightBtn.click();
-        }
+        if (savedTheme === 'light') lightBtn.click();
     }
 
     const colorDots = document.querySelectorAll('.color-dot');
@@ -131,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. اختيار خطة بريميوم (شهرية / سنوية) ---
+    // --- 3. اختيار خطة بريميوم ---
     const planCards = document.querySelectorAll('.premium-plan-card');
     planCards.forEach(card => {
         card.addEventListener('click', () => {
@@ -149,11 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
         subscribeBtn.addEventListener('click', () => {
             const activePlan = document.querySelector('.premium-plan-card.active-plan');
             const planName = activePlan ? activePlan.getAttribute('data-plan') : 'yearly';
-            alert(`Merci ! Redirection vers la passerelle de paiement sécurisée pour l'abonnement (${planName})...`);
+            alert(`Redirection vers la passerelle de paiement sécurisée (${planName})...`);
         });
     }
 
-    // --- 4. مولد QR Code (Generator Dynamic Forms) ---
+    // --- 4. مولد QR Code ---
     const typesGrid = document.getElementById('types-menu-view');
     const dynamicForm = document.getElementById('dynamic-form-view');
     const backToMenuBtn = document.getElementById('back-to-menu-btn');
@@ -203,12 +201,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'email':
                 html = `<div class="input-group"><label>Adresse Email</label><input type="email" id="inp-mail-to" placeholder="destinataire@example.com"></div>
-                        <div class="input-group"><label>Sujet</label><input type="text" id="inp-mail-sub" placeholder="Sujet du message"></div>
-                        <div class="input-group"><label>Message</label><textarea id="inp-mail-body" rows="2" placeholder="Contenu..."></textarea></div>`;
+                        <div class="input-group"><label>Sujet</label><input type="text" id="inp-mail-sub" placeholder="Sujet..."></div>
+                        <div class="input-group"><label>Message</label><textarea id="inp-mail-body" rows="2" placeholder="Message..."></textarea></div>`;
                 break;
             case 'sms':
                 html = `<div class="input-group"><label>Numéro de téléphone</label><input type="tel" id="inp-sms-phone" placeholder="+212..."></div>
-                        <div class="input-group"><label>Message</label><textarea id="inp-sms-text" rows="2" placeholder="Votre message SMS..."></textarea></div>`;
+                        <div class="input-group"><label>Message</label><textarea id="inp-sms-text" rows="2" placeholder="Message SMS..."></textarea></div>`;
                 break;
             case 'coordinates':
                 html = `<div class="input-group"><label>Latitude</label><input type="text" id="inp-lat" placeholder="33.5731"></div>
@@ -228,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="input-group"><label>Date de fin</label><input type="date" id="inp-ev-end"></div>`;
                 break;
             case 'clipboard':
-                html = `<div class="input-group"><label>Contenu du presse-papiers</label><textarea id="inp-clip" rows="3" placeholder="Collez ou écrivez ici..."></textarea></div>`;
+                html = `<div class="input-group"><label>Contenu</label><textarea id="inp-clip" rows="3" placeholder="Texte..."></textarea></div>`;
                 break;
             default:
                 html = `<div class="input-group"><label>Valeur</label><input type="text" id="inp-default" placeholder="Valeur..."></div>`;
@@ -240,13 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
         generateCustomBtn.addEventListener('click', () => {
             let stringData = '';
             switch (currentSelectedType) {
-                case 'url':
-                    stringData = document.getElementById('inp-url')?.value || '';
-                    break;
+                case 'url': stringData = document.getElementById('inp-url')?.value || ''; break;
                 case 'text':
-                case 'clipboard':
-                    stringData = document.getElementById('inp-text')?.value || document.getElementById('inp-clip')?.value || '';
-                    break;
+                case 'clipboard': stringData = document.getElementById('inp-text')?.value || document.getElementById('inp-clip')?.value || ''; break;
                 case 'contact':
                     const n = document.getElementById('inp-name')?.value || '';
                     const p = document.getElementById('inp-phone')?.value || '';
@@ -254,35 +248,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     stringData = `BEGIN:VCARD\nVERSION:3.0\nFN:${n}\nTEL:${p}\nEMAIL:${e}\nEND:VCARD`;
                     break;
                 case 'email':
-                    const mTo = document.getElementById('inp-mail-to')?.value || '';
-                    const mSub = document.getElementById('inp-mail-sub')?.value || '';
-                    const mBody = document.getElementById('inp-mail-body')?.value || '';
-                    stringData = `mailto:${mTo}?subject=${encodeURIComponent(mSub)}&body=${encodeURIComponent(mBody)}`;
+                    stringData = `mailto:${document.getElementById('inp-mail-to')?.value || ''}?subject=${encodeURIComponent(document.getElementById('inp-mail-sub')?.value || '')}&body=${encodeURIComponent(document.getElementById('inp-mail-body')?.value || '')}`;
                     break;
                 case 'sms':
-                    const sPhone = document.getElementById('inp-sms-phone')?.value || '';
-                    const sText = document.getElementById('inp-sms-text')?.value || '';
-                    stringData = `SMSTO:${sPhone}:${sText}`;
+                    stringData = `SMSTO:${document.getElementById('inp-sms-phone')?.value || ''}:${document.getElementById('inp-sms-text')?.value || ''}`;
                     break;
                 case 'coordinates':
-                    const lat = document.getElementById('inp-lat')?.value || '';
-                    const lon = document.getElementById('inp-lon')?.value || '';
-                    stringData = `geo:${lat},${lon}`;
+                    stringData = `geo:${document.getElementById('inp-lat')?.value || ''},${document.getElementById('inp-lon')?.value || ''}`;
                     break;
                 case 'phone':
                     stringData = `tel:${document.getElementById('inp-call')?.value || ''}`;
                     break;
                 case 'wifi':
-                    const wName = document.getElementById('inp-wifi-name')?.value || '';
-                    const wPass = document.getElementById('inp-wifi-pass')?.value || '';
-                    const wSec = document.getElementById('inp-wifi-sec')?.value || 'WPA';
-                    stringData = `WIFI:S:${wName};T:${wSec};P:${wPass};;`;
+                    stringData = `WIFI:S:${document.getElementById('inp-wifi-name')?.value || ''};T:${document.getElementById('inp-wifi-sec')?.value || 'WPA'};P:${document.getElementById('inp-wifi-pass')?.value || ''};;`;
                     break;
                 case 'agenda':
                     stringData = `BEGIN:VEVENT\nSUMMARY:${document.getElementById('inp-ev-title')?.value || ''}\nDTSTART:${document.getElementById('inp-ev-start')?.value || ''}\nDTEND:${document.getElementById('inp-ev-end')?.value || ''}\nEND:VEVENT`;
                     break;
-                default:
-                    stringData = document.getElementById('inp-default')?.value || '';
+                default: stringData = document.getElementById('inp-default')?.value || '';
             }
 
             if (!stringData.trim()) {
@@ -313,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         actionDiv.style.marginTop = '15px';
                         actionDiv.innerHTML = `
                             <button class="history-custom-btn" id="dl-qr-btn"><i class="fa-solid fa-download"></i> Télécharger</button>
-                            <button class="history-custom-btn" id="share-qr-btn"><i class="fa-solid fa-share-nodes"></i> Partager</button>
                         `;
                         qrResultBox.appendChild(actionDiv);
 
@@ -328,21 +310,17 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         });
 
-                        document.getElementById('share-qr-btn')?.addEventListener('click', () => {
-                            alert('QR Code généré avec succès !');
-                        });
-
                         saveToHistory(currentSelectedType, stringData);
-                    }, 200);
+                    }, 100);
 
                 } catch (err) {
-                    alert('Erreur lors de la génération du QR Code.');
+                    alert('Erreur lors de la génération.');
                 }
             }
         });
     }
 
-    // --- 5. الماسح الضوئي الذكي (Scanner) ---
+    // --- 5. الماسح الضوئي الذكي (Fast & Smart Scanner) ---
     let html5QrCode = null;
     let currentCameraIndex = 0;
     let availableCameras = [];
@@ -355,6 +333,8 @@ document.addEventListener('DOMContentLoaded', () => {
             html5QrCode = new Html5Qrcode("reader");
         }
 
+        if (html5QrCode.isScanning) return;
+
         Html5Qrcode.getCameras().then(devices => {
             if (devices && devices.length) {
                 availableCameras = devices;
@@ -362,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 html5QrCode.start(
                     cameraId,
-                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    { fps: 15, qrbox: { width: 240, height: 240 } },
                     (decodedText) => { processSmartScanResult(decodedText); },
                     () => {}
                 ).catch(() => {});
@@ -370,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(() => {
             html5QrCode.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 250, height: 250 } },
+                { fps: 15, qrbox: { width: 240, height: 240 } },
                 (decodedText) => { processSmartScanResult(decodedText); },
                 () => {}
             ).catch(() => {});
@@ -404,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 html5QrCode.scanFile(imageFile, true)
                     .then(decodedText => { processSmartScanResult(decodedText); })
-                    .catch(() => { alert("Aucun QR code n'a pu être détecté dans cette image."); });
+                    .catch(() => { alert("Aucun QR code détecté dans cette image."); });
             }
         });
     }
@@ -422,41 +402,47 @@ document.addEventListener('DOMContentLoaded', () => {
             html5QrCode.stop().catch(() => {});
         }
 
-        let typeCat = 'texte';
         let cleanText = text.trim();
+        let typeCat = 'texte';
+        let actionUrl = '';
 
+        // تحليل ذكي وتوجيه تلقائي (Smart Routing)
         if (cleanText.startsWith('http://') || cleanText.startsWith('https://')) {
             typeCat = 'url';
-            saveToHistory(typeCat, cleanText);
-            window.location.href = cleanText;
-            return;
-        } 
-        else if (cleanText.startsWith('tel:')) {
+            actionUrl = cleanText;
+        } else if (cleanText.startsWith('tel:')) {
             typeCat = 'téléphone';
-            saveToHistory(typeCat, cleanText);
-            window.location.href = cleanText;
-            return;
-        } 
-        else if (cleanText.startsWith('mailto:')) {
+            actionUrl = cleanText;
+        } else if (cleanText.startsWith('mailto:')) {
             typeCat = 'email';
-            saveToHistory(typeCat, cleanText);
-            window.location.href = cleanText;
-            return;
-        }
-        else if (cleanText.startsWith('SMSTO:')) {
+            actionUrl = cleanText;
+        } else if (cleanText.startsWith('SMSTO:') || cleanText.startsWith('sms:')) {
             typeCat = 'sms';
-            saveToHistory(typeCat, cleanText);
-            window.location.href = `sms:${cleanText.split(':')[1]}`;
-            return;
+            actionUrl = cleanText;
+        } else if (cleanText.includes('BEGIN:VCARD')) {
+            typeCat = 'contact';
+        }
+
+        saveToHistory(typeCat, cleanText);
+
+        // إذا كان رابط أو هاتف أو إيميل، يتم توجيه المستخدم أو فتحه فوراً، وإلا تظهر نافذة النتيجة الذكية
+        if (actionUrl) {
+            if (confirm(`QR Code détecté (${typeCat.toUpperCase()}):\n${cleanText}\nVoulez-vous l'ouvrir ?`)) {
+                window.location.href = actionUrl;
+                return;
+            }
         }
 
         if (scanResultModal && scanResultText) {
             scanResultModal.classList.add('active');
             scanResultText.textContent = cleanText;
             if (scanResultCategory) scanResultCategory.textContent = typeCat.toUpperCase();
-            if (smartOpenLinkBtn) smartOpenLinkBtn.style.display = 'none';
-
-            saveToHistory(typeCat, cleanText);
+            if (smartOpenLinkBtn) {
+                smartOpenLinkBtn.style.display = (typeCat === 'url') ? 'block' : 'none';
+            }
+        } else {
+            alert(`Résultat (${typeCat.toUpperCase()}):\n${cleanText}`);
+            startScanner();
         }
     }
 
@@ -477,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scanActionCopy) {
         scanActionCopy.addEventListener('click', () => {
             const textToCopy = scanResultText ? scanResultText.textContent : '';
-            navigator.clipboard.writeText(textToCopy).then(() => { alert('Copié dans le presse-papiers !'); });
+            navigator.clipboard.writeText(textToCopy).then(() => { alert('Copié !'); });
         });
     }
 
@@ -492,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 6. إدارة التاريخ (LocalStorage History) مع إمكانية عرض QR Code عند الضغط ---
+    // --- 6. إدارة التاريخ ---
     function saveToHistory(type, data) {
         let history = JSON.parse(localStorage.getItem('qr_history') || '[]');
         history.unshift({ type, data, date: new Date().toLocaleDateString() });
@@ -513,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
         historyContainer.innerHTML = '';
         history.forEach((item, index) => {
             const div = document.createElement('div');
-            div.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; cursor: pointer; transition: var(--transition);";
+            div.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; cursor: pointer;";
             div.innerHTML = `
                 <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                     <span class="badge">${item.type.toUpperCase()}</span>
@@ -531,16 +517,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.hist-text-click').forEach(p => {
             p.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const text = decodeURIComponent(p.getAttribute('data-text'));
-                showQrPopup(text);
+                showQrPopup(decodeURIComponent(p.getAttribute('data-text')));
             });
         });
 
         document.querySelectorAll('.hist-copy').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const text = decodeURIComponent(btn.getAttribute('data-text'));
-                navigator.clipboard.writeText(text).then(() => alert('Copié !'));
+                navigator.clipboard.writeText(decodeURIComponent(btn.getAttribute('data-text'))).then(() => alert('Copié !'));
             });
         });
 
@@ -583,22 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
             correctLevel: QRCode.CorrectLevel.H
         });
 
-        document.getElementById('close-pop-btn').addEventListener('click', () => {
-            modal.remove();
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.remove();
-        });
-    }
-
-    const clearHistoryBtn = document.getElementById('clear-history-btn');
-    if (clearHistoryBtn) {
-        clearHistoryBtn.addEventListener('click', () => {
-            if (confirm('Voulez-vous vraiment vider tout l\'historique ?')) {
-                localStorage.removeItem('qr_history');
-                renderHistory();
-            }
-        });
+        document.getElementById('close-pop-btn').addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
     }
 });
