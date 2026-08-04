@@ -13,7 +13,6 @@
     <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
     
-    <!-- التعديلات الأساسية (خاصة بـ index.html فقط) -->
     <style>
         /* 1. منع تحديد النصوص في التطبيق كاملاً */
         body, html, * {
@@ -24,7 +23,7 @@
             -webkit-touch-callout: none !important;
         }
 
-        /* 2. فرض ثبات الشريط السفلي للأسفل بصفة قطعية */
+        /* 2. ثبات الشريط السفلي للأسفل بصفة قطعية */
         .app-nav-bar {
             position: fixed !important;
             bottom: 0 !important;
@@ -44,50 +43,6 @@
         /* 3. ترك مساحة في أسفل المحتوى */
         .app-main {
             padding-bottom: 100px !important;
-        }
-
-        /* 4. تنسيق أزرار التاريخ */
-        .history-btn-container {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .history-copy-btn {
-            background: rgba(79, 70, 229, 0.2);
-            color: #818cf8;
-            border: 1px solid rgba(79, 70, 229, 0.4);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-        .history-copy-btn:hover {
-            background: #4f46e5;
-            color: #fff;
-        }
-
-        .history-open-btn {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-        .history-open-btn:hover {
-            background: #10b981;
-            color: #fff;
         }
     </style>
 </head>
@@ -282,98 +237,6 @@
 
     <!-- Scripts -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
-
-    <!-- سكربت خفيف وآمن بدون حلقات تكرار لضمان عدم تجمد الصفحة -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const historyBtn = document.querySelector('[data-target="history"]');
-            if (historyBtn) {
-                historyBtn.addEventListener('click', () => {
-                    setTimeout(enhanceHistoryItems, 150);
-                });
-            }
-        });
-
-        function enhanceHistoryItems() {
-            const container = document.getElementById('history-list-container');
-            if (!container) return;
-            const items = container.querySelectorAll('div');
-            items.forEach(item => {
-                if (item.dataset.enhanced) return;
-                const textContent = item.innerText || "";
-                if (textContent.length > 0 && !item.querySelector('.history-btn-container')) {
-                    item.dataset.enhanced = "true";
-                    
-                    let lines = textContent.split('\n');
-                    let rawText = lines.find(l => l.startsWith('http') || l.includes('tel:') || l.includes('mailto:')) || lines[1] || "";
-
-                    let btnContainer = document.createElement('div');
-                    btnContainer.className = 'history-btn-container';
-
-                    let copyBtn = document.createElement('button');
-                    copyBtn.className = 'history-copy-btn';
-                    copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier';
-                    copyBtn.onclick = () => {
-                        navigator.clipboard.writeText(rawText);
-                        alert('Copié dans le presse-papiers !');
-                    };
-
-                    let openBtn = document.createElement('button');
-                    openBtn.className = 'history-open-btn';
-                    openBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Ouvrir';
-                    openBtn.onclick = () => {
-                        showQrPopup(rawText);
-                    };
-
-                    btnContainer.appendChild(copyBtn);
-                    btnContainer.appendChild(openBtn);
-                    item.appendChild(btnContainer);
-                }
-            });
-        }
-
-        function showQrPopup(text) {
-            let existingModal = document.getElementById('qr-popup-modal');
-            if (existingModal) existingModal.remove();
-
-            let modal = document.createElement('div');
-            modal.id = 'qr-popup-modal';
-            modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999999; display:flex; justify-content:center; align-items:center;";
-            
-            let content = document.createElement('div');
-            content.style.cssText = "background:#1e293b; padding:25px; border-radius:16px; text-align:center; max-width:90%; width:320px; box-shadow:0 10px 25px rgba(0,0,0,0.5); color:#fff;";
-            
-            let title = document.createElement('h3');
-            title.innerText = "Votre QR Code";
-            title.style.marginBottom = "15px";
-            content.appendChild(title);
-
-            let qrBox = document.createElement('div');
-            qrBox.id = "popup-qrcode-render";
-            qrBox.style.cssText = "background:#fff; padding:15px; border-radius:12px; display:inline-block; margin-bottom:15px;";
-            content.appendChild(qrBox);
-
-            let closeBtn = document.createElement('button');
-            closeBtn.className = "primary-btn";
-            closeBtn.innerText = "Fermer";
-            closeBtn.style.cssText = "width:100%; padding:10px; background:#4f46e5; color:#fff; border:none; border-radius:8px; cursor:pointer;";
-            closeBtn.onclick = () => modal.remove();
-            content.appendChild(closeBtn);
-
-            modal.appendChild(content);
-            document.body.appendChild(modal);
-
-            new QRCode(qrBox, {
-                text: text,
-                width: 200,
-                height: 200,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-    </script>
 </body>
 </html>
