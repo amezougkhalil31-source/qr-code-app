@@ -43,19 +43,29 @@
                 </div>
             </div>
 
-            <!-- روابط إضافية -->
-            <div class="setting-links">
+            <!-- روابط إضافية وزر بريميوم -->
+            <div class="setting-links" style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="goto-premium-drawer-btn" class="drawer-link" style="width:100%; text-align:left; background:none; border:none; cursor:pointer; color: #eab308; font-weight: 600;"><i class="fa-solid fa-crown"></i> QR Master Pro Premium</button>
                 <a href="privacy.html" class="drawer-link"><i class="fa-solid fa-shield-halved"></i> Politique de Confidentialité</a>
                 <button id="share-app-btn" class="drawer-link" style="width:100%; text-align:left; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-share-nodes"></i> Partager l'application</button>
             </div>
         </div>
     </aside>
 
-    <!-- الهيدر العلوي -->
+    <!-- الهيدر العلوي (مع أزرار الوصول السريع: القائمة، المنزل، الكاميرا، والبريميوم) -->
     <header class="app-header">
-        <button class="icon-btn" id="menu-toggle-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="icon-btn" id="menu-toggle-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+            <!-- زر المنزل (Accueil) للرجوع لإنشاء الكود مباشرة -->
+            <button class="icon-btn" id="goto-generator-btn" title="Accueil (Créer)"><i class="fa-solid fa-house"></i></button>
+        </div>
         <h1 class="app-title">QR Master Pro</h1>
-        <div style="width: 40px;"></div>
+        <div style="display: flex; align-items: center; gap: 4px;">
+            <!-- زر الكاميرا (Scanner) السريع في الهيدر -->
+            <button class="icon-btn" id="goto-scanner-btn" title="Scanner un QR Code"><i class="fa-solid fa-camera"></i></button>
+            <!-- زر البريميوم السريع في الهيدر -->
+            <button class="icon-btn" id="header-premium-btn" title="Passer à Premium" style="color: #eab308;"><i class="fa-solid fa-crown"></i></button>
+        </div>
     </header>
 
     <!-- المحتوى الرئيسي (Sections) -->
@@ -127,6 +137,41 @@
             </div>
         </section>
 
+        <!-- 4. واجهة بريميوم (Premium Section - شهرية وسنوية) -->
+        <section id="premium-section" class="page-section">
+            <div class="section-container" style="text-align: center;">
+                <div style="font-size: 2.5rem; color: #eab308; margin-bottom: 10px;">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <h2 style="font-size: 1.4rem; margin-bottom: 8px;">QR Master Pro <span style="color: #eab308;">Premium</span></h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Profitez d'une expérience sans publicités, avec des designs illimités et des fonctionnalités exclusives.</p>
+                
+                <!-- خيارات الاشتراك (شهري وسنوي) -->
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <!-- الخيار الشهري -->
+                    <div class="premium-plan-card" style="background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition);" data-plan="monthly">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 600; font-size: 1rem;">Abonnement Mensuel</span>
+                            <span style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">$2.99 / mois</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); text-align: left; margin-top: 4px;">Sans engagement, annulez à tout moment.</p>
+                    </div>
+
+                    <!-- الخيار السنوي (الأكثر توفيراً) -->
+                    <div class="premium-plan-card active-plan" style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition); position: relative;" data-plan="yearly">
+                        <span style="position: absolute; top: -10px; right: 15px; background: var(--primary); color: #fff; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">Économisez 50%</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 600; font-size: 1rem;">Abonnement Annuel</span>
+                            <span style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">$19.99 / an</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); text-align: left; margin-top: 4px;">Le meilleur choix pour les professionnels.</p>
+                    </div>
+                </div>
+
+                <button class="primary-btn" id="subscribe-now-btn" style="background: linear-gradient(135deg, #eab308, #ca8a04); color: #000; font-weight: 700;"><i class="fa-solid fa-bolt"></i> Activer Premium Maintenant</button>
+            </div>
+        </section>
+
     </main>
 
     <!-- واجهة منبثقة للنتائج غير الأوتوماتيكية (النصوص العادية) -->
@@ -158,6 +203,11 @@
         <button class="nav-item" data-target="history">
             <i class="fa-solid fa-clock-rotate-left"></i>
             <span>Historique</span>
+        </button>
+        <!-- خانة البريميوم في الشريط السفلي -->
+        <button class="nav-item" data-target="premium" style="color: #eab308;">
+            <i class="fa-solid fa-crown"></i>
+            <span>Premium</span>
         </button>
     </nav>
 

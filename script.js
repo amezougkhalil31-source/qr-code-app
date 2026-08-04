@@ -35,10 +35,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // أزرار الاختصار في الهيدر
     const gotoGenBtn = document.getElementById('goto-generator-btn');
     const gotoScanBtn = document.getElementById('goto-scanner-btn');
+    const headerPremiumBtn = document.getElementById('header-premium-btn');
+    const gotoDrawerPremium = document.getElementById('goto-premium-drawer-btn');
+
     if (gotoGenBtn) gotoGenBtn.addEventListener('click', () => switchSection('generator'));
     if (gotoScanBtn) gotoScanBtn.addEventListener('click', () => switchSection('scanner'));
+    if (headerPremiumBtn) headerPremiumBtn.addEventListener('click', () => {
+        switchSection('premium');
+        toggleDrawer(false);
+    });
+    if (gotoDrawerPremium) gotoDrawerPremium.addEventListener('click', () => {
+        switchSection('premium');
+        toggleDrawer(false);
+    });
 
     // --- 2. إعدادات القائمة الجانبية والثيمات ---
     const menuBtn = document.getElementById('menu-toggle-btn');
@@ -119,7 +131,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. مولد QR Code (Generator Dynamic Forms) ---
+    // --- 3. اختيار خطة بريميوم (شهرية / سنوية) ---
+    const planCards = document.querySelectorAll('.premium-plan-card');
+    planCards.forEach(card => {
+        card.addEventListener('click', () => {
+            planCards.forEach(c => {
+                c.classList.remove('active-plan');
+                c.style.borderColor = 'var(--border-color)';
+            });
+            card.classList.add('active-plan');
+            card.style.borderColor = 'var(--primary)';
+        });
+    });
+
+    const subscribeBtn = document.getElementById('subscribe-now-btn');
+    if (subscribeBtn) {
+        subscribeBtn.addEventListener('click', () => {
+            const activePlan = document.querySelector('.premium-plan-card.active-plan');
+            const planName = activePlan ? activePlan.getAttribute('data-plan') : 'yearly';
+            alert(`Merci ! Redirection vers la passerelle de paiement sécurisée pour l'abonnement (${planName})...`);
+        });
+    }
+
+    // --- 4. مولد QR Code (Generator Dynamic Forms) ---
     const typesGrid = document.getElementById('types-menu-view');
     const dynamicForm = document.getElementById('dynamic-form-view');
     const backToMenuBtn = document.getElementById('back-to-menu-btn');
@@ -276,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         const actionDiv = document.createElement('div');
                         actionDiv.className = 'history-custom-actions';
+                        actionDiv.style.marginTop = '15px';
                         actionDiv.innerHTML = `
                             <button class="history-custom-btn" id="dl-qr-btn"><i class="fa-solid fa-download"></i> Télécharger</button>
                             <button class="history-custom-btn" id="share-qr-btn"><i class="fa-solid fa-share-nodes"></i> Partager</button>
@@ -307,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. الماسح الضوئي الذكي ---
+    // --- 5. الماسح الضوئي الذكي (Scanner) ---
     let html5QrCode = null;
     let currentCameraIndex = 0;
     let availableCameras = [];
@@ -328,9 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 html5QrCode.start(
                     cameraId,
                     { fps: 10, qrbox: { width: 250, height: 250 } },
-                    (decodedText) => {
-                        processSmartScanResult(decodedText);
-                    },
+                    (decodedText) => { processSmartScanResult(decodedText); },
                     () => {}
                 ).catch(() => {});
             }
@@ -370,12 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     html5QrCode = new Html5Qrcode("reader");
                 }
                 html5QrCode.scanFile(imageFile, true)
-                    .then(decodedText => {
-                        processSmartScanResult(decodedText);
-                    })
-                    .catch(() => {
-                        alert("Aucun QR code n'a pu être détecté dans cette image.");
-                    });
+                    .then(decodedText => { processSmartScanResult(decodedText); })
+                    .catch(() => { alert("Aucun QR code n'a pu être détecté dans cette image."); });
             }
         });
     }
@@ -448,9 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (scanActionCopy) {
         scanActionCopy.addEventListener('click', () => {
             const textToCopy = scanResultText ? scanResultText.textContent : '';
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                alert('Copié dans le presse-papiers !');
-            });
+            navigator.clipboard.writeText(textToCopy).then(() => { alert('Copié dans le presse-papiers !'); });
         });
     }
 
@@ -465,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. إدارة التاريخ (LocalStorage History) ---
+    // --- 6. إدارة التاريخ (LocalStorage History) ---
     function saveToHistory(type, data) {
         let history = JSON.parse(localStorage.getItem('qr_history') || '[]');
         history.unshift({ type, data, date: new Date().toLocaleDateString() });
@@ -486,6 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
         historyContainer.innerHTML = '';
         history.forEach((item, index) => {
             const div = document.createElement('div');
+            div.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px;";
             div.innerHTML = `
                 <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                     <span class="badge">${item.type.toUpperCase()}</span>
