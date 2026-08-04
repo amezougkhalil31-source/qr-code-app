@@ -45,6 +45,27 @@
         .app-main {
             padding-bottom: 100px !important;
         }
+
+        /* 4. تنسيق أزرار التاريخ الإضافية لتحسين تجربة المستخدم */
+        .history-action-btn {
+            background: rgba(79, 70, 229, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(79, 70, 229, 0.4);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            margin-right: 8px;
+            transition: all 0.2s;
+        }
+        .history-action-btn:hover {
+            background: #4f46e5;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -239,5 +260,62 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="script.js"></script>
+
+    <!-- سكربت إضافي داخل index.html لإضافة أزرار التفاعل (فتح/تحميل) في صفحة التاريخ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const historyBtn = document.querySelector('[data-target="history"]');
+            if (historyBtn) {
+                historyBtn.addEventListener('click', () => {
+                    setTimeout(enhanceHistoryItems, 100);
+                });
+            }
+            // مراقبة التغييرات في خانة التاريخ لتحديث العناصر تلقائياً
+            const observer = new MutationObserver(() => {
+                enhanceHistoryItems();
+            });
+            const container = document.getElementById('history-list-container');
+            if (container) {
+                observer.observe(container, { childList: true, subtree: true });
+            }
+        });
+
+        function enhanceHistoryItems() {
+            const container = document.getElementById('history-list-container');
+            if (!container) return;
+            const items = container.querySelectorAll('div');
+            items.forEach(item => {
+                // التأكد من عدم إضافة الأزرار مرتين
+                if (item.dataset.enhanced) return;
+                const textContent = item.innerText || "";
+                if (textContent.length > 0 && !item.querySelector('.history-action-btn')) {
+                    item.dataset.enhanced = "true";
+                    
+                    // استخراج الرابط أو النص الموجود
+                    let lines = textContent.split('\n');
+                    let rawText = lines.find(l => l.startsWith('http') || l.includes('tel:') || l.includes('mailto:')) || lines[1] || "";
+
+                    // زر فتح الرابط إذا كان رابطاً حقيقياً
+                    if (rawText.startsWith('http')) {
+                        let openBtn = document.createElement('button');
+                        openBtn.className = 'history-action-btn';
+                        openBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir';
+                        openBtn.onclick = () => window.open(rawText, '_blank');
+                        item.appendChild(openBtn);
+                    }
+
+                    // زر نسخ المحتوى بسرعة
+                    let copyBtn = document.createElement('button');
+                    copyBtn.className = 'history-action-btn';
+                    copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier';
+                    copyBtn.onclick = () => {
+                        navigator.clipboard.writeText(rawText);
+                        alert('Copié dans le presse-papiers !');
+                    };
+                    item.appendChild(copyBtn);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
