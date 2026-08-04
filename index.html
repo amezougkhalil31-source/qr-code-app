@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="dark" data-theme-color="indigo">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>QR Master Pro</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -52,18 +52,15 @@
         </div>
     </aside>
 
-    <!-- الهيدر العلوي (مع أزرار الوصول السريع: القائمة، المنزل، الكاميرا، والبريميوم) -->
+    <!-- الهيدر العلوي -->
     <header class="app-header">
         <div style="display: flex; align-items: center; gap: 8px;">
             <button class="icon-btn" id="menu-toggle-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-            <!-- زر المنزل (Accueil) للرجوع لإنشاء الكود مباشرة -->
             <button class="icon-btn" id="goto-generator-btn" title="Accueil (Créer)"><i class="fa-solid fa-house"></i></button>
         </div>
         <h1 class="app-title">QR Master Pro</h1>
         <div style="display: flex; align-items: center; gap: 4px;">
-            <!-- زر الكاميرا (Scanner) السريع في الهيدر -->
             <button class="icon-btn" id="goto-scanner-btn" title="Scanner un QR Code"><i class="fa-solid fa-camera"></i></button>
-            <!-- زر البريميوم السريع في الهيدر -->
             <button class="icon-btn" id="header-premium-btn" title="Passer à Premium" style="color: #eab308;"><i class="fa-solid fa-crown"></i></button>
         </div>
     </header>
@@ -74,7 +71,6 @@
         <!-- 1. واجهة الإنشاء (Generator Section) -->
         <section id="generator-section" class="page-section active">
             <div class="section-container">
-                <!-- اختيار نوع الكود -->
                 <div id="types-menu-view" class="types-grid">
                     <button class="type-item-btn" data-type="url"><i class="fa-solid fa-link"></i><span>URL</span></button>
                     <button class="type-item-btn" data-type="text"><i class="fa-solid fa-font"></i><span>Texte</span></button>
@@ -88,7 +84,6 @@
                     <button class="type-item-btn" data-type="clipboard"><i class="fa-solid fa-clipboard"></i><span>Presse-papiers</span></button>
                 </div>
 
-                <!-- نموذج الإدخال الديناميكي -->
                 <div id="dynamic-form-view" style="display: none;">
                     <div class="form-header-row">
                         <button class="icon-btn" id="back-to-menu-btn"><i class="fa-solid fa-arrow-left"></i></button>
@@ -96,7 +91,6 @@
                     </div>
                     <div id="form-inputs-container"></div>
                     
-                    <!-- إعدادات الحجم -->
                     <div class="input-group" style="margin-top: 15px;">
                         <label>Taille du QR Code</label>
                         <select id="qr-size">
@@ -109,14 +103,18 @@
                     <button class="primary-btn" id="generate-custom-btn" style="margin-top: 20px;"><i class="fa-solid fa-qrcode"></i> Générer le QR Code</button>
                 </div>
 
-                <!-- مكان عرض QR Code المُولد -->
                 <div id="qr-result" class="qr-result-box" style="margin-top: 20px; text-align: center;"></div>
             </div>
         </section>
 
-        <!-- 2. واجهة المسح (Scanner Section - مُحسّنة للعمل الفوري) -->
+        <!-- 2. واجهة المسح (Scanner Section) -->
         <section id="scanner-section" class="page-section">
             <div class="scanner-container">
+                <!-- زدنا هاد الجزء باش يبان للمستخدم باللي الكاميرا كتحل وما يحسش بالثقل -->
+                <div id="scanner-loading" style="text-align: center; padding: 40px 20px; color: var(--text-muted); display: none;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                    <p>Ouverture de la caméra...</p>
+                </div>
                 <div id="reader"></div>
             </div>
         </section>
@@ -132,7 +130,7 @@
             </div>
         </section>
 
-        <!-- 4. واجهة بريميوم (Premium Section - شهرية وسنوية) -->
+        <!-- 4. واجهة بريميوم (Premium Section) -->
         <section id="premium-section" class="page-section">
             <div class="section-container" style="text-align: center;">
                 <div style="font-size: 2.5rem; color: #eab308; margin-bottom: 10px;">
@@ -141,25 +139,23 @@
                 <h2 style="font-size: 1.4rem; margin-bottom: 8px;">QR Master Pro <span style="color: #eab308;">Premium</span></h2>
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Profitez d'une expérience sans publicités, avec des designs illimités et des fonctionnalités exclusives.</p>
                 
-                <!-- خيارات الاشتراك (شهري وسنوي) -->
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                    <!-- الخيار الشهري -->
-                    <div class="premium-plan-card" style="background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition);" data-plan="monthly">
+                    <!-- حيدنا الستيل من هنا باش يتكلف بيه CSS بوحدو (مابقاش داك المشكل د البوردر) -->
+                    <div class="premium-plan-card" data-plan="monthly">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-weight: 600; font-size: 1rem;">Abonnement Mensuel</span>
-                            <span style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">$2.99 / mois</span>
+                            <span class="plan-price">$2.99 / mois</span>
                         </div>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); text-align: left; margin-top: 4px;">Sans engagement, annulez à tout moment.</p>
+                        <p class="plan-desc">Sans engagement, annulez à tout moment.</p>
                     </div>
 
-                    <!-- الخيار السنوي (الأكثر توفيراً) -->
-                    <div class="premium-plan-card active-plan" style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: 12px; padding: 16px; cursor: pointer; transition: var(--transition); position: relative;" data-plan="yearly">
-                        <span style="position: absolute; top: -10px; right: 15px; background: var(--primary); color: #fff; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;">Économisez 50%</span>
+                    <div class="premium-plan-card active-plan" data-plan="yearly">
+                        <span class="save-badge">Économisez 50%</span>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-weight: 600; font-size: 1rem;">Abonnement Annuel</span>
-                            <span style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">$19.99 / an</span>
+                            <span class="plan-price">$19.99 / an</span>
                         </div>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); text-align: left; margin-top: 4px;">Le meilleur choix pour les professionnels.</p>
+                        <p class="plan-desc">Le meilleur choix pour les professionnels.</p>
                     </div>
                 </div>
 
@@ -169,7 +165,7 @@
 
     </main>
 
-    <!-- واجهة منبثقة للنتائج غير الأوتوماتيكية (النصوص العادية) -->
+    <!-- واجهة منبثقة للنتائج غير الأوتوماتيكية -->
     <div class="modal-screen" id="scan-result-screen">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -199,7 +195,6 @@
             <i class="fa-solid fa-clock-rotate-left"></i>
             <span>Historique</span>
         </button>
-        <!-- خانة البريميوم في الشريط السفلي -->
         <button class="nav-item" data-target="premium" style="color: #eab308;">
             <i class="fa-solid fa-crown"></i>
             <span>Premium</span>
@@ -209,7 +204,6 @@
     <!-- مكتبات توليد وقراءة QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <!-- السكريبت المطور -->
     <script src="script.js"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@ html[data-theme="dark"] {
     --bg-main: #0f172a;
     --bg-card: #1e293b;
     --text-color: #f8fafc;
+    --text-main: #f8fafc; /* زدنا هذا باش ما يوقعش خطأ فصفحة privacy.html */
     --text-muted: #94a3b8;
     --border-color: #334155;
     --hover-bg: #273548;
@@ -17,6 +18,7 @@ html[data-theme="light"] {
     --bg-main: #f8fafc;
     --bg-card: #ffffff;
     --text-color: #0f172a;
+    --text-main: #0f172a; /* زدنا هذا باش ما يوقعش خطأ فصفحة privacy.html */
     --text-muted: #64748b;
     --border-color: #e2e8f0;
     --hover-bg: #f1f5f9;
@@ -35,15 +37,15 @@ html[data-theme-color="rose"] { --primary: #e11d48; --primary-hover: #be123c; }
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
     -webkit-tap-highlight-color: transparent;
-    /* منع تحديد النصوص ونسخها عشوائياً لبدء تجربة تشبه التطبيقات الحقيقية */
+    /* منع تحديد النصوص عشوائياً لبدء تجربة تشبه التطبيقات الحقيقية */
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
 
-/* السماح بالتحديد والكتابة فقط داخل حقول الإدخال */
-input, textarea {
+/* السماح بالتحديد والكتابة فقط داخل حقول الإدخال والنصوص */
+input, textarea, p, h1, h2, h3, span {
     -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
@@ -261,6 +263,15 @@ body {
     background-color: var(--primary-hover);
 }
 
+/* النتيجة ديال الـ QR Code */
+.qr-result-box img, .qr-result-box canvas {
+    margin: 0 auto;
+    border-radius: 12px;
+    padding: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
 /* --- Drawer / Settings --- */
 .drawer-overlay {
     position: fixed;
@@ -275,7 +286,8 @@ body {
     transition: var(--transition);
 }
 
-.drawer-overlay.open {
+.drawer-overlay.open,
+.drawer-overlay.active {
     opacity: 1;
     visibility: visible;
 }
@@ -375,6 +387,48 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
+/* --- Premium Cards --- */
+.premium-plan-card {
+    position: relative;
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.premium-plan-card.active-plan {
+    border-color: #eab308;
+    background-color: var(--hover-bg);
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.2);
+}
+
+.plan-price {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.plan-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+.save-badge {
+    position: absolute;
+    top: -10px;
+    right: 12px;
+    background: #eab308;
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+}
+
 /* --- Scanner & History & Modals --- */
 .scanner-container {
     width: 100%;
@@ -403,6 +457,10 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
+}
+
+.modal-screen.active {
+    display: flex;
 }
 
 .modal-content {
