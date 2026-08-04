@@ -479,6 +479,33 @@ body {
     transform: scale(1.1);
 }
 
+/* تنسيق أزرار التاريخ المتجاوبة تماماً (الهاتف والبيسي) */
+#history-list-container > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.history-custom-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.history-custom-btn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+    padding: 8px 12px;
+}
+
 /* Media Queries for Desktop */
 @media (min-width: 768px) {
     .app-nav-bar {
@@ -506,5 +533,14 @@ body {
 
     .app-main {
         margin-top: 80px;
+    }
+
+    /* تعديل أزرار التاريخ في البيسي لتبقى مرتبة في سطر واحد */
+    .history-custom-actions {
+        width: auto;
+    }
+    .history-custom-btn {
+        flex: unset;
+        min-width: auto;
     }
 }

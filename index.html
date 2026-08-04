@@ -45,23 +45,28 @@
             padding-bottom: 100px !important;
         }
 
-        /* 4. تنسيق أزرار التاريخ الخفيفة والآمنة */
+        /* 4. تنسيق أزرار التاريخ الخفيفة والآمنة متجاوبة مع الهواتف */
         .history-custom-actions {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-top: 10px;
+            width: 100%;
         }
         .history-custom-btn {
             background: rgba(79, 70, 229, 0.15);
             color: #818cf8;
             border: 1px solid rgba(79, 70, 229, 0.3);
-            padding: 5px 12px;
+            padding: 8px 12px;
             border-radius: 6px;
             font-size: 0.8rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 5px;
+            flex: 1;
+            min-width: 110px;
         }
         .history-custom-btn:hover {
             background: #4f46e5;
