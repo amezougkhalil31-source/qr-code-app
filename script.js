@@ -26,23 +26,138 @@ function handleSubscriptionClick(productId) {
     }
 }
 
-// دالة مساعدة لتحويل النص الناتج إلى رابط ذكي قابل للضغط
-function formatScannedResult(text) {
-    let href = text;
-    if (text.startsWith('tel:') || text.startsWith('mailto:') || text.startsWith('http://') || text.startsWith('https://')) {
-        href = text;
-    } else if (text.match(/^[0-9+\s\-]+$/)) {
-        href = `tel:${text.trim()}`;
-    } else if (text.includes('@') && !text.includes(' ')) {
-        href = `mailto:${text}`;
-    } else if (text.startsWith('www.')) {
-        href = `https://${text}`;
-    } else if (text.match(/^[a-zA-Z0-9][-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/)) {
-        href = `https://${text}`;
-    } else {
-        return `<span style="color: var(--text-color);">${text}</span>`;
+// دالة ذكية لعرض واجهة النتيجة حسب نوع الـ QR Code الحقيقي
+function showScanResultScreen(decodedText) {
+    stopCamera();
+
+    let screen = document.getElementById('scan-result-screen');
+    if (!screen) {
+        screen = document.createElement('div');
+        screen.id = 'scan-result-screen';
+        screen.className = 'scan-result-screen';
+        screen.innerHTML = `
+            <div class="scan-result-header">
+                <span>Résultat du Scan</span>
+                <button id="close-scan-result-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="scan-result-content" id="scan-result-body-content"></div>
+        `;
+        document.body.appendChild(screen);
+
+        document.getElementById('close-scan-result-btn').addEventListener('click', () => {
+            screen.classList.remove('active');
+            startCamera();
+        });
     }
-    return `<a href="${href}" target="_blank" style="color: var(--accent-color); text-decoration: underline; font-weight: bold; word-break: break-all;">${text}</a>`;
+
+    const content = document.getElementById('scan-result-body-content');
+    
+    let typeTitle = "Texte / Données";
+    let typeIcon = "fa-font";
+    let actionText = "Ouvrir";
+    let primaryActionHref = "#";
+    let displayValue = decodedText;
+    let isClickableAction = false;
+
+    // تحليل دقيق لنوع الكود بناءً على بادئته أو محتواه
+    if (decodedText.startsWith('tel:') || /^\+?[0-9\s\-]{7,15}$/.test(decodedText.trim())) {
+        typeTitle = "Numéro de téléphone";
+        typeIcon = "fa-phone";
+        actionText = "Composer le numéro";
+        const cleanTel = decodedText.replace('tel:', '').trim();
+        primaryActionHref = `tel:${cleanTel}`;
+        displayValue = cleanTel;
+        isClickableAction = true;
+    } 
+    else if (decodedText.startsWith('http://') || decodedText.startsWith('https://') || decodedText.startsWith('www.')) {
+        typeTitle = "Lien Web (URL)";
+        typeIcon = "fa-link";
+        actionText = "Ouvrir le lien";
+        primaryActionHref = decodedText.startsWith('www.') ? `https://${decodedText}` : decodedText;
+        isClickableAction = true;
+    } 
+    else if (decodedText.startsWith('mailto:') || (decodedText.includes('@') && !decodedText.includes(' '))) {
+        typeTitle = "Adresse email";
+        typeIcon = "fa-envelope";
+        actionText = "Envoyer un email";
+        const cleanEmail = decodedText.replace('mailto:', '').trim();
+        primaryActionHref = `mailto:${cleanEmail}`;
+        displayValue = cleanEmail;
+        isClickableAction = true;
+    }
+    else if (decodedText.startsWith('WIFI:')) {
+        typeTitle = "Réseau Wi-Fi";
+        typeIcon = "fa-wifi";
+        actionText = "Copier les infos Wi-Fi";
+        displayValue = decodedText;
+        isClickableAction = false;
+    }
+    else if (decodedText.startsWith('SMSTO:') || decodedText.startsWith('sms:')) {
+        typeTitle = "Message SMS";
+        typeIcon = "fa-comment-sms";
+        actionText = "Envoyer un SMS";
+        primaryActionHref = `sms:${decodedText.replace(/^(SMSTO:|sms:)/i, '')}`;
+        isClickableAction = true;
+    }
+    else if (decodedText.startsWith('geo:')) {
+        typeTitle = "Coordonnées GPS";
+        typeIcon = "fa-location-dot";
+        actionText = "Ouvrir la carte";
+        primaryActionHref = `https://www.google.com/maps/search/?api=1&query=${decodedText.replace('geo:', '')}`;
+        isClickableAction = true;
+    }
+    else {
+        typeTitle = "Texte Brut";
+        typeIcon = "fa-font";
+        actionText = "Rechercher sur le web";
+        primaryActionHref = `https://www.google.com/search?q=${encodeURIComponent(decodedText)}`;
+        isClickableAction = true;
+    }
+
+    const currentDate = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(decodedText)}`;
+
+    content.innerHTML = `
+        <div class="scan-type-badge">
+            <i class="fa-solid ${typeIcon}"></i>
+            <div class="scan-type-info">
+                <h3>${typeTitle}</h3>
+                <span>${currentDate}</span>
+            </div>
+        </div>
+
+        <div class="scan-raw-text">${displayValue}</div>
+
+        <div class="scan-actions-grid">
+            <button class="scan-action-item" onclick="${isClickableAction ? `window.open('${primaryActionHref}', '_blank')` : `alert('Action non disponible pour ce type')`}">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <span>Action</span>
+            </button>
+            <button class="scan-action-item" onclick="navigator.clipboard.writeText('${displayValue.replace(/'/g, "\\'")}').then(() => alert('Copié !'))">
+                <i class="fa-solid fa-copy"></i>
+                <span>Copie</span>
+            </button>
+            <button class="scan-action-item" onclick="if(navigator.share) navigator.share({title: 'QR Result', text: '${displayValue.replace(/'/g, "\\'")}'})">
+                <i class="fa-solid fa-share-nodes"></i>
+                <span>Partager</span>
+            </button>
+            <button class="scan-action-item" onclick="document.getElementById('scan-result-screen').classList.remove('active'); startCamera();">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span>Nouveau</span>
+            </button>
+        </div>
+
+        ${isClickableAction ? `<button class="scan-main-action-btn" onclick="window.open('${primaryActionHref}', '_blank')">${actionText}</button>` : `<button class="scan-main-action-btn" onclick="navigator.clipboard.writeText('${displayValue.replace(/'/g, "\\'")}').then(() => alert('Texte copié !'))">Copier le texte</button>`}
+
+        <div class="scan-qr-thumbnail">
+            <img src="${qrApiUrl}" alt="QR Thumbnail">
+        </div>
+    `;
+
+    screen.classList.add('active');
+
+    historyData.unshift({ text: displayValue, url: isClickableAction ? primaryActionHref : '#', date: new Date().toLocaleDateString() });
+    localStorage.setItem('qr_history', JSON.stringify(historyData));
 }
 
 // دالة الانتقال بين الصفحات الأساسية
@@ -77,7 +192,6 @@ function switchTab(tabId) {
 // تشغيل الأكواد فور تحميل الصفحة
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. ربط أزرار الشريط السفلي بالكامل
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
@@ -88,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. ربط أزرار واجهة الاستقبال الرئيسية
     const gotoGen = document.getElementById('goto-generator-btn');
     if (gotoGen) {
         gotoGen.addEventListener('click', () => switchTab('generator'));
@@ -99,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         gotoScan.addEventListener('click', () => switchTab('scanner'));
     }
 
-    // ربط أزرار الاشتراكات في واجهة البريميوم (إن وجدت أزرار مخصصة)
     const monthlyBtn = document.getElementById('subscribe-monthly-btn');
     if (monthlyBtn) {
         monthlyBtn.addEventListener('click', () => handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.MONTHLY));
@@ -110,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
         yearlyBtn.addEventListener('click', () => handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.YEARLY));
     }
 
-    // 3. ربط قائمة أنواع الـ QR
     document.querySelectorAll('.type-item-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const type = this.getAttribute('data-type');
@@ -120,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. زر العودة من النموذج
     const backBtn = document.getElementById('back-to-menu-btn');
     if (backBtn) {
         backBtn.addEventListener('click', () => {
@@ -133,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. زر توليد الرمز
     const genBtn = document.getElementById('generate-custom-btn');
     if (genBtn) {
         genBtn.addEventListener('click', function() {
@@ -221,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. القائمة الجانبية والإعدادات
     const menuToggle = document.getElementById('menu-toggle-btn');
     const drawer = document.getElementById('settings-drawer');
     const overlay = document.getElementById('drawer-overlay');
@@ -246,7 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 7. الثيم والألوان
     const darkBtn = document.getElementById('dark-mode-btn');
     const lightBtn = document.getElementById('light-mode-btn');
 
@@ -273,7 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 8. مشاركة التطبيق
     const shareBtn = document.getElementById('share-app-btn');
     if (shareBtn) {
         shareBtn.addEventListener('click', () => {
@@ -285,7 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 9. تفعيل أزرار الماسح (قلب الكاميرا واستيراد الصور من الجاليري)
     const flipCamBtn = document.getElementById('flip-camera-btn');
     if (flipCamBtn) {
         flipCamBtn.addEventListener('click', async () => {
@@ -302,21 +407,13 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-            const scannerResult = document.getElementById('scanner-result');
-            if (scannerResult) scannerResult.innerHTML = `<p style="color: var(--accent-color);">Analyse de l'image...</p>`;
 
             try {
                 const tempScanner = new Html5Qrcode("reader");
                 const decodedText = await tempScanner.scanFile(file, true);
-                if (scannerResult) {
-                    scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold; margin-bottom: 5px;">QR Trouvé :</p>` + formatScannedResult(decodedText);
-                }
-                historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
-                localStorage.setItem('qr_history', JSON.stringify(historyData));
+                showScanResultScreen(decodedText);
             } catch (err) {
-                if (scannerResult) {
-                    scannerResult.innerHTML = `<p style="color: #ef4444;">Aucun QR code détecté.</p>`;
-                }
+                alert("Aucun QR code détecté dans cette image.");
             }
         });
     }
@@ -324,7 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadHistory();
 });
 
-// دالة فتح النماذج
 function openTypeForm(type) {
     currentFormType = type;
     const menuView = document.getElementById('types-menu-view');
@@ -392,11 +488,7 @@ function openTypeForm(type) {
     if (container) container.innerHTML = html;
 }
 
-// دوال الكاميرا المحدثة
 async function startCamera() {
-    const scannerResult = document.getElementById('scanner-result');
-    if (scannerResult) scannerResult.innerHTML = '';
-
     if (typeof Html5Qrcode === 'undefined') {
         console.log("مكتبة Html5Qrcode غير محملة");
         return;
@@ -410,22 +502,15 @@ async function startCamera() {
         if (!html5QrCode.isScanning) {
             await html5QrCode.start(
                 { facingMode: currentFacingMode },
-                { fps: 10, qrbox: { width: 250, height: 250 } },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
                 (decodedText) => {
-                    if (scannerResult) {
-                        scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold; margin-bottom: 5px;">Résultat :</p>` + formatScannedResult(decodedText);
-                    }
-                    historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
-                    localStorage.setItem('qr_history', JSON.stringify(historyData));
+                    showScanResultScreen(decodedText);
                 },
                 (errorMessage) => {}
             );
         }
     } catch (err) {
         console.log("Erreur démarrage scanner:", err);
-        if (scannerResult) {
-            scannerResult.innerHTML = `<p style="color: #ef4444;">Erreur d'accès à la caméra. Vérifiez les permissions.</p>`;
-        }
     }
 }
 
