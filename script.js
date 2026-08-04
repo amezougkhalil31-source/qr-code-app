@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main JavaScript Logic (Updated with History & LocalStorage)
+   QR Master Pro - Main JavaScript Logic (Complete)
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,6 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
         if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+    }
+
+    // [التعديل المضاف]: زر الوصول السريع للسجل من داخل القائمة الجانبية
+    const drawerHistoryBtn = document.getElementById('drawer-history-btn');
+    if (drawerHistoryBtn) {
+        drawerHistoryBtn.addEventListener('click', () => {
+            settingsDrawer.classList.remove('open');
+            drawerOverlay.classList.remove('open');
+            document.querySelector('[data-target="history"]').click();
+        });
     }
 
     // تبديل الثيم والألوان
@@ -320,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formTitleText.textContent = "Contact (vCard)";
                 html = `
                     <div class="input-group"><label>Nom complet</label><input type="text" id="vcard-name" placeholder="Nom Prénom"></div>
-                    <div class="input-group"><label>Téléphone</label><input type="tel" id="vcard-phone" placeholder="+212600000000"></div>
+                    <div class="input-group"><label>Téléphone</label><input type="tel" id="vcard-phone" placeholder="+33600000000"></div>
                 `;
                 break;
             case 'wifi':
