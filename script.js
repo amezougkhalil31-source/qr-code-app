@@ -205,20 +205,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         saveToHistory("Galerie", decodedText);
                     })
                     .catch(err => {
-                        alert("Impossible de trouver un QR Code valide dans هذه الصورة.");
+                        alert("Impossible de trouver un QR Code valide dans cette image.");
                         startScanner();
                     });
             }
         });
     }
 
-    // التعامل الذكي مع نتائج السكان (التحقق الشامل داخل النص)
+    // التعامل الذكي مع نتائج السكان والتحكم في الزر الرئيسي حسب نوع المحتوى
     const scanResultScreen = document.getElementById('scan-result-screen');
     const closeScanResultBtn = document.getElementById('close-scan-result-btn');
     const scanResultText = document.getElementById('scan-result-text');
     const scanResultTypeTitle = document.getElementById('scan-result-type-title');
     const scanResultCategory = document.getElementById('scan-result-category');
-    const smartOpenLinkBtn = document.getElementById('smart-open-link-btn');
+    const scanMainActionBtn = document.getElementById('scan-main-action-btn');
 
     function handleScanResult(text) {
         if (!scanResultScreen) return;
@@ -228,44 +228,36 @@ document.addEventListener('DOMContentLoaded', () => {
         let typeName = "Texte en clair";
         let category = "TEXT";
 
-        if (smartOpenLinkBtn) {
-            let newBtn = smartOpenLinkBtn.cloneNode(true);
-            smartOpenLinkBtn.parentNode.replaceChild(newBtn, smartOpenLinkBtn);
-            const activeSmartBtn = document.getElementById('smart-open-link-btn');
+        // التحقق من نوع النص الممسوح بدقة
+        const urlMatch = text.match(/(https?:\/\/[^\s]+)/);
+        const telMatch = text.match(/tel:([0-9+\-\s]+)/) || text.match(/(?:\+?[0-9\s\-]{8,})/);
+        const emailMatch = text.match(/mailto:([^\s]+)/) || text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
 
-            // البحث عن روابط ويب داخل النص
-            const urlMatch = text.match(/(https?:\/\/[^\s]+)/);
-            // البحث عن رقم هاتف (سواء متبوع بـ tel: أو أرقام عادية طويلة)
-            const telMatch = text.match(/tel:([0-9+\-\s]+)/) || text.match(/(?:\+?[0-9\s\-]{8,})/);
-            // البحث عن إيميل
-            const emailMatch = text.match(/mailto:([^\s]+)/) || text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-
+        if (scanMainActionBtn) {
             if (urlMatch) {
                 typeName = "Lien Web";
                 category = "URL";
-                let targetUrl = urlMatch[1];
-                activeSmartBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien';
-                activeSmartBtn.onclick = () => window.open(targetUrl, '_blank');
+                scanMainActionBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien';
+                scanMainActionBtn.onclick = () => window.open(urlMatch[1], '_blank');
             } else if (telMatch) {
                 typeName = "Numéro de téléphone";
                 category = "PHONE";
-                // استخراج الرقم وتنظيفه لتوجيهه للاتصال مباشرة
                 let rawPhone = telMatch[1] || telMatch[0];
                 let cleanPhone = rawPhone.replace('tel:', '').trim();
-                activeSmartBtn.innerHTML = '<i class="fa-solid fa-phone"></i> Appeler ce numéro';
-                activeSmartBtn.onclick = () => window.location.href = `tel:${cleanPhone}`;
+                scanMainActionBtn.innerHTML = '<i class="fa-solid fa-phone"></i> Appeler ce numéro';
+                scanMainActionBtn.onclick = () => window.location.href = `tel:${cleanPhone}`;
             } else if (emailMatch) {
                 typeName = "Adresse courriel";
                 category = "EMAIL";
                 let rawEmail = emailMatch[1] || emailMatch[0];
                 let cleanEmail = rawEmail.replace('mailto:', '').trim();
-                activeSmartBtn.innerHTML = '<i class="fa-solid fa-envelope"></i> Envoyer un e-mail';
-                activeSmartBtn.onclick = () => window.location.href = `mailto:${cleanEmail}`;
+                scanMainActionBtn.innerHTML = '<i class="fa-solid fa-envelope"></i> Envoyer un e-mail';
+                scanMainActionBtn.onclick = () => window.location.href = `mailto:${cleanEmail}`;
             } else {
                 typeName = "Texte en clair";
                 category = "TEXT";
-                activeSmartBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Rechercher sur Google';
-                activeSmartBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
+                scanMainActionBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Rechercher sur Google';
+                scanMainActionBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
             }
         }
 
