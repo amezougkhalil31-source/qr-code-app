@@ -1,18 +1,21 @@
 {
   "name": "QR Master Pro",
   "short_name": "QR Master",
-  "description": "Générez et scannez tous vos QR codes en toute simplicité et rapidité.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#4f46e5",
-  "orientation": "portrait",
+  "description": "L'application ultime pour créer et scanner vos QR Codes en toute simplicité.",
   "icons": [
     {
-      "src": "qr-master-icon.html",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "text/html",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }

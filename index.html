@@ -4,248 +4,150 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Master Pro</title>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
-    <!-- Manifest PWA -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
-    <style>
-        /* 1. منع تحديد النصوص في التطبيق بأمان تام */
-        body, html, * {
-            -webkit-user-select: none !important;
-            -moz-user-select: none !important;
-            -ms-user-select: none !important;
-            user-select: none !important;
-            -webkit-touch-callout: none !important;
-        }
-
-        /* 2. ثبات الشريط السفلي للأسفل بصفة قطعية ومنع الارتجاج */
-        .app-nav-bar {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            top: auto !important;
-            width: 100% !important;
-            height: 65px !important;
-            z-index: 99999 !important;
-            display: flex !important;
-            justify-content: space-around !important;
-            align-items: center !important;
-            background: var(--bg-secondary, #1e293b) !important;
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4) !important;
-        }
-
-        /* 3. ترك مساحة في أسفل المحتوى لضمان عدم تغطية العناصر */
-        .app-main {
-            padding-bottom: 100px !important;
-        }
-
-        /* 4. تنسيق أزرار التاريخ الخفيفة والآمنة متجاوبة مع الهواتف */
-        .history-custom-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-            width: 100%;
-        }
-        .history-custom-btn {
-            background: rgba(79, 70, 229, 0.15);
-            color: #818cf8;
-            border: 1px solid rgba(79, 70, 229, 0.3);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            flex: 1;
-            min-width: 110px;
-        }
-        .history-custom-btn:hover {
-            background: #4f46e5;
-            color: #fff;
-        }
-    </style>
 </head>
 <body>
 
-    <!-- الهيدر العلوي -->
-    <header class="app-header">
-        <button id="menu-toggle-btn" class="icon-btn" aria-label="Menu">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-        <h1 class="app-title">QR Master Pro</h1>
-        <button id="share-app-btn" class="icon-btn" aria-label="Partager">
-            <i class="fa-solid fa-share-nodes"></i>
-        </button>
-    </header>
-
-    <!-- القائمة الجانبية -->
-    <div id="drawer-overlay" class="drawer-overlay"></div>
-    <aside id="settings-drawer" class="settings-drawer">
+    <!-- القائمة الجانبية (Settings Drawer & Overlay) -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <aside class="settings-drawer" id="settings-drawer">
         <div class="drawer-header">
             <h2>Paramètres</h2>
-            <button id="close-drawer-btn" class="icon-btn" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+            <button class="icon-btn" id="close-drawer-btn" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="drawer-content">
+        <div class="drawer-body">
+            <!-- الثيم (Dark/Light) -->
             <div class="setting-item">
-                <span>Thème</span>
-                <div class="theme-buttons">
-                    <button id="light-mode-btn" class="theme-btn" aria-label="Clair"><i class="fa-solid fa-sun"></i></button>
-                    <button id="dark-mode-btn" class="theme-btn active" aria-label="Sombre"><i class="fa-solid fa-moon"></i></button>
+                <span>Mode d'affichage</span>
+                <div class="theme-switch-btns">
+                    <button id="light-mode-btn" class="theme-btn"><i class="fa-solid fa-sun"></i></button>
+                    <button id="dark-mode-btn" class="theme-btn active"><i class="fa-solid fa-moon"></i></button>
                 </div>
             </div>
+
+            <!-- ألوان الواجهة -->
             <div class="setting-item">
                 <span>Couleur principale</span>
-                <div class="color-picker-dots">
-                    <span class="color-dot active" data-color="indigo" style="background: #4f46e5;"></span>
-                    <span class="color-dot" data-color="blue" style="background: #0284c7;"></span>
-                    <span class="color-dot" data-color="emerald" style="background: #10b981;"></span>
-                    <span class="color-dot" data-color="rose" style="background: #f43f5e;"></span>
-                    <span class="color-dot" data-color="amber" style="background: #f59e0b;"></span>
+                <div class="color-picker-group">
+                    <span class="color-dot active" data-color="indigo" style="background:#4f46e5;"></span>
+                    <span class="color-dot" data-color="blue" style="background:#0284c7;"></span>
+                    <span class="color-dot" data-color="emerald" style="background:#059669;"></span>
+                    <span class="color-dot" data-color="rose" style="background:#e11d48;"></span>
                 </div>
+            </div>
+
+            <!-- روابط إضافية -->
+            <div class="setting-links">
+                <a href="privacy.html" class="drawer-link"><i class="fa-solid fa-shield-halved"></i> Politique de Confidentialité</a>
+                <button id="share-app-btn" class="drawer-link" style="width:100%; text-align:left; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-share-nodes"></i> Partager l'application</button>
             </div>
         </div>
     </aside>
 
-    <!-- المحتوى الرئيسي -->
+    <!-- الهيدر العلوي -->
+    <header class="app-header">
+        <button class="icon-btn" id="menu-toggle-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+        <h1 class="app-title">QR Master Pro</h1>
+        <div style="width: 40px;"></div>
+    </header>
+
+    <!-- المحتوى الرئيسي (Sections) -->
     <main class="app-main">
 
-        <!-- 1. واجهة الاستقبال (Home) -->
-        <section id="home-section" class="page-section active">
-            <div class="hero-card">
-                <h2>Bienvenue sur QR Master Pro</h2>
-                <p>Générez et scannez tous vos QR codes en toute simplicité et rapidité.</p>
-                <div class="hero-actions">
-                    <button id="goto-generator-btn" class="primary-btn"><i class="fa-solid fa-qrcode"></i> Créer un QR Code</button>
-                    <button id="goto-scanner-btn" class="secondary-btn"><i class="fa-solid fa-camera"></i> Scanner un QR Code</button>
+        <!-- 1. واجهة الإنشاء (Generator Section) -->
+        <section id="generator-section" class="page-section active">
+            <div class="section-container">
+                <!-- اختيار نوع الكود -->
+                <div id="types-menu-view" class="types-grid">
+                    <button class="type-item-btn" data-type="url"><i class="fa-solid fa-link"></i><span>URL</span></button>
+                    <button class="type-item-btn" data-type="text"><i class="fa-solid fa-font"></i><span>Texte</span></button>
+                    <button class="type-item-btn" data-type="contact"><i class="fa-solid fa-address-book"></i><span>Contact</span></button>
+                    <button class="type-item-btn" data-type="email"><i class="fa-solid fa-envelope"></i><span>Email</span></button>
+                    <button class="type-item-btn" data-type="sms"><i class="fa-solid fa-comment-sms"></i><span>SMS</span></button>
+                    <button class="type-item-btn" data-type="coordinates"><i class="fa-solid fa-location-dot"></i><span>GPS</span></button>
+                    <button class="type-item-btn" data-type="phone"><i class="fa-solid fa-phone"></i><span>Téléphone</span></button>
+                    <button class="type-item-btn" data-type="wifi"><i class="fa-solid fa-wifi"></i><span>Wi-Fi</span></button>
+                    <button class="type-item-btn" data-type="agenda"><i class="fa-solid fa-calendar-days"></i><span>Agenda</span></button>
+                    <button class="type-item-btn" data-type="clipboard"><i class="fa-solid fa-clipboard"></i><span>Presse-papiers</span></button>
                 </div>
+
+                <!-- نموذج الإدخال الديناميكي -->
+                <div id="dynamic-form-view" style="display: none;">
+                    <div class="form-header-row">
+                        <button class="icon-btn" id="back-to-menu-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                        <h3 id="form-title-text">Créer</h3>
+                    </div>
+                    <div id="form-inputs-container"></div>
+                    
+                    <!-- إعدادات الحجم -->
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>Taille du QR Code</label>
+                        <select id="qr-size">
+                            <option value="200">Petit (200x200)</option>
+                            <option value="300" selected>Moyen (300x300)</option>
+                            <option value="400">Grand (400x400)</option>
+                        </select>
+                    </div>
+
+                    <button class="primary-btn" id="generate-custom-btn" style="margin-top: 20px;"><i class="fa-solid fa-qrcode"></i> Générer le QR Code</button>
+                </div>
+
+                <!-- مكان عرض QR Code المُولد -->
+                <div id="qr-result" class="qr-result-box" style="margin-top: 20px; text-align: center;"></div>
             </div>
         </section>
 
-        <!-- 2. واجهة التوليد (Generator) -->
-        <section id="generator-section" class="page-section">
-            <div class="section-header">
-                <h2>Générateur de QR Code</h2>
-            </div>
-            
-            <div id="types-menu-view" class="types-grid">
-                <button class="type-item-btn" data-type="url"><i class="fa-solid fa-link"></i><span>URL</span></button>
-                <button class="type-item-btn" data-type="text"><i class="fa-solid fa-font"></i><span>Texte</span></button>
-                <button class="type-item-btn" data-type="contact"><i class="fa-solid fa-address-book"></i><span>Contact</span></button>
-                <button class="type-item-btn" data-type="email"><i class="fa-solid fa-envelope"></i><span>Email</span></button>
-                <button class="type-item-btn" data-type="sms"><i class="fa-solid fa-comment-sms"></i><span>SMS</span></button>
-                <button class="type-item-btn" data-type="coordinates"><i class="fa-solid fa-location-dot"></i><span>GPS</span></button>
-                <button class="type-item-btn" data-type="phone"><i class="fa-solid fa-phone"></i><span>Téléphone</span></button>
-                <button class="type-item-btn" data-type="wifi"><i class="fa-solid fa-wifi"></i><span>Wi-Fi</span></button>
-                <button class="type-item-btn" data-type="agenda"><i class="fa-solid fa-calendar"></i><span>Agenda</span></button>
-                <button class="type-item-btn" data-type="clipboard"><i class="fa-solid fa-clipboard"></i><span>Presse-papiers</span></button>
-            </div>
-
-            <div id="dynamic-form-view" class="dynamic-form-card" style="display: none;">
-                <div class="form-nav-top">
-                    <button id="back-to-menu-btn" class="icon-btn" aria-label="Retour"><i class="fa-solid fa-arrow-right"></i></button>
-                    <h3 id="form-title-text">Contenu</h3>
-                </div>
-                
-                <div id="form-inputs-container" class="form-inputs"></div>
-
-                <div class="input-group" style="margin-top: 15px;">
-                    <label for="qr-size">Taille du QR Code (Pixels)</label>
-                    <select id="qr-size" class="form-control">
-                        <option value="200">200x200 (Petit)</option>
-                        <option value="300" selected>300x300 (Moyen)</option>
-                        <option value="500">500x500 (Grand)</option>
-                    </select>
-                </div>
-
-                <button id="generate-custom-btn" class="primary-btn" style="width: 100%; margin-top: 20px;">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Générer le QR Code
-                </button>
-
-                <div id="qr-result" class="qr-result-box" style="text-align: center; margin-top: 20px;"></div>
-            </div>
-        </section>
-
-        <!-- 3. واجهة الماسح الضوئي (Scanner) -->
+        <!-- 2. واجهة المسح (Scanner Section) -->
         <section id="scanner-section" class="page-section">
             <div class="scanner-container">
                 <div id="reader"></div>
-                <div class="scanner-actions-bar">
-                    <button id="flip-camera-btn" class="scanner-tool-btn" title="Changer de caméra" aria-label="Changer de caméra"><i class="fa-solid fa-camera-rotate"></i></button>
-                    <button id="gallery-btn" class="scanner-tool-btn" title="Importer depuis la galerie" aria-label="Galerie"><i class="fa-solid fa-image"></i></button>
+                <div class="scanner-controls" style="margin-top: 15px; display: flex; justify-content: center; gap: 15px;">
+                    <button class="primary-btn" id="flip-camera-btn" style="width: auto; padding: 10px 20px;"><i class="fa-solid fa-camera-rotate"></i> Caméra</button>
+                    <button class="primary-btn" id="gallery-btn" style="width: auto; padding: 10px 20px;"><i class="fa-solid fa-image"></i> Galerie</button>
                     <input type="file" id="gallery-file-input" accept="image/*" style="display: none;">
                 </div>
             </div>
-
-            <div id="scan-result-screen" class="scan-result-modal">
-                <div class="scan-result-content">
-                    <div class="scan-result-header">
-                        <span id="scan-result-category" class="badge">URL</span>
-                        <button id="close-scan-result-btn" class="icon-btn" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                    <h3 id="scan-result-type-title">Lien Web</h3>
-                    <p id="scan-result-text" class="result-text-box"></p>
-                    <div class="scan-modal-actions">
-                        <button id="smart-open-link-btn" class="primary-btn"><i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien</button>
-                        <div class="secondary-actions">
-                            <button id="scan-action-copy" class="secondary-btn"><i class="fa-solid fa-copy"></i> Copier</button>
-                            <button id="scan-action-share" class="secondary-btn"><i class="fa-solid fa-share-nodes"></i> Partager</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
 
-        <!-- 4. واجهة التاريخ (Historique) -->
+        <!-- 3. واجهة التاريخ (History Section) -->
         <section id="history-section" class="page-section">
-            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <h2>Historique des QR Codes</h2>
-                <button id="clear-history-btn" class="secondary-btn" style="font-size: 0.8rem; padding: 6px 12px;"><i class="fa-solid fa-trash"></i> Vider</button>
-            </div>
-            <div id="history-list-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;"></div>
-        </section>
-
-        <!-- 5. واجهة البريميوم (Premium) -->
-        <section id="premium-section" class="page-section">
-            <div class="section-header">
-                <h2>QR Master Premium</h2>
-            </div>
-            <div style="max-width: 500px; margin: 20px auto; background: linear-gradient(135deg, #4f46e5, #9333ea); padding: 24px; border-radius: 16px; color: #fff; text-align: center;">
-                <i class="fa-solid fa-crown" style="font-size: 3rem; margin-bottom: 15px; color: #facc15;"></i>
-                <h3 style="font-size: 1.4rem; margin-bottom: 10px;">Débloquez toutes les fonctionnalités</h3>
-                <p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 25px;">Profitez d'un accès illimité à la génération avancée, sans aucune restriction.</p>
-                
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <button class="primary-btn" onclick="alert('Redirection vers le paiement mensuel (4.99 €)...')" style="background: #fff; color: #4f46e5; padding: 14px; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                        <span><i class="fa-solid fa-calendar-days"></i> Abonnement Mensuel</span>
-                        <span style="background: #4f46e5; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem;">4.99 € / mois</span>
-                    </button>
-                    
-                    <button class="primary-btn" onclick="alert('Redirection vers le paiement annuel (39.99 €)...')" style="background: rgba(255,255,255,0.2); color: #fff; padding: 14px; font-weight: 600; border-radius: 10px; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                        <span><i class="fa-solid fa-star"></i> Abonnement Annuel (Économisez)</span>
-                        <span style="background: #facc15; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: bold;">39.99 € / an</span>
-                    </button>
+            <div class="section-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2>Historique</h2>
+                    <button class="icon-btn" id="clear-history-btn" title="Vider l'historique"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
+                <div id="history-list-container"></div>
             </div>
         </section>
 
     </main>
 
-    <!-- الشريط السفلي للتنقل -->
-    <nav class="app-nav-bar">
-        <button class="nav-item active" data-target="home">
-            <i class="fa-solid fa-house"></i>
-            <span>Accueil</span>
-        </button>
-        <button class="nav-item" data-target="generator">
+    <!-- واجهة منبثقة للنتائج غير الأوتوماتيكية (النصوص العادية) -->
+    <div class="modal-screen" id="scan-result-screen">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span class="badge" id="scan-result-category">TEXTE</span>
+                <button class="icon-btn" id="close-scan-result-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p id="scan-result-text" style="word-break: break-all; margin-bottom: 20px;"></p>
+            <div class="history-custom-actions">
+                <button class="history-custom-btn" id="scan-action-copy"><i class="fa-solid fa-copy"></i> Copier</button>
+                <button class="history-custom-btn" id="scan-action-share"><i class="fa-solid fa-share-nodes"></i> Partager</button>
+                <button class="history-custom-btn" id="smart-open-link-btn" style="display:none;"><i class="fa-solid fa-globe"></i> Ouvrir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-target="generator">
             <i class="fa-solid fa-qrcode"></i>
             <span>Créer</span>
         </button>
@@ -257,15 +159,12 @@
             <i class="fa-solid fa-clock-rotate-left"></i>
             <span>Historique</span>
         </button>
-        <button class="nav-item" data-target="premium">
-            <i class="fa-solid fa-crown" style="color: #facc15;"></i>
-            <span>Premium</span>
-        </button>
     </nav>
 
-    <!-- Scripts الأساسية -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- مكتبات توليد وقراءة QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- السكريبت المطور -->
     <script src="script.js"></script>
 </body>
 </html>

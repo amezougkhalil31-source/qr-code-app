@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main JavaScript (Zero-Bug Optimized)
+   QR Master Pro - Main JavaScript (Full & Ultimate Production Ready)
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,14 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetSection) targetSection.classList.add('active');
         if (targetNav) targetNav.classList.add('active');
 
-        // إيقاف الماسح الضوئي إذا خرجنا من واجهة الكاميرا
         if (targetId !== 'scanner' && html5QrCode && html5QrCode.isScanning) {
             html5QrCode.stop().catch(() => {});
         } else if (targetId === 'scanner') {
             startScanner();
         }
 
-        // تحميل التاريخ إذا تم الانتقال لواجهة التاريخ
         if (targetId === 'history') {
             renderHistory();
         }
@@ -42,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gotoGenBtn) gotoGenBtn.addEventListener('click', () => switchSection('generator'));
     if (gotoScanBtn) gotoScanBtn.addEventListener('click', () => switchSection('scanner'));
 
-    // --- 2. إعدادات القائمة الجانبية (Drawer & Themes) ---
+    // --- 2. إعدادات القائمة الجانبية والثيمات ---
     const menuBtn = document.getElementById('menu-toggle-btn');
     const closeDrawerBtn = document.getElementById('close-drawer-btn');
     const drawer = document.getElementById('settings-drawer');
@@ -64,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', () => toggleDrawer(false));
     if (overlay) overlay.addEventListener('click', () => toggleDrawer(false));
 
-    // الأضواء والثيمات
     const lightBtn = document.getElementById('light-mode-btn');
     const darkBtn = document.getElementById('dark-mode-btn');
     const htmlTag = document.documentElement;
@@ -84,14 +81,12 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('qr_theme', 'dark');
         });
 
-        // استرجاع الثيم المحفوظ
         const savedTheme = localStorage.getItem('qr_theme');
         if (savedTheme === 'light') {
             lightBtn.click();
         }
     }
 
-    // الألوان الرئيسية
     const colorDots = document.querySelectorAll('.color-dot');
     colorDots.forEach(dot => {
         dot.addEventListener('click', () => {
@@ -109,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetDot) targetDot.click();
     }
 
-    // زر المشاركة العامة
     const shareAppBtn = document.getElementById('share-app-btn');
     if (shareAppBtn) {
         shareAppBtn.addEventListener('click', () => {
@@ -279,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         correctLevel: QRCode.CorrectLevel.H
                     });
 
-                    // أزرار التحميل والمشاركة بعد التوليد
                     setTimeout(() => {
                         const actionDiv = document.createElement('div');
                         actionDiv.className = 'history-custom-actions';
@@ -304,7 +297,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             alert('QR Code généré avec succès !');
                         });
 
-                        // حفظ في التاريخ
                         saveToHistory(currentSelectedType, stringData);
                     }, 200);
 
@@ -315,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. الماسح الضوئي (Scanner & Html5Qrcode) ---
+    // --- 4. الماسح الضوئي الذكي ---
     let html5QrCode = null;
     let currentCameraIndex = 0;
     let availableCameras = [];
@@ -337,17 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     cameraId,
                     { fps: 10, qrbox: { width: 250, height: 250 } },
                     (decodedText) => {
-                        handleSuccessfulScan(decodedText);
+                        processSmartScanResult(decodedText);
                     },
                     () => {}
                 ).catch(() => {});
             }
         }).catch(() => {
-            // تفعيل الكاميرا الأمامية/الخلفية الافتراضية في حال فشل جلب القائمة
             html5QrCode.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 250, height: 250 } },
-                (decodedText) => { handleSuccessfulScan(decodedText); },
+                (decodedText) => { processSmartScanResult(decodedText); },
                 () => {}
             ).catch(() => {});
         });
@@ -367,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // رفع صورة من الجاليري وفحصها
     const galleryBtn = document.getElementById('gallery-btn');
     const galleryFileInput = document.getElementById('gallery-file-input');
 
@@ -381,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 html5QrCode.scanFile(imageFile, true)
                     .then(decodedText => {
-                        handleSuccessfulScan(decodedText);
+                        processSmartScanResult(decodedText);
                     })
                     .catch(() => {
                         alert("Aucun QR code n'a pu être détecté dans cette image.");
@@ -390,7 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // معالجة نتيجة المسح الناجح
     const scanResultModal = document.getElementById('scan-result-screen');
     const scanResultText = document.getElementById('scan-result-text');
     const scanResultCategory = document.getElementById('scan-result-category');
@@ -399,25 +388,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const scanActionCopy = document.getElementById('scan-action-copy');
     const scanActionShare = document.getElementById('scan-action-share');
 
-    function handleSuccessfulScan(text) {
+    function processSmartScanResult(text) {
         if (html5QrCode && html5QrCode.isScanning) {
             html5QrCode.stop().catch(() => {});
         }
 
+        let typeCat = 'texte';
+        let cleanText = text.trim();
+
+        if (cleanText.startsWith('http://') || cleanText.startsWith('https://')) {
+            typeCat = 'url';
+            saveToHistory(typeCat, cleanText);
+            window.location.href = cleanText;
+            return;
+        } 
+        else if (cleanText.startsWith('tel:')) {
+            typeCat = 'téléphone';
+            saveToHistory(typeCat, cleanText);
+            window.location.href = cleanText;
+            return;
+        } 
+        else if (cleanText.startsWith('mailto:')) {
+            typeCat = 'email';
+            saveToHistory(typeCat, cleanText);
+            window.location.href = cleanText;
+            return;
+        }
+        else if (cleanText.startsWith('SMSTO:')) {
+            typeCat = 'sms';
+            saveToHistory(typeCat, cleanText);
+            window.location.href = `sms:${cleanText.split(':')[1]}`;
+            return;
+        }
+
         if (scanResultModal && scanResultText) {
             scanResultModal.classList.add('active');
-            scanResultText.textContent = text;
-            
-            let typeCat = 'Texte';
-            if (text.startsWith('http://') || text.startsWith('https://')) {
-                typeCat = 'URL';
-                if (smartOpenLinkBtn) smartOpenLinkBtn.style.display = 'inline-flex';
-            } else {
-                if (smartOpenLinkBtn) smartOpenLinkBtn.style.display = 'none';
-            }
-            if (scanResultCategory) scanResultCategory.textContent = typeCat;
+            scanResultText.textContent = cleanText;
+            if (scanResultCategory) scanResultCategory.textContent = typeCat.toUpperCase();
+            if (smartOpenLinkBtn) smartOpenLinkBtn.style.display = 'none';
 
-            saveToHistory(typeCat.toLowerCase(), text);
+            saveToHistory(typeCat, cleanText);
         }
     }
 
@@ -459,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveToHistory(type, data) {
         let history = JSON.parse(localStorage.getItem('qr_history') || '[]');
         history.unshift({ type, data, date: new Date().toLocaleDateString() });
-        if (history.length > 50) history.pop(); // الاحتفاظ بأحدث 50 عنصر فقط
+        if (history.length > 50) history.pop();
         localStorage.setItem('qr_history', JSON.stringify(history));
     }
 
@@ -490,7 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
             historyContainer.appendChild(div);
         });
 
-        // أحداث أزرار التاريخ
         document.querySelectorAll('.hist-copy').forEach(btn => {
             btn.addEventListener('click', () => {
                 const text = decodeURIComponent(btn.getAttribute('data-text'));
