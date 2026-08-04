@@ -46,7 +46,7 @@
             padding-bottom: 100px !important;
         }
 
-        /* 4. تنسيق أزرار التاريخ الإضافية لتحسين تجربة المستخدم */
+        /* 4. تنسيق أزرار التاريخ */
         .history-action-btn {
             background: rgba(79, 70, 229, 0.2);
             color: #818cf8;
@@ -64,6 +64,26 @@
         }
         .history-action-btn:hover {
             background: #4f46e5;
+            color: #fff;
+        }
+
+        /* تنسيق زر الفتح في أقصى اليمين */
+        .history-right-btn {
+            float: right;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .history-right-btn:hover {
+            background: #10b981;
             color: #fff;
         }
     </style>
@@ -259,9 +279,10 @@
 
     <!-- Scripts -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 
-    <!-- سكربت إضافي داخل index.html لإضافة أزرار التفاعل (فتح/تحميل) في صفحة التاريخ -->
+    <!-- سكربت تعديل التاريخ: إبقاء زر Copier تحت الاسم، واستبدال زر اليمين بـ Ouvrir لعرض QR Code -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const historyBtn = document.querySelector('[data-target="history"]');
@@ -270,7 +291,6 @@
                     setTimeout(enhanceHistoryItems, 100);
                 });
             }
-            // مراقبة التغييرات في خانة التاريخ لتحديث العناصر تلقائياً
             const observer = new MutationObserver(() => {
                 enhanceHistoryItems();
             });
@@ -285,35 +305,65 @@
             if (!container) return;
             const items = container.querySelectorAll('div');
             items.forEach(item => {
-                // التأكد من عدم إضافة الأزرار مرتين
                 if (item.dataset.enhanced) return;
                 const textContent = item.innerText || "";
-                if (textContent.length > 0 && !item.querySelector('.history-action-btn')) {
+                if (textContent.length > 0 && !item.querySelector('.history-right-btn')) {
                     item.dataset.enhanced = "true";
                     
-                    // استخراج الرابط أو النص الموجود
                     let lines = textContent.split('\n');
                     let rawText = lines.find(l => l.startsWith('http') || l.includes('tel:') || l.includes('mailto:')) || lines[1] || "";
 
-                    // زر فتح الرابط إذا كان رابطاً حقيقياً
-                    if (rawText.startsWith('http')) {
-                        let openBtn = document.createElement('button');
-                        openBtn.className = 'history-action-btn';
-                        openBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir';
-                        openBtn.onclick = () => window.open(rawText, '_blank');
-                        item.appendChild(openBtn);
-                    }
-
-                    // زر نسخ المحتوى بسرعة
-                    let copyBtn = document.createElement('button');
-                    copyBtn.className = 'history-action-btn';
-                    copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier';
-                    copyBtn.onclick = () => {
-                        navigator.clipboard.writeText(rawText);
-                        alert('Copié dans le presse-papiers !');
+                    // تعديل زر العرض الأيمن (Ouvrir / Afficher) لإظهار الكود
+                    let rightBtn = document.createElement('button');
+                    rightBtn.className = 'history-right-btn';
+                    rightBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Ouvrir';
+                    rightBtn.onclick = () => {
+                        showQrPopup(rawText);
                     };
-                    item.appendChild(copyBtn);
+                    item.appendChild(rightBtn);
                 }
+            });
+        }
+
+        function showQrPopup(text) {
+            let existingModal = document.getElementById('qr-popup-modal');
+            if (existingModal) existingModal.remove();
+
+            let modal = document.createElement('div');
+            modal.id = 'qr-popup-modal';
+            modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999999; display:flex; justify-content:center; align-items:center;";
+            
+            let content = document.createElement('div');
+            content.style.cssText = "background:#1e293b; padding:25px; border-radius:16px; text-align:center; max-width:90%; width:320px; box-shadow:0 10px 25px rgba(0,0,0,0.5); color:#fff;";
+            
+            let title = document.createElement('h3');
+            title.innerText = "Votre QR Code";
+            title.style.marginBottom = "15px";
+            content.appendChild(title);
+
+            let qrBox = document.createElement('div');
+            qrBox.id = "popup-qrcode-render";
+            qrBox.style.cssText = "background:#fff; padding:15px; border-radius:12px; display:inline-block; margin-bottom:15px;";
+            content.appendChild(qrBox);
+
+            let closeBtn = document.createElement('button');
+            closeBtn.className = "primary-btn";
+            closeBtn.innerText = "Fermer";
+            closeBtn.style.cssText = "width:100%; padding:10px; background:#4f46e5; color:#fff; border:none; border-radius:8px; cursor:pointer;";
+            closeBtn.onclick = () => modal.remove();
+            content.appendChild(closeBtn);
+
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+
+            // توليد الكود داخل النافذة
+            new QRCode(qrBox, {
+                text: text,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
         }
     </script>
