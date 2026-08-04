@@ -46,8 +46,15 @@
             padding-bottom: 100px !important;
         }
 
-        /* 4. تنسيق أزرار التاريخ */
-        .history-action-btn {
+        /* 4. تنسيق أزرار التاريخ (Copier و Ouvrir) */
+        .history-btn-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-copy-btn {
             background: rgba(79, 70, 229, 0.2);
             color: #818cf8;
             border: 1px solid rgba(79, 70, 229, 0.4);
@@ -58,18 +65,14 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-top: 8px;
-            margin-right: 8px;
             transition: all 0.2s;
         }
-        .history-action-btn:hover {
+        .history-copy-btn:hover {
             background: #4f46e5;
             color: #fff;
         }
 
-        /* تنسيق زر الفتح في أقصى اليمين */
-        .history-right-btn {
-            float: right;
+        .history-open-btn {
             background: rgba(16, 185, 129, 0.2);
             color: #34d399;
             border: 1px solid rgba(16, 185, 129, 0.4);
@@ -82,7 +85,7 @@
             gap: 6px;
             transition: all 0.2s;
         }
-        .history-right-btn:hover {
+        .history-open-btn:hover {
             background: #10b981;
             color: #fff;
         }
@@ -282,7 +285,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 
-    <!-- سكربت تعديل التاريخ: إبقاء زر Copier تحت الاسم، واستبدال زر اليمين بـ Ouvrir لعرض QR Code -->
+    <!-- سكربت لضبط زري Copier و Ouvrir بشكل منفصل في كل كارد -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const historyBtn = document.querySelector('[data-target="history"]');
@@ -307,20 +310,36 @@
             items.forEach(item => {
                 if (item.dataset.enhanced) return;
                 const textContent = item.innerText || "";
-                if (textContent.length > 0 && !item.querySelector('.history-right-btn')) {
+                if (textContent.length > 0 && !item.querySelector('.history-btn-container')) {
                     item.dataset.enhanced = "true";
                     
                     let lines = textContent.split('\n');
                     let rawText = lines.find(l => l.startsWith('http') || l.includes('tel:') || l.includes('mailto:')) || lines[1] || "";
 
-                    // تعديل زر العرض الأيمن (Ouvrir / Afficher) لإظهار الكود
-                    let rightBtn = document.createElement('button');
-                    rightBtn.className = 'history-right-btn';
-                    rightBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Ouvrir';
-                    rightBtn.onclick = () => {
+                    // إنشاء حاوية للأزرار
+                    let btnContainer = document.createElement('div');
+                    btnContainer.className = 'history-btn-container';
+
+                    // زر النسخ (Copier)
+                    let copyBtn = document.createElement('button');
+                    copyBtn.className = 'history-copy-btn';
+                    copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier';
+                    copyBtn.onclick = () => {
+                        navigator.clipboard.writeText(rawText);
+                        alert('Copié dans le presse-papiers !');
+                    };
+
+                    // زر الفتح والعرض (Ouvrir)
+                    let openBtn = document.createElement('button');
+                    openBtn.className = 'history-open-btn';
+                    openBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Ouvrir';
+                    openBtn.onclick = () => {
                         showQrPopup(rawText);
                     };
-                    item.appendChild(rightBtn);
+
+                    btnContainer.appendChild(copyBtn);
+                    btnContainer.appendChild(openBtn);
+                    item.appendChild(btnContainer);
                 }
             });
         }
@@ -356,7 +375,6 @@
             modal.appendChild(content);
             document.body.appendChild(modal);
 
-            // توليد الكود داخل النافذة
             new QRCode(qrBox, {
                 text: text,
                 width: 200,
