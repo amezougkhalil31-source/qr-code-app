@@ -26,6 +26,25 @@ function handleSubscriptionClick(productId) {
     }
 }
 
+// دالة مساعدة لتحويل النص الناتج إلى رابط ذكي قابل للضغط
+function formatScannedResult(text) {
+    let href = text;
+    if (text.startsWith('tel:') || text.startsWith('mailto:') || text.startsWith('http://') || text.startsWith('https://')) {
+        href = text;
+    } else if (text.match(/^[0-9+\s\-]+$/)) {
+        href = `tel:${text.trim()}`;
+    } else if (text.includes('@') && !text.includes(' ')) {
+        href = `mailto:${text}`;
+    } else if (text.startsWith('www.')) {
+        href = `https://${text}`;
+    } else if (text.match(/^[a-zA-Z0-9][-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/)) {
+        href = `https://${text}`;
+    } else {
+        return `<span style="color: var(--text-color);">${text}</span>`;
+    }
+    return `<a href="${href}" target="_blank" style="color: var(--accent-color); text-decoration: underline; font-weight: bold; word-break: break-all;">${text}</a>`;
+}
+
 // دالة الانتقال بين الصفحات الأساسية
 function switchTab(tabId) {
     document.querySelectorAll('.page-section').forEach(sec => {
@@ -287,11 +306,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scannerResult) scannerResult.innerHTML = `<p style="color: var(--accent-color);">Analyse de l'image...</p>`;
 
             try {
-                // استخدام عنصر مؤقت أو الماسح الحالي لفحص الصورة
                 const tempScanner = new Html5Qrcode("reader");
                 const decodedText = await tempScanner.scanFile(file, true);
                 if (scannerResult) {
-                    scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold;">QR Trouvé : ${decodedText}</p>`;
+                    scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold; margin-bottom: 5px;">QR Trouvé :</p>` + formatScannedResult(decodedText);
                 }
                 historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
                 localStorage.setItem('qr_history', JSON.stringify(historyData));
@@ -374,7 +392,7 @@ function openTypeForm(type) {
     if (container) container.innerHTML = html;
 }
 
-// دوال الكاميرا المحدثة خصيصاً لمنع الشاشة الكحلة
+// دوال الكاميرا المحدثة
 async function startCamera() {
     const scannerResult = document.getElementById('scanner-result');
     if (scannerResult) scannerResult.innerHTML = '';
@@ -395,7 +413,7 @@ async function startCamera() {
                 { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText) => {
                     if (scannerResult) {
-                        scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold;">Résultat : ${decodedText}</p>`;
+                        scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold; margin-bottom: 5px;">Résultat :</p>` + formatScannedResult(decodedText);
                     }
                     historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
                     localStorage.setItem('qr_history', JSON.stringify(historyData));

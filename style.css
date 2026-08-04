@@ -308,20 +308,23 @@ body {
     color: var(--accent-color);
 }
 
+/* تعديل المربع الخاص بالماسح باش يبان مقاد وواضح بدون اقتطاع */
 .scanner-viewport {
     width: 100%;
-    height: 260px;
+    max-width: 320px;
+    height: 320px;
     background-color: #000;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin: 0 auto 15px auto;
 }
 
-.scanner-viewport video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.scanner-viewport video,
+.scanner-viewport div {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
 }
 
 .scanner-laser {
@@ -331,6 +334,8 @@ body {
     background-color: #ef4444;
     box-shadow: 0 0 10px #ef4444;
     animation: scan 2s infinite ease-in-out;
+    pointer-events: none;
+    z-index: 10;
 }
 
 @keyframes scan {
