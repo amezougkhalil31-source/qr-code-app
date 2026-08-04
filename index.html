@@ -15,7 +15,7 @@
 </head>
 <body>
 
-    <!-- الهيدر العلوي (زر 3 شراط في الجنب وزر البارطاج) -->
+    <!-- الهيدر العلوي: زر القائمة في اليسار، العنوان في الوسط، وزر البارطاج في اليمين كاع -->
     <header class="app-header">
         <button id="menu-toggle-btn" class="icon-btn" aria-label="Menu">
             <i class="fa-solid fa-bars"></i>
@@ -55,7 +55,7 @@
     </aside>
 
     <!-- المحتوى الرئيسي (الصفحات) -->
-    <main class="app-main">
+    <main class="app-main" style="padding-bottom: 80px;">
 
         <!-- 1. واجهة الاستقبال (Home) -->
         <section id="home-section" class="page-section active">
@@ -159,7 +159,7 @@
             </div>
         </section>
 
-        <!-- 5. واجهة البريميوم (Premium) حدا السجل في الشريط السفلي -->
+        <!-- 5. واجهة البريميوم (Premium) -->
         <section id="premium-section" class="page-section">
             <div class="section-header">
                 <h2>QR Master Premium</h2>
@@ -185,8 +185,8 @@
 
     </main>
 
-    <!-- الشريط السفلي للتنقل (فيه Accueil, Créer, Scanner, Historique, ولصقها Premium) -->
-    <nav class="app-nav-bar">
+    <!-- الشريط السفلي للتنقل مستقر في الأسفل -->
+    <nav class="app-nav-bar" style="position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1000;">
         <button class="nav-item active" data-target="home">
             <i class="fa-solid fa-house"></i>
             <span>Accueil</span>
