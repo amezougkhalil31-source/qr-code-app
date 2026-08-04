@@ -20,12 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetSection.classList.add('active');
             }
 
-            // إذا دخلنا لواجهة التاريخ، نقوم بعرضه
             if (target === 'history') {
                 renderHistory();
             }
 
-            // إيقاف الكاميرا تلقائياً إذا خرجنا من واجهة السكان لتفادي المشاكل
             if (target !== 'scanner' && html5QrCode && isScanning) {
                 stopScanner();
             }
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
     }
 
-    // [التعديل المضاف]: زر الوصول السريع للسجل من داخل القائمة الجانبية
     const drawerHistoryBtn = document.getElementById('drawer-history-btn');
     if (drawerHistoryBtn) {
         drawerHistoryBtn.addEventListener('click', () => {
@@ -100,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // اختيار الألوان
     const colorDots = document.querySelectorAll('.color-dot');
     colorDots.forEach(dot => {
         dot.addEventListener('click', () => {
@@ -111,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // أزرار الانتقال السريع في واجهة الاستقبال
     const gotoGeneratorBtn = document.getElementById('goto-generator-btn');
     const gotoScannerBtn = document.getElementById('goto-scanner-btn');
 
@@ -176,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // زر قلب الكاميرا
     const flipCameraBtn = document.getElementById('flip-camera-btn');
     if (flipCameraBtn) {
         flipCameraBtn.addEventListener('click', () => {
@@ -188,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // زر اختيار صورة من المعرض
     const galleryBtn = document.getElementById('gallery-btn');
     const galleryFileInput = document.getElementById('gallery-file-input');
 
@@ -212,14 +205,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         saveToHistory("Galerie", decodedText);
                     })
                     .catch(err => {
-                        alert("Impossible de trouver un QR Code valide dans cette image.");
+                        alert("Impossible de trouver un QR Code valide dans هذه الصورة.");
                         startScanner();
                     });
             }
         });
     }
 
-    // التعامل مع نتائج السكان (الزر الذكي الجديد كلياً)
+    // التعامل الذكي مع نتائج السكان (التحقق الشامل داخل النص)
     const scanResultScreen = document.getElementById('scan-result-screen');
     const closeScanResultBtn = document.getElementById('close-scan-result-btn');
     const scanResultText = document.getElementById('scan-result-text');
@@ -235,31 +228,39 @@ document.addEventListener('DOMContentLoaded', () => {
         let typeName = "Texte en clair";
         let category = "TEXT";
 
-        // تنظيف الأحداث القديمة للزر الذكي لتجنب التكرار
         if (smartOpenLinkBtn) {
             let newBtn = smartOpenLinkBtn.cloneNode(true);
             smartOpenLinkBtn.parentNode.replaceChild(newBtn, smartOpenLinkBtn);
-            
-            // إعادة ربط المتغير بالعنصر الجديد
             const activeSmartBtn = document.getElementById('smart-open-link-btn');
 
-            if (text.startsWith('http://') || text.startsWith('https://')) {
+            // البحث عن روابط ويب داخل النص
+            const urlMatch = text.match(/(https?:\/\/[^\s]+)/);
+            // البحث عن رقم هاتف (سواء متبوع بـ tel: أو أرقام عادية طويلة)
+            const telMatch = text.match(/tel:([0-9+\-\s]+)/) || text.match(/(?:\+?[0-9\s\-]{8,})/);
+            // البحث عن إيميل
+            const emailMatch = text.match(/mailto:([^\s]+)/) || text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+
+            if (urlMatch) {
                 typeName = "Lien Web";
                 category = "URL";
+                let targetUrl = urlMatch[1];
                 activeSmartBtn.innerHTML = '<i class="fa-solid fa-external-link-alt"></i> Ouvrir le lien';
-                activeSmartBtn.onclick = () => window.open(text, '_blank');
-            } else if (text.startsWith('mailto:') || text.includes('@')) {
-                typeName = "Adresse courriel";
-                category = "EMAIL";
-                let email = text.startsWith('mailto:') ? text : `mailto:${text}`;
-                activeSmartBtn.innerHTML = '<i class="fa-solid fa-envelope"></i> Envoyer un e-mail';
-                activeSmartBtn.onclick = () => window.location.href = email;
-            } else if (text.startsWith('tel:') || /^\+?[0-9\s\-]{8,}/.test(text)) {
+                activeSmartBtn.onclick = () => window.open(targetUrl, '_blank');
+            } else if (telMatch) {
                 typeName = "Numéro de téléphone";
                 category = "PHONE";
-                let phone = text.startsWith('tel:') ? text : `tel:${text}`;
+                // استخراج الرقم وتنظيفه لتوجيهه للاتصال مباشرة
+                let rawPhone = telMatch[1] || telMatch[0];
+                let cleanPhone = rawPhone.replace('tel:', '').trim();
                 activeSmartBtn.innerHTML = '<i class="fa-solid fa-phone"></i> Appeler ce numéro';
-                activeSmartBtn.onclick = () => window.location.href = phone;
+                activeSmartBtn.onclick = () => window.location.href = `tel:${cleanPhone}`;
+            } else if (emailMatch) {
+                typeName = "Adresse courriel";
+                category = "EMAIL";
+                let rawEmail = emailMatch[1] || emailMatch[0];
+                let cleanEmail = rawEmail.replace('mailto:', '').trim();
+                activeSmartBtn.innerHTML = '<i class="fa-solid fa-envelope"></i> Envoyer un e-mail';
+                activeSmartBtn.onclick = () => window.location.href = `mailto:${cleanEmail}`;
             } else {
                 typeName = "Texte en clair";
                 category = "TEXT";
@@ -378,13 +379,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         </a>
                     </div>
                 `;
-                // تسجلو في التاريخ أوتوماتيكياً
                 saveToHistory("Création (" + currentSelectedType.toUpperCase() + ")", contentToEncode);
             }
         });
     }
 
-    // نظام إدارة التاريخ (Historique & LocalStorage)
     function saveToHistory(type, text) {
         let history = JSON.parse(localStorage.getItem('qr_history')) || [];
         history.unshift({ type, text, date: new Date().toLocaleString() });
