@@ -28,13 +28,26 @@ html[data-theme-color="blue"] { --primary: #0284c7; --primary-hover: #0369a1; }
 html[data-theme-color="emerald"] { --primary: #059669; --primary-hover: #047857; }
 html[data-theme-color="rose"] { --primary: #e11d48; --primary-hover: #be123c; }
 
-/* --- Base Reset --- */
+/* --- Base Reset & Native App Experience --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
     -webkit-tap-highlight-color: transparent;
+    /* منع تحديد النصوص ونسخها عشوائياً لبدء تجربة تشبه التطبيقات الحقيقية */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* السماح بالتحديد والكتابة فقط داخل حقول الإدخال */
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 body {
