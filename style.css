@@ -429,3 +429,41 @@ body {
     justify-content: center;
     gap: 6px;
 }
+
+/* --- إصلاحات التجاوب والتحسينات للشاشات الكبيرة (البيسي) --- */
+@media(min-width: 768px) {
+    .scanner-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .scanner-controls {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 20px !important;
+        margin-top: 20px !important;
+    }
+}
+
+/* تنسيق نافذة إظهار QR Code من السجل */
+.qr-pop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 400;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.qr-pop-content {
+    background-color: var(--bg-card);
+    width: 100%;
+    max-width: 340px;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}

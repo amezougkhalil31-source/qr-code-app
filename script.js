@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 6. إدارة التاريخ (LocalStorage History) ---
+    // --- 6. إدارة التاريخ (LocalStorage History) مع إمكانية عرض QR Code عند الضغط ---
     function saveToHistory(type, data) {
         let history = JSON.parse(localStorage.getItem('qr_history') || '[]');
         history.unshift({ type, data, date: new Date().toLocaleDateString() });
@@ -513,13 +513,13 @@ document.addEventListener('DOMContentLoaded', () => {
         historyContainer.innerHTML = '';
         history.forEach((item, index) => {
             const div = document.createElement('div');
-            div.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px;";
+            div.style.cssText = "background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; cursor: pointer; transition: var(--transition);";
             div.innerHTML = `
                 <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                     <span class="badge">${item.type.toUpperCase()}</span>
                     <span style="font-size:0.75rem; color:var(--text-muted);">${item.date}</span>
                 </div>
-                <p style="font-size:0.9rem; word-break:break-all; margin:8px 0; color:var(--text-main);">${item.data}</p>
+                <p style="font-size:0.9rem; word-break:break-all; margin:8px 0; color:var(--text-main);" class="hist-text-click" data-text="${encodeURIComponent(item.data)}">${item.data}</p>
                 <div class="history-custom-actions">
                     <button class="history-custom-btn hist-copy" data-text="${encodeURIComponent(item.data)}"><i class="fa-solid fa-copy"></i> Copier</button>
                     <button class="history-custom-btn hist-del" data-index="${index}"><i class="fa-solid fa-trash"></i> Supprimer</button>
@@ -528,21 +528,67 @@ document.addEventListener('DOMContentLoaded', () => {
             historyContainer.appendChild(div);
         });
 
+        document.querySelectorAll('.hist-text-click').forEach(p => {
+            p.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const text = decodeURIComponent(p.getAttribute('data-text'));
+                showQrPopup(text);
+            });
+        });
+
         document.querySelectorAll('.hist-copy').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const text = decodeURIComponent(btn.getAttribute('data-text'));
                 navigator.clipboard.writeText(text).then(() => alert('Copié !'));
             });
         });
 
         document.querySelectorAll('.hist-del').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const idx = parseInt(btn.getAttribute('data-index'));
                 let history = JSON.parse(localStorage.getItem('qr_history') || '[]');
                 history.splice(idx, 1);
                 localStorage.setItem('qr_history', JSON.stringify(history));
                 renderHistory();
             });
+        });
+    }
+
+    function showQrPopup(text) {
+        let existingModal = document.getElementById('dynamic-qr-popup');
+        if (existingModal) existingModal.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'dynamic-qr-popup';
+        modal.className = 'qr-pop-modal';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+            <div class="qr-pop-content">
+                <h3 style="font-size: 1rem; margin-bottom: 15px; color: var(--text-color);">QR Code généré</h3>
+                <div id="pop-qrcode-wrap" style="display:inline-block; padding:15px; background:#fff; border-radius:12px; margin-bottom: 15px;"></div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); word-break: break-all; margin-bottom: 15px; max-height: 80px; overflow-y: auto;">${text}</p>
+                <button class="primary-btn" id="close-pop-btn">Fermer</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        new QRCode(document.getElementById('pop-qrcode-wrap'), {
+            text: text,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        document.getElementById('close-pop-btn').addEventListener('click', () => {
+            modal.remove();
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
         });
     }
 
