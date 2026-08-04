@@ -308,11 +308,11 @@ body {
     color: var(--accent-color);
 }
 
-/* تعديل المربع الخاص بالماسح باش يبان مقاد وواضح بدون اقتطاع */
+/* التعديل الجديد: إطار الكاميرا النقي بدون المربع الأبيض والخط الأحمر الكبير */
 .scanner-viewport {
     width: 100%;
-    max-width: 320px;
-    height: 320px;
+    max-width: 300px;
+    height: 300px;
     background-color: #000;
     border-radius: 12px;
     position: relative;
@@ -320,27 +320,37 @@ body {
     margin: 0 auto 15px auto;
 }
 
-.scanner-viewport video,
-.scanner-viewport div {
+.scanner-viewport video {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    border: none !important;
 }
 
+/* إخفاء أي مربعات افتراضية قد تولدها المكتبة */
+.scanner-viewport div img, 
+.scanner-viewport__scan-region,
+#reader__scan_region {
+    display: none !important;
+}
+
+/* سطر الليزر الأحمر الرقيق فقط اللي كينزل ويطلع */
 .scanner-laser {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
     background-color: #ef4444;
-    box-shadow: 0 0 10px #ef4444;
-    animation: scan 2s infinite ease-in-out;
+    box-shadow: 0 0 8px #ef4444;
+    animation: scanAnimation 2s infinite ease-in-out;
     pointer-events: none;
-    z-index: 10;
+    z-index: 50;
 }
 
-@keyframes scan {
+@keyframes scanAnimation {
     0% { top: 0%; }
-    50% { top: 100%; }
+    50% { top: 98%; }
     100% { top: 0%; }
 }
 
