@@ -12,9 +12,9 @@
 
     <!-- الهيدر العلوي -->
     <header class="app-header">
-        <button class="menu-burger-btn" id="menu-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+        <button class="menu-burger-btn" id="menu-toggle-btn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
         <div class="app-logo"><i class="fa-solid fa-qrcode"></i> QR Master Pro</div>
-        <button class="icon-header-btn" id="share-app-btn"><i class="fa-solid fa-share-nodes"></i></button>
+        <button class="icon-header-btn" id="share-app-btn" aria-label="Partager"><i class="fa-solid fa-share-nodes"></i></button>
     </header>
 
     <!-- قائمة الإعدادات الجانبية -->
@@ -22,24 +22,24 @@
     <div class="settings-drawer" id="settings-drawer">
         <div class="drawer-header">
             <h3>Paramètres</h3>
-            <button id="close-drawer-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button id="close-drawer-btn" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="drawer-content">
             <div class="setting-group">
                 <h4>Couleurs</h4>
                 <div class="color-picker-grid">
-                    <div class="color-dot active" data-color="indigo" style="background: #4f46e5;"></div>
-                    <div class="color-dot" data-color="red" style="background: #dc2626;"></div>
-                    <div class="color-dot" data-color="orange" style="background: #ea580c;"></div>
-                    <div class="color-dot" data-color="green" style="background: #16a34a;"></div>
+                    <div class="color-dot active" data-color="indigo" style="background: #4f46e5;" title="Indigo"></div>
+                    <div class="color-dot" data-color="red" style="background: #dc2626;" title="Rouge"></div>
+                    <div class="color-dot" data-color="orange" style="background: #ea580c;" title="Orange"></div>
+                    <div class="color-dot" data-color="green" style="background: #16a34a;" title="Vert"></div>
                 </div>
             </div>
 
             <div class="setting-group" style="margin-top: 20px;">
                 <h4>Thème de l'application</h4>
                 <div class="theme-switch-buttons">
-                    <button class="theme-btn active" id="dark-mode-btn"><i class="fa-solid fa-moon"></i> Mode Sombre</button>
-                    <button class="theme-btn" id="light-mode-btn"><i class="fa-solid fa-sun"></i> Mode Lumière</button>
+                    <button class="theme-btn active" id="dark-mode-btn"><i class="fa-solid fa-moon"></i> Sombre</button>
+                    <button class="theme-btn" id="light-mode-btn"><i class="fa-solid fa-sun"></i> Clair</button>
                 </div>
             </div>
         </div>
@@ -68,14 +68,14 @@
                 <p class="section-desc">Choisissez le type de contenu à générer</p>
                 
                 <div class="qr-types-list">
-                    <button class="type-item-btn" data-type="clipboard"><i class="fa-solid fa-clipboard"></i><span>Contenu du presse-papiers</span></button>
+                    <button class="type-item-btn" data-type="clipboard"><i class="fa-solid fa-clipboard"></i><span>Presse-papiers</span></button>
                     <button class="type-item-btn" data-type="url"><i class="fa-solid fa-link"></i><span>URL</span></button>
                     <button class="type-item-btn" data-type="text"><i class="fa-solid fa-font"></i><span>Texte en clair</span></button>
                     <button class="type-item-btn" data-type="contact"><i class="fa-solid fa-user"></i><span>Contact</span></button>
-                    <button class="type-item-btn" data-type="email"><i class="fa-solid fa-envelope"></i><span>Adresse courriel</span></button>
-                    <button class="type-item-btn" data-type="sms"><i class="fa-solid fa-comment-sms"></i><span>Adresse SMS</span></button>
-                    <button class="type-item-btn" data-type="coordinates"><i class="fa-solid fa-location-dot"></i><span>Coordonnées géographiques</span></button>
-                    <button class="type-item-btn" data-type="phone"><i class="fa-solid fa-phone"></i><span>Numéro de téléphone</span></button>
+                    <button class="type-item-btn" data-type="email"><i class="fa-solid fa-envelope"></i><span>Courriel</span></button>
+                    <button class="type-item-btn" data-type="sms"><i class="fa-solid fa-comment-sms"></i><span>SMS</span></button>
+                    <button class="type-item-btn" data-type="coordinates"><i class="fa-solid fa-location-dot"></i><span>Coordonnées</span></button>
+                    <button class="type-item-btn" data-type="phone"><i class="fa-solid fa-phone"></i><span>Téléphone</span></button>
                     <button class="type-item-btn" data-type="agenda"><i class="fa-solid fa-calendar-days"></i><span>Agenda</span></button>
                     <button class="type-item-btn" data-type="wifi"><i class="fa-solid fa-wifi"></i><span>Wi-Fi</span></button>
                 </div>
@@ -105,7 +105,7 @@
             </div>
         </section>
 
-        <!-- 3. واجهة الماسح الضوئي (Scanner) بدون تكرار الزوايا -->
+        <!-- 3. واجهة الماسح الضوئي (Scanner) -->
         <section id="scanner-section" class="page-section">
             <div class="card-box">
                 <h2><i class="fa-solid fa-camera"></i> Scanner QR</h2>
@@ -138,7 +138,7 @@
             <div class="card-box">
                 <h2><i class="fa-solid fa-crown" style="color: #eab308;"></i> QR Master Pro</h2>
                 <p class="section-desc">Débloquez toutes les fonctionnalités avancées sans publicité.</p>
-                <div class="pricing-cards" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="pricing-cards">
                     <div class="price-card">
                         <h3>Abonnement Mensuel</h3>
                         <div class="price">4.99$ <span>/ mois</span></div>
@@ -156,7 +156,7 @@
 
     </main>
 
-    <!-- شريط التنقل السفلي الأصلي -->
+    <!-- شريط التنقل السفلي -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-target="home"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
         <button class="nav-item" data-target="generator"><i class="fa-solid fa-qrcode"></i><span>Générer</span></button>
@@ -165,11 +165,11 @@
         <button class="nav-item" data-target="premium"><i class="fa-solid fa-gem"></i><span>Premium</span></button>
     </nav>
 
-    <!-- شاشة نتائج السكان المنبثقة الاحترافية -->
+    <!-- شاشة نتائج السكان المنبثقة -->
     <div class="scan-result-screen" id="scan-result-screen">
         <div class="scan-result-header">
             <span>Résultat du Scan</span>
-            <button id="close-scan-result-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button id="close-scan-result-btn" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="scan-result-content">
             <div class="scan-type-badge">

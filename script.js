@@ -20,12 +20,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetSection.classList.add('active');
             }
 
-            // إيقاف الكاميرا تلقائياً إذا خرجنا من واجهة السكان لتفادي المشاكل والشاشة الكحلة
+            // إيقاف الكاميرا تلقائياً إذا خرجنا من واجهة السكان لتفادي المشاكل والشاشة السوداء
             if (target !== 'scanner' && html5QrCode && isScanning) {
                 stopScanner();
             }
         });
     });
+
+    // زر مشاركة التطبيق من الهيدر العلوي
+    const shareAppBtn = document.getElementById('share-app-btn');
+    if (shareAppBtn) {
+        shareAppBtn.addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'QR Master Pro',
+                    text: 'Découvrez QR Master Pro, l\'application ultime pour générer et scanner vos QR codes !',
+                    url: window.location.href
+                }).catch(err => console.log('Erreur de partage:', err));
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Lien de l\'application copié dans le presse-papiers !');
+            }
+        });
+    }
 
     // القائمة الجانبية (الإعدادات)
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
@@ -96,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // منطق الكاميرا والماسح الضوئي (Scanner) بدون شاشة كحلة
+    // منطق الكاميرا والماسح الضوئي (Scanner)
     let html5QrCode = null;
     let isScanning = false;
 
@@ -113,17 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText) => {
-                    // نجاح القراءة: إيقاف الكاميرا وعرض النتائج في الواجهة المنبثقة المناسبة
                     stopScanner();
                     handleScanResult(decodedText);
                 },
                 (errorMessage) => {
-                    // الأخطاء البسيطة أثناء المسح نتجاهلها لكي لا تتسبب في توقف التطبيق أو شاشة كحلة
+                    // الأخطاء البسيطة أثناء المسح نتجاهلها لكي لا تتسبب في توقف التطبيق
                 }
             ).then(() => {
                 isScanning = true;
             }).catch(err => {
-                console.error("خطأ في تشغيل الكاميرا:", err);
+                console.error("Erreur de démarrage de la caméra:", err);
             });
         }
     }
@@ -133,13 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
             html5QrCode.stop().then(() => {
                 isScanning = false;
             }).catch(err => {
-                console.error("خطأ أثناء إيقاف الكاميرا:", err);
+                console.error("Erreur lors de l'arrêt de la caméra:", err);
                 isScanning = false;
             });
         }
     }
 
-    // تفعيل الكاميرا تلقائياً عند الدخول لواجهة السكان
     const scannerNavBtn = document.querySelector('[data-target="scanner"]');
     if (scannerNavBtn) {
         scannerNavBtn.addEventListener('click', () => {
@@ -147,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // زر قلب الكاميرا
     const flipCameraBtn = document.getElementById('flip-camera-btn');
     if (flipCameraBtn) {
         flipCameraBtn.addEventListener('click', () => {
@@ -177,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let mainActionText = "Ouvrir";
         let isLink = false;
 
-        // التحقق من نوع المحتوى وتوجيهه بدقة
         if (text.startsWith('http://') || text.startsWith('https://')) {
             typeName = "Lien Web";
             category = "URL";
@@ -227,12 +240,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // أزرار النسخ والمشاركة داخل شاشة النتائج
     const scanActionCopy = document.getElementById('scan-action-copy');
     if (scanActionCopy) {
         scanActionCopy.addEventListener('click', () => {
             navigator.clipboard.writeText(scanResultText.textContent);
-            alert('Copié !');
+            alert('Copié dans le presse-papiers !');
         });
     }
 
@@ -241,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scanActionShare.addEventListener('click', () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'QR Master Pro Resultat',
+                    title: 'QR Master Pro Résultat',
                     text: scanResultText.textContent
                 }).catch(err => console.log(err));
             } else {
@@ -257,12 +269,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToMenuBtn = document.getElementById('back-to-menu-btn');
     const formInputsContainer = document.getElementById('form-inputs-container');
     const formTitleText = document.getElementById('form-title-text');
+    const generateCustomBtn = document.getElementById('generate-custom-btn');
+    const qrResultArea = document.getElementById('qr-result');
+
+    let currentSelectedType = 'url';
 
     typeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const type = btn.getAttribute('data-type');
+            currentSelectedType = type;
             if (typesMenuView) typesMenuView.style.display = 'none';
             if (dynamicFormView) dynamicFormView.style.display = 'block';
+            if (qrResultArea) qrResultArea.innerHTML = '';
             buildFormInputs(type);
         });
     });
@@ -280,6 +298,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = '';
 
         switch(type) {
+            case 'clipboard':
+                formTitleText.textContent = "Contenu du presse-papiers";
+                navigator.clipboard.readText().clipText = "";
+                html = `<div class="input-group"><label>Valeur lue</label><input type="text" id="input-val" placeholder="Texte récupéré automatiquement..."></div>`;
+                navigator.clipboard.readText().then(clipText => {
+                    const inputEl = document.getElementById('input-val');
+                    if (inputEl) inputEl.value = clipText;
+                }).catch(() => {});
+                break;
             case 'url':
                 formTitleText.textContent = "Création URL";
                 html = `<div class="input-group"><label>Lien Web (URL)</label><input type="url" id="input-val" placeholder="https://example.com"></div>`;
@@ -288,13 +315,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 formTitleText.textContent = "Texte en clair";
                 html = `<div class="input-group"><label>Votre Texte</label><textarea id="input-val" rows="3" placeholder="Écrivez votre texte ici..."></textarea></div>`;
                 break;
+            case 'contact':
+                formTitleText.textContent = "Contact (vCard)";
+                html = `
+                    <div class="input-group"><label>Nom complet</label><input type="text" id="vcard-name" placeholder="Nom Prénom"></div>
+                    <div class="input-group"><label>Téléphone</label><input type="tel" id="vcard-phone" placeholder="+212600000000"></div>
+                    <div class="input-group"><label>Email</label><input type="email" id="vcard-email" placeholder="contact@example.com"></div>
+                `;
+                break;
+            case 'email':
+                formTitleText.textContent = "Adresse courriel";
+                html = `
+                    <div class="input-group"><label>Email</label><input type="email" id="input-val" placeholder="contact@example.com"></div>
+                    <div class="input-group"><label>Sujet</label><input type="text" id="email-subject" placeholder="Sujet du message"></div>
+                `;
+                break;
+            case 'sms':
+                formTitleText.textContent = "Adresse SMS";
+                html = `
+                    <div class="input-group"><label>Numéro de téléphone</label><input type="tel" id="sms-phone" placeholder="+212600000000"></div>
+                    <div class="input-group"><label>Message</label><textarea id="sms-body" rows="2" placeholder="Votre message..."></textarea></div>
+                `;
+                break;
+            case 'coordinates':
+                formTitleText.textContent = "Coordonnées géographiques";
+                html = `
+                    <div class="input-group"><label>Latitude</label><input type="text" id="geo-lat" placeholder="33.5731"></div>
+                    <div class="input-group"><label>Longitude</label><input type="text" id="geo-lng" placeholder="-7.5898"></div>
+                `;
+                break;
             case 'phone':
                 formTitleText.textContent = "Numéro de téléphone";
                 html = `<div class="input-group"><label>Numéro</label><input type="tel" id="input-val" placeholder="+212600000000"></div>`;
                 break;
-            case 'email':
-                formTitleText.textContent = "Adresse courriel";
-                html = `<div class="input-group"><label>Email</label><input type="email" id="input-val" placeholder="contact@example.com"></div>`;
+            case 'agenda':
+                formTitleText.textContent = "Agenda (Événement)";
+                html = `
+                    <div class="input-group"><label>Titre de l'événement</label><input type="text" id="event-title" placeholder="Réunion..."></div>
+                    <div class="input-group"><label>Date de début</label><input type="datetime-local" id="event-start"></div>
+                `;
                 break;
             case 'wifi':
                 formTitleText.textContent = "Wi-Fi";
@@ -309,5 +368,57 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
         formInputsContainer.innerHTML = html;
+    }
+
+    if (generateCustomBtn) {
+        generateCustomBtn.addEventListener('click', () => {
+            let contentToEncode = "";
+
+            if (currentSelectedType === 'wifi') {
+                const ssid = document.getElementById('wifi-ssid')?.value || '';
+                const pass = document.getElementById('wifi-pass')?.value || '';
+                contentToEncode = `WIFI:S:${ssid};T:WPA;P:${pass};;`;
+            } else if (currentSelectedType === 'contact') {
+                const name = document.getElementById('vcard-name')?.value || '';
+                const phone = document.getElementById('vcard-phone')?.value || '';
+                const email = document.getElementById('vcard-email')?.value || '';
+                contentToEncode = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
+            } else if (currentSelectedType === 'email') {
+                const email = document.getElementById('input-val')?.value || '';
+                const subj = document.getElementById('email-subject')?.value || '';
+                contentToEncode = `mailto:${email}?subject=${encodeURIComponent(subj)}`;
+            } else if (currentSelectedType === 'sms') {
+                const phone = document.getElementById('sms-phone')?.value || '';
+                const body = document.getElementById('sms-body')?.value || '';
+                contentToEncode = `SMSTO:${phone}:${body}`;
+            } else if (currentSelectedType === 'coordinates') {
+                const lat = document.getElementById('geo-lat')?.value || '';
+                const lng = document.getElementById('geo-lng')?.value || '';
+                contentToEncode = `geo:${lat},${lng}`;
+            } else {
+                contentToEncode = document.getElementById('input-val')?.value || '';
+            }
+
+            if (!contentToEncode.trim()) {
+                alert('Veuillez remplir les champs requis pour générer le QR Code.');
+                return;
+            }
+
+            const size = document.getElementById('qr-size')?.value || '300';
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(contentToEncode)}`;
+
+            if (qrResultArea) {
+                qrResultArea.innerHTML = `
+                    <div style="background: #fff; padding: 15px; border-radius: 12px; display: inline-block; margin-top: 15px;">
+                        <img src="${qrApiUrl}" alt="QR Code" style="display: block; max-width: 100%; height: auto; border-radius: 8px;">
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <a href="${qrApiUrl}" download="qrcode.png" class="primary-btn" style="text-decoration: none; display: inline-flex; justify-content: center;">
+                            <i class="fa-solid fa-download"></i> Télécharger l'image
+                        </a>
+                    </div>
+                `;
+            }
+        });
     }
 });
