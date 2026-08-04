@@ -105,12 +105,12 @@
             </div>
         </section>
 
-        <!-- 3. واجهة الماسح الضوئي (Scanner) - تم إزالة زر الفلاش نهائياً -->
+        <!-- 3. واجهة الماسح الضوئي (Scanner) - تم تعديل عنصر الفيديو إلى div id="reader" لتفادي الشاشة الكحلة -->
         <section id="scanner-section" class="page-section">
             <div class="card-box">
                 <h2><i class="fa-solid fa-camera"></i> Scanner QR</h2>
                 <div class="scanner-viewport">
-                    <video id="scanner-video" autoplay playsinline></video>
+                    <div id="reader" style="width: 100%; min-height: 250px;"></div>
                     <div class="scanner-laser"></div>
                 </div>
                 <div class="scanner-controls">
@@ -133,7 +133,7 @@
             </div>
         </section>
 
-        <!-- 5. واجهة بريميوم (Premium) -->
+        <!-- 5. واجهة بريميوم (Premium) مع ربط معرفات الأزرار للتطبيق -->
         <section id="premium-section" class="page-section">
             <div class="card-box">
                 <h2><i class="fa-solid fa-crown" style="color: #eab308;"></i> QR Master Pro</h2>
@@ -142,13 +142,13 @@
                     <div class="price-card">
                         <h3>Abonnement Mensuel</h3>
                         <div class="price">4.99$ <span>/ mois</span></div>
-                        <button class="plan-btn">Choisir ce plan</button>
+                        <button class="plan-btn" id="subscribe-monthly-btn">Choisir ce plan</button>
                     </div>
                     <div class="price-card popular">
                         <div class="pop-tag">Populaire</div>
                         <h3>Abonnement Annuel</h3>
                         <div class="price">29.99$ <span>/ an</span></div>
-                        <button class="plan-btn active-plan">Choisir ce plan</button>
+                        <button class="plan-btn active-plan" id="subscribe-yearly-btn">Choisir ce plan</button>
                     </div>
                 </div>
             </div>
@@ -165,7 +165,7 @@
         <button class="nav-item" data-target="premium"><i class="fa-solid fa-gem"></i><span>Premium</span></button>
     </nav>
 
-    <!-- تضمين مكتبة قراءة الباركود والكاميرا عبر الإنترنت لتشغيل الماسح والجاليري بدقة -->
+    <!-- تضمين مكتبة قراءة الباركود والكاميرا عبر الإنترنت -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="script.js"></script>
 </body>

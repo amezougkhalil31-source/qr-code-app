@@ -7,30 +7,21 @@ let html5QrCode = null;
 // ==========================================
 // إعدادات Google Play Billing (الاشتراكات)
 // ==========================================
-// تعريف Product IDs اللي غادي تقادهم نفسهم في لوحة التحكم ديال جوجل بلاي
 const SUBSCRIPTION_PRODUCTS = {
     MONTHLY: 'qr_master_monthly',
     YEARLY: 'qr_master_yearly'
 };
 
-// دالة الاتصال بنظام الدفع ديال قوقل بلاي (تستدعى عند الضغط على أزرار الاشتراك)
 function handleSubscriptionClick(productId) {
     console.log(`محاولة الاشتراك في المنتج: ${productId}`);
-    
-    // التحقق واش التطبيق خدام داخل بيئة أندرويد الرسمية ومع Google Play Billing Library
     if (window.google && window.google.payments && window.google.payments.inapp) {
-        // الكود التقني الفعلي لفتح نافذة الدفع الرسمية الخاصة بقوقل بلاي
         try {
-            google.payments.inapp.buy({
-                sku: productId,
-                // يمكنك إضافة دوال الاستجابة للنجاح أو الفشل هنا مستقبلاً
-            });
+            google.payments.inapp.buy({ sku: productId });
         } catch (error) {
             console.error("خطأ في فتح نافذة الدفع:", error);
             alert("حدث خطأ أثناء الاتصال بنظام الدفع لجوجل بلاي.");
         }
     } else {
-        // رسالة تنبيه إذا كان المستخدم كيجرّب التطبيق من متصفح عادٍ أو خارج المتجر
         alert("خدمة الدفع عبر Google Play متاح فقط داخل التطبيق الرسمي على متجر جوجل بلاي.");
     }
 }
@@ -89,21 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
         gotoScan.addEventListener('click', () => switchTab('scanner'));
     }
 
-    // ==========================================
-    // ربط أزرار الاشتراكات الشهرية والسنوية بـ Google Play
-    // ==========================================
-    const monthlyBtn = document.getElementById('subscribe-monthly-btn'); // تأكد من أن زر الاشتراك الشهري عنده هاد الإيد في الواجهة
+    // ربط أزرار الاشتراكات في واجهة البريميوم (إن وجدت أزرار مخصصة)
+    const monthlyBtn = document.getElementById('subscribe-monthly-btn');
     if (monthlyBtn) {
-        monthlyBtn.addEventListener('click', () => {
-            handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.MONTHLY);
-        });
+        monthlyBtn.addEventListener('click', () => handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.MONTHLY));
     }
 
-    const yearlyBtn = document.getElementById('subscribe-yearly-btn'); // تأكد من أن زر الاشتراك السنوي عنده هاد الإيد في الواجهة
+    const yearlyBtn = document.getElementById('subscribe-yearly-btn');
     if (yearlyBtn) {
-        yearlyBtn.addEventListener('click', () => {
-            handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.YEARLY);
-        });
+        yearlyBtn.addEventListener('click', () => handleSubscriptionClick(SUBSCRIPTION_PRODUCTS.YEARLY));
     }
 
     // 3. ربط قائمة أنواع الـ QR
@@ -302,8 +287,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scannerResult) scannerResult.innerHTML = `<p style="color: var(--accent-color);">Analyse de l'image...</p>`;
 
             try {
-                const scannerScan = new Html5Qrcode("scanner-video");
-                const decodedText = await scannerScan.scanFile(file, true);
+                // استخدام عنصر مؤقت أو الماسح الحالي لفحص الصورة
+                const tempScanner = new Html5Qrcode("reader");
+                const decodedText = await tempScanner.scanFile(file, true);
                 if (scannerResult) {
                     scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold;">QR Trouvé : ${decodedText}</p>`;
                 }
@@ -388,55 +374,54 @@ function openTypeForm(type) {
     if (container) container.innerHTML = html;
 }
 
-// دوال الكاميرا
+// دوال الكاميرا المحدثة خصيصاً لمنع الشاشة الكحلة
 async function startCamera() {
     const scannerResult = document.getElementById('scanner-result');
     if (scannerResult) scannerResult.innerHTML = '';
 
     if (typeof Html5Qrcode === 'undefined') {
-        const video = document.getElementById('scanner-video');
-        if (video) {
-            try {
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
-                video.srcObject = videoStream;
-            } catch (e) {
-                console.log("Caméra non disponible");
-            }
-        }
+        console.log("مكتبة Html5Qrcode غير محملة");
         return;
     }
 
     try {
         if (!html5QrCode) {
-            html5QrCode = new Html5Qrcode("scanner-video");
+            html5QrCode = new Html5Qrcode("reader");
         }
         
-        await html5QrCode.start(
-            { facingMode: currentFacingMode },
-            { fps: 10, qrbox: { width: 250, height: 250 } },
-            (decodedText) => {
-                if (scannerResult) {
-                    scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold;">Résultat : ${decodedText}</p>`;
-                }
-                historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
-                localStorage.setItem('qr_history', JSON.stringify(historyData));
-            },
-            (errorMessage) => {}
-        );
+        if (!html5QrCode.isScanning) {
+            await html5QrCode.start(
+                { facingMode: currentFacingMode },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                (decodedText) => {
+                    if (scannerResult) {
+                        scannerResult.innerHTML = `<p style="color: #22c55e; font-weight: bold;">Résultat : ${decodedText}</p>`;
+                    }
+                    historyData.unshift({ text: decodedText, url: decodedText, date: new Date().toLocaleDateString() });
+                    localStorage.setItem('qr_history', JSON.stringify(historyData));
+                },
+                (errorMessage) => {}
+            );
+        }
     } catch (err) {
         console.log("Erreur démarrage scanner:", err);
+        if (scannerResult) {
+            scannerResult.innerHTML = `<p style="color: #ef4444;">Erreur d'accès à la caméra. Vérifiez les permissions.</p>`;
+        }
     }
 }
 
 async function stopCamera() {
-    if (html5QrCode && html5QrCode.isScanning) {
+    if (html5QrCode) {
         try {
-            await html5QrCode.stop();
-        } catch (e) {}
-    }
-    if (videoStream) {
-        videoStream.getTracks().forEach(t => t.stop());
-        videoStream = null;
+            if (html5QrCode.isScanning) {
+                await html5QrCode.stop();
+            }
+            await html5QrCode.clear();
+        } catch (e) {
+            console.log("Erreur arrêt caméra:", e);
+        }
+        html5QrCode = null;
     }
 }
 
