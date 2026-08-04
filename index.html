@@ -105,13 +105,14 @@
             </div>
         </section>
 
-        <!-- 3. واجهة الماسح الضوئي (Scanner) - تم تعديل عنصر الفيديو إلى div id="reader" لتفادي الشاشة الكحلة -->
+        <!-- 3. واجهة الماسح الضوئي (Scanner) -->
         <section id="scanner-section" class="page-section">
             <div class="card-box">
                 <h2><i class="fa-solid fa-camera"></i> Scanner QR</h2>
                 <div class="scanner-viewport">
                     <div id="reader" style="width: 100%; min-height: 250px;"></div>
                     <div class="scanner-laser"></div>
+                    <div class="scanner-frame-bottom-corners"></div>
                 </div>
                 <div class="scanner-controls">
                     <button class="control-btn" id="flip-camera-btn" title="Changer Caméra"><i class="fa-solid fa-camera-rotate"></i></button>
@@ -133,7 +134,7 @@
             </div>
         </section>
 
-        <!-- 5. واجهة بريميوم (Premium) مع ربط معرفات الأزرار للتطبيق -->
+        <!-- 5. واجهة بريميوم (Premium) -->
         <section id="premium-section" class="page-section">
             <div class="card-box">
                 <h2><i class="fa-solid fa-crown" style="color: #eab308;"></i> QR Master Pro</h2>
@@ -156,7 +157,7 @@
 
     </main>
 
-    <!-- شريط التنقل السفلي -->
+    <!-- شريط التنقل السفلي الأصلي -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-target="home"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
         <button class="nav-item" data-target="generator"><i class="fa-solid fa-qrcode"></i><span>Générer</span></button>
@@ -165,7 +166,51 @@
         <button class="nav-item" data-target="premium"><i class="fa-solid fa-gem"></i><span>Premium</span></button>
     </nav>
 
-    <!-- تضمين مكتبة قراءة الباركود والكاميرا عبر الإنترنت -->
+    <!-- شاشة نتائج السكان المنبثقة الاحترافية -->
+    <div class="scan-result-screen" id="scan-result-screen">
+        <div class="scan-result-header">
+            <span>Résultat du Scan</span>
+            <button id="close-scan-result-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="scan-result-content">
+            <div class="scan-type-badge">
+                <i id="scan-result-icon" class="fa-solid fa-link"></i>
+                <div class="scan-type-info">
+                    <h3 id="scan-result-type-title">Lien Web</h3>
+                    <span id="scan-result-category">URL</span>
+                </div>
+            </div>
+            
+            <div class="scan-raw-text" id="scan-result-text">https://example.com</div>
+            
+            <div class="scan-actions-grid">
+                <button class="scan-action-item" id="scan-action-copy">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>Copier</span>
+                </button>
+                <button class="scan-action-item" id="scan-action-share">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Partager</span>
+                </button>
+                <button class="scan-action-item" id="scan-action-web" style="display: none;">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Ouvrir</span>
+                </button>
+                <button class="scan-action-item" id="scan-action-save">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Enregistrer</span>
+                </button>
+            </div>
+
+            <button class="scan-main-action-btn" id="scan-main-action-btn">Ouvrir le lien</button>
+
+            <div class="scan-qr-thumbnail">
+                <img id="scan-result-qr-img" src="" alt="QR Code Thumbnail">
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبات وسكربت التطبيق -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="script.js"></script>
 </body>
