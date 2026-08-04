@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main JavaScript Logic (Updated)
+   QR Master Pro - Main JavaScript Logic (Updated with History & LocalStorage)
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetSection = document.getElementById(`${target}-section`);
             if (targetSection) {
                 targetSection.classList.add('active');
+            }
+
+            // إذا دخلنا لواجهة التاريخ، نقوم بعرضه
+            if (target === 'history') {
+                renderHistory();
             }
 
             // إيقاف الكاميرا تلقائياً إذا خرجنا من واجهة السكان لتفادي المشاكل
@@ -44,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // القائمة الجانبية (الإعدادات)
+    // القائمة الجانبية (الإعدادات والبريميوم)
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
     const settingsDrawer = document.getElementById('settings-drawer');
     const drawerOverlay = document.getElementById('drawer-overlay');
@@ -116,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // منطق الكاميرا والماسح الضوئي (Scanner)
     let html5QrCode = null;
     let isScanning = false;
-    let currentFacingMode = "environment"; // تبدأ بالكاميرا الخلفية
+    let currentFacingMode = "environment";
 
     function startScanner() {
         const readerElement = document.getElementById('reader');
@@ -133,10 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 (decodedText) => {
                     stopScanner();
                     handleScanResult(decodedText);
+                    saveToHistory("Scan", decodedText);
                 },
-                (errorMessage) => {
-                    // تجاهل الأخطاء العادية أثناء المسح المستمر
-                }
+                (errorMessage) => {}
             ).then(() => {
                 isScanning = true;
             }).catch(err => {
@@ -150,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
             html5QrCode.stop().then(() => {
                 isScanning = false;
             }).catch(err => {
-                console.error("Erreur lors de l'arrêt de la caméra:", err);
                 isScanning = false;
             });
         }
@@ -163,21 +166,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // زر قلب الكاميرا (أمامية / خلفية)
+    // زر قلب الكاميرا
     const flipCameraBtn = document.getElementById('flip-camera-btn');
     if (flipCameraBtn) {
         flipCameraBtn.addEventListener('click', () => {
             currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
             if (html5QrCode) {
                 stopScanner();
-                setTimeout(() => {
-                    startScanner();
-                }, 400);
+                setTimeout(() => { startScanner(); }, 400);
             }
         });
     }
 
-    // زر اختيار صورة من المعرض (Gallery)
+    // زر اختيار صورة من المعرض
     const galleryBtn = document.getElementById('gallery-btn');
     const galleryFileInput = document.getElementById('gallery-file-input');
 
@@ -189,22 +190,18 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryFileInput.addEventListener('change', (e) => {
             if (e.target.files && e.target.files.length > 0) {
                 const imageFile = e.target.files[0];
-                
-                // إيقاف الكاميرا المؤقتة أثناء قراءة الصورة من الملف
                 if (html5QrCode && isScanning) {
                     stopScanner();
                 }
-
                 if (!html5QrCode) {
                     html5QrCode = new Html5Qrcode("reader");
                 }
-
                 html5QrCode.scanFile(imageFile, true)
                     .then(decodedText => {
                         handleScanResult(decodedText);
+                        saveToHistory("Galerie", decodedText);
                     })
                     .catch(err => {
-                        console.error("Erreur de scan du fichier:", err);
                         alert("Impossible de trouver un QR Code valide dans cette image.");
                         startScanner();
                     });
@@ -212,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // التعامل مع نتائج السكان وتوجيه المستخدم للواجهة المناسبة
+    // التعامل مع نتائج السكان
     const scanResultScreen = document.getElementById('scan-result-screen');
     const closeScanResultBtn = document.getElementById('close-scan-result-btn');
     const scanResultText = document.getElementById('scan-result-text');
@@ -222,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleScanResult(text) {
         if (!scanResultScreen) return;
-
         scanResultText.textContent = text;
         scanResultScreen.classList.add('active');
 
@@ -246,10 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
             category = "PHONE";
             mainActionText = "Appeler ce numéro";
             isLink = true;
-        } else if (text.startsWith('WIFI:')) {
-            typeName = "Réseau Wi-Fi";
-            category = "WIFI";
-            mainActionText = "Copier les identifiants";
         } else {
             typeName = "Texte en clair";
             category = "TEXT";
@@ -276,28 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const activeSec = document.querySelector('.page-section.active');
             if (activeSec && activeSec.id === 'scanner-section') {
                 startScanner();
-            }
-        });
-    }
-
-    const scanActionCopy = document.getElementById('scan-action-copy');
-    if (scanActionCopy) {
-        scanActionCopy.addEventListener('click', () => {
-            navigator.clipboard.writeText(scanResultText.textContent);
-            alert('Copié dans le presse-papiers !');
-        });
-    }
-
-    const scanActionShare = document.getElementById('scan-action-share');
-    if (scanActionShare) {
-        scanActionShare.addEventListener('click', () => {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'QR Master Pro Résultat',
-                    text: scanResultText.textContent
-                }).catch(err => console.log(err));
-            } else {
-                alert('Le partage n\'est pas supporté sur ce navigateur.');
             }
         });
     }
@@ -338,14 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = '';
 
         switch(type) {
-            case 'clipboard':
-                formTitleText.textContent = "Contenu du presse-papiers";
-                html = `<div class="input-group"><label>Valeur lue</label><input type="text" id="input-val" placeholder="Texte récupéré automatiquement..."></div>`;
-                navigator.clipboard.readText().then(clipText => {
-                    const inputEl = document.getElementById('input-val');
-                    if (inputEl) inputEl.value = clipText;
-                }).catch(() => {});
-                break;
             case 'url':
                 formTitleText.textContent = "Création URL";
                 html = `<div class="input-group"><label>Lien Web (URL)</label><input type="url" id="input-val" placeholder="https://example.com"></div>`;
@@ -359,39 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 html = `
                     <div class="input-group"><label>Nom complet</label><input type="text" id="vcard-name" placeholder="Nom Prénom"></div>
                     <div class="input-group"><label>Téléphone</label><input type="tel" id="vcard-phone" placeholder="+212600000000"></div>
-                    <div class="input-group"><label>Email</label><input type="email" id="vcard-email" placeholder="contact@example.com"></div>
-                `;
-                break;
-            case 'email':
-                formTitleText.textContent = "Adresse courriel";
-                html = `
-                    <div class="input-group"><label>Email</label><input type="email" id="input-val" placeholder="contact@example.com"></div>
-                    <div class="input-group"><label>Sujet</label><input type="text" id="email-subject" placeholder="Sujet du message"></div>
-                `;
-                break;
-            case 'sms':
-                formTitleText.textContent = "Adresse SMS";
-                html = `
-                    <div class="input-group"><label>Numéro de téléphone</label><input type="tel" id="sms-phone" placeholder="+212600000000"></div>
-                    <div class="input-group"><label>Message</label><textarea id="sms-body" rows="2" placeholder="Votre message..."></textarea></div>
-                `;
-                break;
-            case 'coordinates':
-                formTitleText.textContent = "Coordonnées géographiques";
-                html = `
-                    <div class="input-group"><label>Latitude</label><input type="text" id="geo-lat" placeholder="33.5731"></div>
-                    <div class="input-group"><label>Longitude</label><input type="text" id="geo-lng" placeholder="-7.5898"></div>
-                `;
-                break;
-            case 'phone':
-                formTitleText.textContent = "Numéro de téléphone";
-                html = `<div class="input-group"><label>Numéro</label><input type="tel" id="input-val" placeholder="+212600000000"></div>`;
-                break;
-            case 'agenda':
-                formTitleText.textContent = "Agenda (Événement)";
-                html = `
-                    <div class="input-group"><label>Titre de l'événement</label><input type="text" id="event-title" placeholder="Réunion..."></div>
-                    <div class="input-group"><label>Date de début</label><input type="datetime-local" id="event-start"></div>
                 `;
                 break;
             case 'wifi':
@@ -412,34 +341,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (generateCustomBtn) {
         generateCustomBtn.addEventListener('click', () => {
             let contentToEncode = "";
-
             if (currentSelectedType === 'wifi') {
                 const ssid = document.getElementById('wifi-ssid')?.value || '';
                 const pass = document.getElementById('wifi-pass')?.value || '';
                 contentToEncode = `WIFI:S:${ssid};T:WPA;P:${pass};;`;
-            } else if (currentSelectedType === 'contact') {
-                const name = document.getElementById('vcard-name')?.value || '';
-                const phone = document.getElementById('vcard-phone')?.value || '';
-                const email = document.getElementById('vcard-email')?.value || '';
-                contentToEncode = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
-            } else if (currentSelectedType === 'email') {
-                const email = document.getElementById('input-val')?.value || '';
-                const subj = document.getElementById('email-subject')?.value || '';
-                contentToEncode = `mailto:${email}?subject=${encodeURIComponent(subj)}`;
-            } else if (currentSelectedType === 'sms') {
-                const phone = document.getElementById('sms-phone')?.value || '';
-                const body = document.getElementById('sms-body')?.value || '';
-                contentToEncode = `SMSTO:${phone}:${body}`;
-            } else if (currentSelectedType === 'coordinates') {
-                const lat = document.getElementById('geo-lat')?.value || '';
-                const lng = document.getElementById('geo-lng')?.value || '';
-                contentToEncode = `geo:${lat},${lng}`;
             } else {
                 contentToEncode = document.getElementById('input-val')?.value || '';
             }
 
             if (!contentToEncode.trim()) {
-                alert('Veuillez remplir les champs requis pour générer le QR Code.');
+                alert('Veuillez remplir les champs requis.');
                 return;
             }
 
@@ -457,7 +368,45 @@ document.addEventListener('DOMContentLoaded', () => {
                         </a>
                     </div>
                 `;
+                // تسجلو في التاريخ أوتوماتيكياً
+                saveToHistory("Création (" + currentSelectedType.toUpperCase() + ")", contentToEncode);
             }
+        });
+    }
+
+    // نظام إدارة التاريخ (Historique & LocalStorage)
+    function saveToHistory(type, text) {
+        let history = JSON.parse(localStorage.getItem('qr_history')) || [];
+        history.unshift({ type, text, date: new Date().toLocaleString() });
+        localStorage.setItem('qr_history', JSON.stringify(history));
+    }
+
+    function renderHistory() {
+        const container = document.getElementById('history-list-container');
+        if (!container) return;
+        
+        let history = JSON.parse(localStorage.getItem('qr_history')) || [];
+        if (history.length === 0) {
+            container.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin-top: 20px;">Aucun historique pour le moment.</p>`;
+            return;
+        }
+
+        container.innerHTML = history.map(item => `
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span class="badge" style="margin-bottom: 4px; display: inline-block;">${item.type}</span>
+                    <p style="font-size: 0.9rem; word-break: break-all; margin: 4px 0;">${item.text}</p>
+                    <small style="color: var(--text-muted); font-size: 0.75rem;">${item.date}</small>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', () => {
+            localStorage.removeItem('qr_history');
+            renderHistory();
         });
     }
 });

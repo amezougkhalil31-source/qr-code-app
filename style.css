@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main Stylesheet
+   QR Master Pro - Updated Stylesheet (Responsive)
    ========================================== */
 
 :root {
@@ -50,7 +50,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 16px;
+    padding: 0 20px;
     border-bottom: 1px solid var(--border-color);
     position: fixed;
     top: 0;
@@ -60,7 +60,7 @@ body {
 }
 
 .app-title {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
@@ -83,7 +83,7 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Bottom Navigation Bar */
+/* Bottom Navigation Bar (Mobile) & Sidebar adjustments */
 .app-nav-bar {
     position: fixed;
     bottom: 0;
@@ -120,13 +120,13 @@ body {
     color: var(--accent-color);
 }
 
-/* Main Content */
+/* Main Content - Responsive for PC & Phone */
 .app-main {
-    margin-top: 60px;
-    margin-bottom: 65px;
+    margin-top: 70px;
+    margin-bottom: 80px;
     flex: 1;
-    padding: 16px;
-    max-width: 600px;
+    padding: 20px;
+    max-width: 900px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -143,7 +143,7 @@ body {
 /* Hero Section */
 .hero-card {
     background-color: var(--card-bg);
-    padding: 24px;
+    padding: 30px;
     border-radius: 16px;
     text-align: center;
     border: 1px solid var(--border-color);
@@ -151,25 +151,26 @@ body {
 }
 
 .hero-card h2 {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     margin-bottom: 10px;
 }
 
 .hero-card p {
     color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 20px;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
 }
 
 .hero-actions {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
 }
 
 /* Buttons */
 .primary-btn, .secondary-btn {
-    padding: 12px 20px;
+    padding: 12px 24px;
     border-radius: 10px;
     font-size: 0.95rem;
     font-weight: 500;
@@ -203,36 +204,36 @@ body {
 
 /* Generator Types Grid */
 .section-header {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .types-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
 }
 
 .type-item-btn {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
-    padding: 16px;
+    padding: 20px;
     border-radius: 12px;
     color: var(--text-main);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .type-item-btn i {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: var(--accent-color);
 }
 
 .type-item-btn span {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 500;
 }
 
@@ -244,7 +245,7 @@ body {
 /* Dynamic Form */
 .dynamic-form-card {
     background-color: var(--card-bg);
-    padding: 20px;
+    padding: 24px;
     border-radius: 16px;
     border: 1px solid var(--border-color);
 }
@@ -253,11 +254,11 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .input-group {
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 .input-group label {
@@ -269,12 +270,12 @@ body {
 
 .input-group input, .input-group textarea, .input-group select {
     width: 100%;
-    padding: 10px 14px;
+    padding: 12px 14px;
     border-radius: 8px;
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .input-group input:focus, .input-group textarea:focus {
@@ -286,7 +287,8 @@ body {
 .scanner-container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 160px);
+    max-width: 500px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -295,7 +297,6 @@ body {
 
 #reader {
     width: 100% !important;
-    max-width: 400px;
     border-radius: 16px !important;
     overflow: hidden;
     border: 1px solid var(--border-color) !important;
@@ -344,7 +345,7 @@ body {
 .scan-result-content {
     background-color: var(--card-bg);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     padding: 24px;
     border-radius: 16px;
     border: 1px solid var(--border-color);
@@ -393,7 +394,7 @@ body {
     flex: 1;
 }
 
-/* Drawer / Settings */
+/* Drawer / Settings & Premium */
 .drawer-overlay {
     position: fixed;
     top: 0;
@@ -412,14 +413,15 @@ body {
 .settings-drawer {
     position: fixed;
     top: 0;
-    left: -300px;
-    width: 300px;
+    left: -320px;
+    width: 320px;
     height: 100%;
     background-color: var(--card-bg);
     z-index: 160;
     transition: left 0.3s ease;
     border-right: 1px solid var(--border-color);
     padding: 20px;
+    overflow-y: auto;
 }
 
 .settings-drawer.open {
@@ -475,4 +477,34 @@ body {
 .color-dot.active {
     border-color: #ffffff;
     transform: scale(1.1);
+}
+
+/* Media Queries for Desktop */
+@media (min-width: 768px) {
+    .app-nav-bar {
+        top: 0;
+        bottom: auto;
+        height: 60px;
+        width: 300px;
+        left: auto;
+        right: 20px;
+        background: transparent;
+        border: none;
+        justify-content: flex-end;
+        gap: 15px;
+    }
+    
+    .nav-item {
+        flex-direction: row;
+        background-color: var(--bg-secondary);
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        flex: unset;
+        font-size: 0.85rem;
+    }
+
+    .app-main {
+        margin-top: 80px;
+    }
 }

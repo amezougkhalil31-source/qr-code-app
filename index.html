@@ -26,14 +26,24 @@
         </button>
     </header>
 
-    <!-- القائمة الجانبية (الإعدادات) -->
+    <!-- القائمة الجانبية (الإعدادات والبريميوم) -->
     <div id="drawer-overlay" class="drawer-overlay"></div>
     <aside id="settings-drawer" class="settings-drawer">
         <div class="drawer-header">
-            <h2>Paramètres</h2>
+            <h2>Paramètres & Premium</h2>
             <button id="close-drawer-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="drawer-content">
+            <!-- واجهة البريميوم والاشتراكات -->
+            <div class="premium-box" style="background: linear-gradient(135deg, #4f46e5, #9333ea); padding: 16px; border-radius: 12px; margin-bottom: 20px; color: #fff;">
+                <h3 style="font-size: 1rem; margin-bottom: 6px;"><i class="fa-solid fa-crown"></i> QR Master Premium</h3>
+                <p style="font-size: 0.8rem; opacity: 0.9; margin-bottom: 12px;">Débloquez toutes les fonctionnalités illimitées.</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="primary-btn" style="flex: 1; font-size: 0.75rem; padding: 8px; background: #fff; color: #4f46e5;">Mensuel (49 DH)</button>
+                    <button class="primary-btn" style="flex: 1; font-size: 0.75rem; padding: 8px; background: rgba(255,255,255,0.2);">Annuel (399 DH)</button>
+                </div>
+            </div>
+
             <div class="setting-item">
                 <span>Thème</span>
                 <div class="theme-buttons">
@@ -148,6 +158,17 @@
             </div>
         </section>
 
+        <!-- 4. واجهة التاريخ (Historique) -->
+        <section id="history-section" class="page-section">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Historique des QR Codes</h2>
+                <button id="clear-history-btn" class="secondary-btn" style="font-size: 0.8rem; padding: 6px 12px;"><i class="fa-solid fa-trash"></i> Vider</button>
+            </div>
+            <div id="history-list-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <!-- يتم ملء التاريخ ديناميكياً -->
+            </div>
+        </section>
+
     </main>
 
     <!-- الشريط السفلي للتنقل -->
@@ -160,9 +181,13 @@
             <i class="fa-solid fa-qrcode"></i>
             <span>Créer</span>
         </button>
-        <button class="nav-item active" data-target="scanner">
+        <button class="nav-item" data-target="scanner">
             <i class="fa-solid fa-camera"></i>
             <span>Scanner</span>
+        </button>
+        <button class="nav-item" data-target="history">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Historique</span>
         </button>
     </nav>
 
