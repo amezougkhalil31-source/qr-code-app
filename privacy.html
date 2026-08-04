@@ -1,127 +1,84 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fr" data-theme="dark" data-theme-color="indigo">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - QR Master Pro</title>
+    <title>Politique de Confidentialité - QR Master Pro</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-heading: #0f172a;
-            --border-color: #e2e8f0;
-        }
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.7;
-            margin: 0;
-            padding: 40px 20px;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-        }
-        .container {
-            max-width: 850px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 50px;
+        .privacy-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: var(--card-bg);
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
         }
-        h1 {
-            color: var(--text-heading);
-            font-size: 2.25rem;
-            margin-bottom: 10px;
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 15px;
-        }
-        .last-updated {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin-bottom: 35px;
-            font-style: italic;
-        }
-        h2 {
-            color: var(--text-heading);
-            font-size: 1.35rem;
-            margin-top: 35px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary-color);
-            padding-left: 12px;
-        }
-        p {
-            margin-bottom: 15px;
-        }
-        ul {
+        .privacy-container h2 {
+            font-size: 1.8rem;
             margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        .privacy-container h3 {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .privacy-container p, .privacy-container li {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .privacy-container ul {
             padding-left: 20px;
-        }
-        li {
-            margin-bottom: 8px;
-        }
-        .highlight-box {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 25px 0;
-        }
-        .highlight-box h3 {
-            margin-top: 0;
-            color: var(--secondary-color);
-            font-size: 1.1rem;
-        }
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #64748b;
-            border-top: 1px solid var(--border-color);
-            padding-top: 20px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Privacy Policy</h1>
-        <div class="last-updated">Last updated: August 04, 2026</div>
 
-        <p>Welcome to <strong>QR Master Pro</strong>. We are committed to protecting your personal privacy and ensuring a transparent user experience. This Privacy Policy outlines how our application handles your information, camera permissions, advertisements, and premium subscriptions.</p>
+    <!-- الهيدر العلوي -->
+    <header class="app-header">
+        <a href="index.html" class="icon-btn" aria-label="Retour"><i class="fa-solid fa-arrow-left"></i></a>
+        <h1 class="app-title">Confidentialité</h1>
+        <div style="width: 40px;"></div>
+    </header>
 
-        <h2>1. Information We Collect</h2>
-        <p>QR Master Pro is designed with your privacy in mind. We do not require you to create an account, nor do we collect personally identifiable information such as your name, email address, or phone number directly.</p>
-        
-        <div class="highlight-box">
-            <h3>Camera Permission Usage</h3>
-            <p>Our app requests access to your device's <strong>Camera</strong> solely for the purpose of scanning QR codes and barcodes in real-time. Image and video data processed by the camera are used instantly on your device and are never stored, logged, or transmitted to any external servers.</p>
+    <!-- المحتوى الرئيسي -->
+    <main class="app-main">
+        <div class="privacy-container">
+            <h2>Politique de Confidentialité de QR Master Pro</h2>
+            <p>Dernière mise à jour : 2026</p>
+            
+            <h3>1. Introduction</h3>
+            <p>QR Master Pro s'engage à protéger votre vie privée. Cette politique de confidentialité explique comment notre application collecte, utilise et protège vos informations lorsque vous utilisez notre service de génération et de lecture de QR codes.</p>
+
+            <h3>2. Collecte des Données</h3>
+            <p>Nous accordons une importance majeure à la sécurité de vos données :</p>
+            <ul>
+                <li><strong>Historique local :</strong> L'historique de vos scans et de vos créations est stocké exclusivement sur votre appareil (via le stockage local du navigateur / LocalStorage). Aucune donnée personnelle n'est envoyée à des serveurs distants.</li>
+                <li><strong>Caméra :</strong> La caméra est utilisée uniquement en temps réel pour scanner les QR codes à votre demande directe. Aucune image ni vidéo n'est enregistrée ou transmise.</li>
+            </ul>
+
+            <h3>3. Publicités et Services Tiers</h3>
+            <p>L'application peut intégrer des services publicitaires (tels que Google AdSense ou des régies publicitaires partenaires) afin de financer le service gratuit. Ces services tiers peuvent utiliser des cookies ou des identifiants publicitaires pour diffuser des annonces adaptées à vos centres d'intérêt, conformément à leurs propres politiques de confidentialité.</p>
+
+            <h3>4. Abonnements et Fonctionnalités Premium</h3>
+            <p>QR Master Pro propose des abonnements optionnels (formules mensuelle et annuelle) permettant de débloquer des fonctionnalités avancées (Version Premium). Les transactions de paiement sont gérées de manière sécurisée par les plateformes de paiement officielles des stores (Google Play Billing / App Store). Nous ne stockons aucune information bancaire ou de carte de crédit sur nos serveurs.</p>
+
+            <h3>5. Sécurité</h3>
+            <p>Nous mettons en œuvre des mesures de sécurité rigoureuses pour garantir que votre utilisation de l'application reste totalement sécurisée et privée.</p>
+
+            <h3>6. Contact</h3>
+            <p>Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter directement via les paramètres de l'application.</p>
         </div>
+    </main>
 
-        <h2>2. Advertisements</h2>
-        <p>To keep QR Master Pro free for general use while supporting ongoing development, we integrate third-party advertising networks (such as Google AdMob). These advertising partners may collect and use non-personal data (such as device identifiers, IP addresses, and ad interaction metrics) to serve personalized or contextually relevant advertisements.</p>
-
-        <h2>3. Subscriptions and Premium Services</h2>
-        <p>QR Master Pro offers optional monthly and yearly subscription plans to unlock advanced features and an ad-free experience. 
-        <ul>
-            <li><strong>Payment Processing:</strong> All financial transactions, renewals, and billing details are securely processed through official third-party app stores and billing platforms (such as Google Play Billing).</li>
-            <li><strong>Data Security:</strong> We do not store, process, or have direct access to your credit card numbers, banking credentials, or financial details.</li>
-        </ul>
-        </p>
-
-        <h2>4. Data Security</h2>
-        <p>We employ standard technical and administrative security measures to protect the integrity of the application. Since core processing occurs locally on your device, your exposure to privacy risks is minimized.</p>
-
-        <h2>5. Changes to This Privacy Policy</h2>
-        <p>We may update our Privacy Policy from time to time. Any modifications will be reflected directly within this page with an updated revision date. You are advised to review this policy periodically for any changes.</p>
-
-        <h2>6. Contact Us</h2>
-        <p>If you have any questions, feedback, or concerns regarding this Privacy Policy or the app's functionality, please feel free to reach out through our official developer channels or GitHub repository.</p>
-
-        <footer>
-            &copy; 2026 QR Master Pro. All rights reserved.
-        </footer>
-    </div>
 </body>
 </html>

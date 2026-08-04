@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Master Icon Generator</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+        }
+        .icon-box {
+            width: 512px;
+            height: 512px;
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            border-radius: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .qr-symbol {
+            width: 65%;
+            height: 65%;
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .qr-block {
+            background: #1e1b4b;
+            border-radius: 15px;
+        }
+        .qr-block.empty {
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon-box">
+        <div class="qr-symbol">
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block empty"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+            <div class="qr-block"></div>
+        </div>
+    </div>
+</body>
+</html>

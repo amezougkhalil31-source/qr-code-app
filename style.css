@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Updated Stylesheet (Responsive)
+   QR Master Pro - Main Stylesheet (Zero-Bug Optimized)
    ========================================== */
 
 :root {
@@ -278,7 +278,7 @@ body {
     font-size: 0.95rem;
 }
 
-.input-group input:focus, .input-group textarea:focus {
+.input-group input:focus, .input-group textarea:focus, .input-group select:focus {
     outline: none;
     border-color: var(--accent-color);
 }
@@ -479,7 +479,7 @@ body {
     transform: scale(1.1);
 }
 
-/* تنسيق أزرار التاريخ المتجاوبة تماماً (الهاتف والبيسي) */
+/* History styling */
 #history-list-container > div {
     display: flex;
     flex-direction: column;
@@ -504,6 +504,20 @@ body {
     min-width: 120px;
     justify-content: center;
     padding: 8px 12px;
+    background: rgba(79, 70, 229, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(79, 70, 229, 0.3);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.history-custom-btn:hover {
+    background: #4f46e5;
+    color: #fff;
 }
 
 /* Media Queries for Desktop */
@@ -535,7 +549,6 @@ body {
         margin-top: 80px;
     }
 
-    /* تعديل أزرار التاريخ في البيسي لتبقى مرتبة في سطر واحد */
     .history-custom-actions {
         width: auto;
     }
