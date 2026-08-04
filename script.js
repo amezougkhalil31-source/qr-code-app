@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main JavaScript Logic (Complete & Safe)
+   QR Master Pro - Main JavaScript Logic (Complete, Safe & Fixed)
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -455,7 +455,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const holder = document.getElementById('active-qr-holder');
                 generateQRCodeSafe(contentToEncode, holder, size);
 
-                // زر التحميل المباشر للصورة المتولدة
                 const downloadBtn = document.getElementById('download-qr-btn');
                 if (downloadBtn) {
                     downloadBtn.onclick = () => {
@@ -489,6 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('qr_history', JSON.stringify(history));
     }
 
+    // دالة التاريخ الآمنة 100% لتجنب انقطاع زر Ouvrir QR مع مرور الوقت وطول النصوص
     function renderHistory() {
         const container = document.getElementById('history-list-container');
         if (!container) return;
@@ -499,23 +499,51 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        container.innerHTML = history.map(item => `
-            <div class="history-item" style="background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, #334155); padding: 14px; border-radius: 12px; margin-bottom: 10px;">
-                <div>
-                    <span class="badge" style="margin-bottom: 4px; display: inline-block;">${item.type}</span>
-                    <p style="font-size: 0.9rem; word-break: break-all; margin: 4px 0; color: #fff;">${item.text}</p>
-                    <small style="color: #94a3b8; font-size: 0.75rem;">${item.date}</small>
-                </div>
-                <div class="history-custom-actions" style="display: flex; gap: 8px; margin-top: 10px;">
-                    <button class="history-custom-btn" onclick="showQrModalSafe('${item.text.replace(/'/g, "\\'")}')" style="background: rgba(79, 70, 229, 0.15); color: #818cf8; border: 1px solid rgba(79, 70, 229, 0.3); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex: 1;">
-                        <i class="fa-solid fa-qrcode"></i> Ouvrir QR
-                    </button>
-                    <button class="history-custom-btn" onclick="navigator.clipboard.writeText('${item.text.replace(/'/g, "\\'")}'); alert('Copié !');" style="background: rgba(79, 70, 229, 0.15); color: #818cf8; border: 1px solid rgba(79, 70, 229, 0.3); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex: 1;">
-                        <i class="fa-solid fa-copy"></i> Copier
-                    </button>
-                </div>
-            </div>
-        `).join('');
+        container.innerHTML = '';
+
+        history.forEach((item) => {
+            let itemDiv = document.createElement('div');
+            itemDiv.className = "history-item";
+            itemDiv.style.cssText = "background: var(--card-bg, #1e293b); border: 1px solid var(--border-color, #334155); padding: 14px; border-radius: 12px; margin-bottom: 10px;";
+
+            let contentDiv = document.createElement('div');
+            contentDiv.innerHTML = `
+                <span class="badge" style="margin-bottom: 4px; display: inline-block;">${item.type}</span>
+                <p class="history-text-val" style="font-size: 0.9rem; word-break: break-all; margin: 4px 0; color: #fff;"></p>
+                <small style="color: #94a3b8; font-size: 0.75rem;">${item.date}</small>
+            `;
+            contentDiv.querySelector('.history-text-val').textContent = item.text;
+            itemDiv.appendChild(contentDiv);
+
+            let actionsDiv = document.createElement('div');
+            actionsDiv.className = "history-custom-actions";
+            actionsDiv.style.cssText = "display: flex; gap: 8px; margin-top: 10px;";
+
+            let openBtn = document.createElement('button');
+            openBtn.className = "history-custom-btn";
+            openBtn.innerHTML = '<i class="fa-solid fa-qrcode"></i> Ouvrir QR';
+            openBtn.style.cssText = "background: rgba(79, 70, 229, 0.15); color: #818cf8; border: 1px solid rgba(79, 70, 229, 0.3); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex: 1;";
+            
+            openBtn.onclick = () => {
+                showQrModalSafe(item.text);
+            };
+
+            let copyBtn = document.createElement('button');
+            copyBtn.className = "history-custom-btn";
+            copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier';
+            copyBtn.style.cssText = "background: rgba(79, 70, 229, 0.15); color: #818cf8; border: 1px solid rgba(79, 70, 229, 0.3); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex: 1;";
+            
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(item.text);
+                alert('Copié !');
+            };
+
+            actionsDiv.appendChild(openBtn);
+            actionsDiv.appendChild(copyBtn);
+            itemDiv.appendChild(actionsDiv);
+
+            container.appendChild(itemDiv);
+        });
     }
 
     const clearHistoryBtn = document.getElementById('clear-history-btn');
@@ -527,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// نافذة منبثقة آمنة لمعاينة QR Code من التاريخ بدون مربعات بيضاء فارغة
+// نافذة منبثقة آمنة لمعاينة QR Code من التاريخ بدون مربعات بيضاء فارغة نهائياً
 function showQrModalSafe(text) {
     let oldModal = document.getElementById('safe-qr-modal');
     if (oldModal) oldModal.remove();
