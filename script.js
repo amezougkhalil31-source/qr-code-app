@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showScanModal(decodedText);
     }
 
-    // الزر الذكي المطور (يتفاعل مع الروابط، أرقام الهاتف، الإيميلات، أو يبحث في جوجل)
+    // الزر الذكي المطور (يتفاعل ديناميكياً مع نوع المحتوى المسكون)
     function showScanModal(text) {
         if (!text) text = "";
         if (scanResultText) scanResultText.textContent = text;
@@ -379,18 +379,38 @@ document.addEventListener('DOMContentLoaded', () => {
             smartOpenLinkBtn.style.display = 'flex';
             
             if (text.startsWith('http://') || text.startsWith('https://')) {
-                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-globe"></i> Ouvrir le lien`;
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-globe"></i> <span>Ouvrir le lien web</span>`;
                 smartOpenLinkBtn.onclick = () => window.open(text, '_blank');
             } else if (text.startsWith('tel:') || /^\+?[0-9\s\-\(\)]{7,}$/.test(text)) {
                 const phoneNum = text.startsWith('tel:') ? text : `tel:${text}`;
-                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-phone"></i> Appeler / Enregistrer`;
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-phone"></i> <span>Appeler / Enregistrer le numéro</span>`;
                 smartOpenLinkBtn.onclick = () => window.location.href = phoneNum;
             } else if (text.startsWith('mailto:') || text.includes('@')) {
                 const mailLink = text.startsWith('mailto:') ? text : `mailto:${text}`;
-                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-envelope"></i> Envoyer un Email`;
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-envelope"></i> <span>Envoyer un Email</span>`;
                 smartOpenLinkBtn.onclick = () => window.location.href = mailLink;
+            } else if (text.startsWith('BEGIN:VEVENT')) {
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-calendar-days"></i> <span>Ajouter à l'Agenda</span>`;
+                smartOpenLinkBtn.onclick = () => {
+                    const blob = new Blob([text], { type: 'text/calendar' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'event.ics';
+                    a.click();
+                };
+            } else if (text.startsWith('BEGIN:VCARD')) {
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-address-book"></i> <span>Ajouter aux Contacts</span>`;
+                smartOpenLinkBtn.onclick = () => {
+                    const blob = new Blob([text], { type: 'text/vcard' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'contact.vcf';
+                    a.click();
+                };
             } else {
-                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Rechercher sur Google`;
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>Rechercher sur Google</span>`;
                 smartOpenLinkBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
             }
         }
@@ -424,7 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // نافذة منبثقة لعرض QR Code من التاريخ مع زر إغلاق X في الزاوية
     let qrPopModal = document.getElementById('qr-pop-modal');
     if (!qrPopModal) {
         qrPopModal = document.createElement('div');
