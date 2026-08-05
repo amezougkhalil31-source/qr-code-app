@@ -33,9 +33,9 @@
             "url": "./index.html?action=scan",
             "icons": [
                 {
-                    "src": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/camera.svg",
-                    "sizes": "96x96",
-                    "type": "image/svg+xml"
+                    "src": "./icon-192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
                 }
             ]
         }

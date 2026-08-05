@@ -4,7 +4,9 @@ const assetsToCache = [
     './style.css',
     './script.js',
     './manifest.json',
-    './privacy.html'
+    './privacy.html',
+    './icon-192.png',
+    './icon-512.png'
 ];
 
 // 1. مرحلة التثبيت (Installation): تخزين جميع ملفات التطبيق الأساسية في الذاكرة المؤقتة

@@ -11,6 +11,18 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// PWA Install Prompt Handler
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // إظهار زر التثبيت إذا كان متوفراً في القائمة الجانبية
+    const installAppDrawerBtn = document.getElementById('install-app-drawer-btn');
+    if (installAppDrawerBtn) {
+        installAppDrawerBtn.style.display = 'flex';
+    }
+});
+
 // App State & Storage (LocalStorage Integration)
 let historyData = JSON.parse(localStorage.getItem('qr_master_history')) || [];
 let currentActiveType = 'url';
@@ -21,7 +33,7 @@ let cameraIndex = 0;
 let selectedPlanType = 'annual';
 let isUserPremium = JSON.parse(localStorage.getItem('qr_is_premium')) || false;
 let freeGensCount = parseInt(localStorage.getItem('qr_free_gens_count')) || 0;
-const MAX_FREE_GENS = 3;
+const MAX_FREE_GENS = 5; // الحد المسموح به مجاناً
 
 // Locked/Premium Generator Types
 const lockedTypes = ['contact', 'wifi', 'coordinates', 'agenda', 'email', 'sms'];
@@ -151,6 +163,24 @@ document.querySelectorAll('.type-item-btn').forEach(btn => {
     }
 });
 
+// Install App Button Action
+const installAppDrawerBtn = document.getElementById('install-app-drawer-btn');
+if (installAppDrawerBtn) {
+    installAppDrawerBtn.addEventListener('click', async () => {
+        closeDrawer();
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+        } else {
+            alert('Pour installer l\'application, utilisez le menu de votre navigateur (Ajouter à l\'écran d\'accueil).');
+        }
+    });
+}
+
 // Share App Button
 const shareAppBtn = document.getElementById('share-app-btn');
 if (shareAppBtn) {
@@ -188,9 +218,6 @@ if (subscribeNowBtn) {
         const planName = selectedPlanType === 'annual' ? 'Abonnement Annuel (9.99 $ / an)' : 'Abonnement Mensuel (1.99 $ / mois)';
         if (confirm(`Voulez-vous procéder au paiement sécurisé via Google Play Billing pour le plan : ${planName} ?`)) {
             alert('Connexion sécurisée à Google Play Billing... Redirection vers le système de paiement Google Play.');
-            // Simulation of successful activation for testing purposes
-            // isUserPremium = true;
-            // localStorage.setItem('qr_is_premium', 'true');
         }
     });
 }
@@ -394,7 +421,6 @@ if (generateCustomBtn) {
             return;
         }
 
-        // Increment free generation count if not premium
         if (!isUserPremium) {
             freeGensCount++;
             localStorage.setItem('qr_free_gens_count', freeGensCount);
