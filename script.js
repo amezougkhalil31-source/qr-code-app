@@ -1,19 +1,15 @@
 // ==========================================
-// QR Master Pro - Complete Script (script.js)
+// QR Master Pro - Final Script (script.js)
 // ==========================================
 
-// 1. Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('Service Worker enregistré avec succès !', reg))
-            .catch(err => console.error('Erreur Service Worker:', err));
+        navigator.serviceWorker.register('./sw.js').catch(err => console.error('Erreur Service Worker:', err));
     });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Navigation elements
     const navItems = document.querySelectorAll('.nav-item');
     const pageSections = document.querySelectorAll('.page-section');
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
@@ -21,18 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsDrawer = document.getElementById('settings-drawer');
     const drawerOverlay = document.getElementById('drawer-overlay');
     
-    const gotoGeneratorBtn = document.getElementById('goto-generator-btn');
-    const gotoScannerBtn = document.getElementById('goto-scanner-btn');
     const headerPremiumBtn = document.getElementById('header-premium-btn');
     const gotoPremiumDrawerBtn = document.getElementById('goto-premium-drawer-btn');
     const shareAppBtn = document.getElementById('share-app-btn');
 
-    // Theme & Color elements
     const lightModeBtn = document.getElementById('light-mode-btn');
     const darkModeBtn = document.getElementById('dark-mode-btn');
     const colorDots = document.querySelectorAll('.color-dot');
 
-    // Generator elements
     const typesMenuView = document.getElementById('types-menu-view');
     const dynamicFormView = document.getElementById('dynamic-form-view');
     const backToMenuBtn = document.getElementById('back-to-menu-btn');
@@ -42,17 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrResult = document.getElementById('qr-result');
     const qrSizeSelect = document.getElementById('qr-size');
 
-    // Scanner elements
     const scannerLoading = document.getElementById('scanner-loading');
     let html5QrCode = null;
     let isScannerRunning = false;
     let currentFacingMode = "environment";
 
-    // History elements
     const historyListContainer = document.getElementById('history-list-container');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
 
-    // Scan Result Modal elements
     const scanResultScreen = document.getElementById('scan-result-screen');
     const closeScanResultBtn = document.getElementById('close-scan-result-btn');
     const scanResultCategory = document.getElementById('scan-result-category');
@@ -61,13 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const scanActionShare = document.getElementById('scan-action-share');
     const smartOpenLinkBtn = document.getElementById('smart-open-link-btn');
 
-    // Premium elements
     const planCards = document.querySelectorAll('.premium-plan-card');
     const subscribeNowBtn = document.getElementById('subscribe-now-btn');
 
     let currentSelectedType = 'url';
 
-    // Tab Switching Logic
     function switchTab(targetTab) {
         navItems.forEach(item => {
             if (item.dataset.target === targetTab) item.classList.add('active');
@@ -79,15 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
             else section.classList.remove('active');
         });
 
-        if (targetTab === 'scanner') {
-            startScanner();
-        } else {
-            stopScanner();
-        }
+        if (targetTab === 'scanner') startScanner();
+        else stopScanner();
 
-        if (targetTab === 'history') {
-            renderHistory();
-        }
+        if (targetTab === 'history') renderHistory();
 
         closeDrawer();
     }
@@ -96,12 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', () => switchTab(item.dataset.target));
     });
 
-    gotoGeneratorBtn?.addEventListener('click', () => switchTab('generator'));
-    gotoScannerBtn?.addEventListener('click', () => switchTab('scanner'));
     headerPremiumBtn?.addEventListener('click', () => switchTab('premium'));
     gotoPremiumDrawerBtn?.addEventListener('click', () => switchTab('premium'));
 
-    // Drawer Control
     function openDrawer() {
         settingsDrawer?.classList.add('open');
         drawerOverlay?.classList.add('open');
@@ -116,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     closeDrawerBtn?.addEventListener('click', closeDrawer);
     drawerOverlay?.addEventListener('click', closeDrawer);
 
-    // Theming Logic
     const savedTheme = localStorage.getItem('qr_theme') || 'dark';
     const savedColor = localStorage.getItem('qr_color') || 'indigo';
 
@@ -158,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Generator Type Selection
     const typeButtons = document.querySelectorAll('.type-item-btn');
     typeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -207,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="input-group"><label>Email</label><input type="email" id="input-email" placeholder="jean@example.com"></div>
             `;
         } else if (type === 'phone') {
-            html = `<div class="input-group"><label>Numéro de Téléphone</label><input type="tel" id="input-phone" placeholder="+33600000000"></div>`;
+            html = `<div class="input-group"><label>Numéro de Téléphone</label><input type="tel" id="input-phone" placeholder="+212600000000"></div>`;
         } else if (type === 'email') {
             html = `
                 <div class="input-group"><label>Destinataire</label><input type="email" id="input-email-to" placeholder="exemple@mail.com"></div>
@@ -216,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else if (type === 'sms') {
             html = `
-                <div class="input-group"><label>Numéro</label><input type="tel" id="input-sms-num" placeholder="+33600000000"></div>
+                <div class="input-group"><label>Numéro</label><input type="tel" id="input-sms-num" placeholder="+212600000000"></div>
                 <div class="input-group"><label>Message</label><textarea id="input-sms-body" rows="3" placeholder="Votre SMS..."></textarea></div>
             `;
         } else if (type === 'wifi') {
@@ -233,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else if (type === 'coordinates') {
             html = `
-                <div class="input-group"><label>Latitude</label><input type="number" step="any" id="input-lat" placeholder="48.8566"></div>
-                <div class="input-group"><label>Longitude</label><input type="number" step="any" id="input-lng" placeholder="2.3522"></div>
+                <div class="input-group"><label>Latitude</label><input type="number" step="any" id="input-lat" placeholder="30.4278"></div>
+                <div class="input-group"><label>Longitude</label><input type="number" step="any" id="input-lng" placeholder="-9.5981"></div>
             `;
         } else if (type === 'agenda') {
             html = `
@@ -319,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Scanner Logic
     function startScanner() {
         if (isScannerRunning) return;
         if (scannerLoading) scannerLoading.style.display = 'block';
@@ -380,6 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function onScanSuccess(decodedText) {
+        if (!decodedText) return;
         stopScanner();
         
         saveToHistory({
@@ -392,17 +369,30 @@ document.addEventListener('DOMContentLoaded', () => {
         showScanModal(decodedText);
     }
 
+    // الزر الذكي المطور (يتفاعل مع الروابط، أرقام الهاتف، الإيميلات، أو يبحث في جوجل)
     function showScanModal(text) {
+        if (!text) text = "";
         if (scanResultText) scanResultText.textContent = text;
         if (scanResultCategory) scanResultCategory.textContent = 'RÉSULTAT';
 
-        if (text.startsWith('http://') || text.startsWith('https://')) {
-            if (smartOpenLinkBtn) {
-                smartOpenLinkBtn.style.display = 'flex';
+        if (smartOpenLinkBtn) {
+            smartOpenLinkBtn.style.display = 'flex';
+            
+            if (text.startsWith('http://') || text.startsWith('https://')) {
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-globe"></i> Ouvrir le lien`;
                 smartOpenLinkBtn.onclick = () => window.open(text, '_blank');
+            } else if (text.startsWith('tel:') || /^\+?[0-9\s\-\(\)]{7,}$/.test(text)) {
+                const phoneNum = text.startsWith('tel:') ? text : `tel:${text}`;
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-phone"></i> Appeler / Enregistrer`;
+                smartOpenLinkBtn.onclick = () => window.location.href = phoneNum;
+            } else if (text.startsWith('mailto:') || text.includes('@')) {
+                const mailLink = text.startsWith('mailto:') ? text : `mailto:${text}`;
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-envelope"></i> Envoyer un Email`;
+                smartOpenLinkBtn.onclick = () => window.location.href = mailLink;
+            } else {
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Rechercher sur Google`;
+                smartOpenLinkBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
             }
-        } else {
-            if (smartOpenLinkBtn) smartOpenLinkBtn.style.display = 'none';
         }
 
         scanResultScreen?.classList.add('active');
@@ -434,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // QR Code Popup Modal from History (Ouvrir le code QR + X)
+    // نافذة منبثقة لعرض QR Code من التاريخ مع زر إغلاق X في الزاوية
     let qrPopModal = document.getElementById('qr-pop-modal');
     if (!qrPopModal) {
         qrPopModal = document.createElement('div');
@@ -442,8 +432,8 @@ document.addEventListener('DOMContentLoaded', () => {
         qrPopModal.className = 'qr-pop-modal';
         qrPopModal.innerHTML = `
             <div class="qr-pop-content">
-                <button id="close-qr-pop-btn" class="icon-btn" style="position: absolute; top: 12px; right: 12px;"><i class="fa-solid fa-xmark"></i></button>
-                <h3 style="margin-bottom: 15px; font-size: 1rem;">Ouvrir le Code QR</h3>
+                <button id="close-qr-pop-btn" class="icon-btn" style="position: absolute; top: 12px; right: 12px; background: var(--hover-bg); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; color: var(--text-color);"><i class="fa-solid fa-xmark"></i></button>
+                <h3 style="margin-bottom: 15px; font-size: 1rem; color: var(--text-color);">Ouvrir le Code QR</h3>
                 <div id="qr-pop-container" style="display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: 10px;"></div>
             </div>
         `;
@@ -475,7 +465,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (qrPopModal) qrPopModal.style.display = 'flex';
     }
 
-    // History Management
     function getHistory() {
         return JSON.parse(localStorage.getItem('qr_history') || '[]');
     }
