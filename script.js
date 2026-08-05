@@ -1,6 +1,8 @@
 // ==========================================
-// 1. تسجيل الـ Service Worker (العمل بدون إنترنيت)
+// QR Master Pro - Complete Script (script.js)
 // ==========================================
+
+// 1. Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
@@ -9,12 +11,9 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// ==========================================
-// 2. التطبيق الرئيسي (QR Master Pro App Logic)
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- العناصر الرئيسية (DOM Elements) ---
+    // Navigation elements
     const navItems = document.querySelectorAll('.nav-item');
     const pageSections = document.querySelectorAll('.page-section');
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
@@ -22,19 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsDrawer = document.getElementById('settings-drawer');
     const drawerOverlay = document.getElementById('drawer-overlay');
     
-    // أزرار الهيدر والـ Drawer
     const gotoGeneratorBtn = document.getElementById('goto-generator-btn');
     const gotoScannerBtn = document.getElementById('goto-scanner-btn');
     const headerPremiumBtn = document.getElementById('header-premium-btn');
     const gotoPremiumDrawerBtn = document.getElementById('goto-premium-drawer-btn');
     const shareAppBtn = document.getElementById('share-app-btn');
 
-    // أزرار الثيم والألوان
+    // Theme & Color elements
     const lightModeBtn = document.getElementById('light-mode-btn');
     const darkModeBtn = document.getElementById('dark-mode-btn');
     const colorDots = document.querySelectorAll('.color-dot');
 
-    // عناصر توليد الـ QR
+    // Generator elements
     const typesMenuView = document.getElementById('types-menu-view');
     const dynamicFormView = document.getElementById('dynamic-form-view');
     const backToMenuBtn = document.getElementById('back-to-menu-btn');
@@ -44,16 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrResult = document.getElementById('qr-result');
     const qrSizeSelect = document.getElementById('qr-size');
 
-    // عناصر المسح (Scanner)
+    // Scanner elements
     const scannerLoading = document.getElementById('scanner-loading');
     let html5QrCode = null;
     let isScannerRunning = false;
+    let currentFacingMode = "environment";
 
-    // عناصر السجل (History)
+    // History elements
     const historyListContainer = document.getElementById('history-list-container');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
 
-    // عناصر النافذة المنبثقة (Modal)
+    // Scan Result Modal elements
     const scanResultScreen = document.getElementById('scan-result-screen');
     const closeScanResultBtn = document.getElementById('close-scan-result-btn');
     const scanResultCategory = document.getElementById('scan-result-category');
@@ -62,54 +61,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const scanActionShare = document.getElementById('scan-action-share');
     const smartOpenLinkBtn = document.getElementById('smart-open-link-btn');
 
-    // عناصر باقات البريميوم
+    // Premium elements
     const planCards = document.querySelectorAll('.premium-plan-card');
     const subscribeNowBtn = document.getElementById('subscribe-now-btn');
 
     let currentSelectedType = 'url';
 
-    // ==========================================
-    // 3. التنقل بين الصفحات (Navigation Logic)
-    // ==========================================
+    // Tab Switching Logic
     function switchTab(targetTab) {
-        // تحديث أزرار الشريط السفلي
         navItems.forEach(item => {
-            if (item.dataset.target === targetTab) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
+            if (item.dataset.target === targetTab) item.classList.add('active');
+            else item.classList.remove('active');
         });
 
-        // إظهار وإخفاء المقاطع (Sections)
         pageSections.forEach(section => {
-            if (section.id === `${targetTab}-section`) {
-                section.classList.add('active');
-            } else {
-                section.classList.remove('active');
-            }
+            if (section.id === `${targetTab}-section`) section.classList.add('active');
+            else section.classList.remove('active');
         });
 
-        // تشغيل أو إيقاف الكاميرا حسَب الصفحة
         if (targetTab === 'scanner') {
             startScanner();
         } else {
             stopScanner();
         }
 
-        // تحديث السجل عند فتح صفحة History
         if (targetTab === 'history') {
             renderHistory();
         }
 
-        // إغلاق القائمة الجانبية إذا كانت مفتوحة
         closeDrawer();
     }
 
     navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            switchTab(item.dataset.target);
-        });
+        item.addEventListener('click', () => switchTab(item.dataset.target));
     });
 
     gotoGeneratorBtn?.addEventListener('click', () => switchTab('generator'));
@@ -117,26 +101,22 @@ document.addEventListener('DOMContentLoaded', () => {
     headerPremiumBtn?.addEventListener('click', () => switchTab('premium'));
     gotoPremiumDrawerBtn?.addEventListener('click', () => switchTab('premium'));
 
-    // ==========================================
-    // 4. القائمة الجانبية (Drawer Logic)
-    // ==========================================
+    // Drawer Control
     function openDrawer() {
-        settingsDrawer.classList.add('open');
-        drawerOverlay.classList.add('open');
+        settingsDrawer?.classList.add('open');
+        drawerOverlay?.classList.add('open');
     }
 
     function closeDrawer() {
-        settingsDrawer.classList.remove('open');
-        drawerOverlay.classList.remove('open');
+        settingsDrawer?.classList.remove('open');
+        drawerOverlay?.classList.remove('open');
     }
 
     menuToggleBtn?.addEventListener('click', openDrawer);
     closeDrawerBtn?.addEventListener('click', closeDrawer);
     drawerOverlay?.addEventListener('click', closeDrawer);
 
-    // ==========================================
-    // 5. الثيم والألوان (Theme & Color Customization)
-    // ==========================================
+    // Theming Logic
     const savedTheme = localStorage.getItem('qr_theme') || 'dark';
     const savedColor = localStorage.getItem('qr_color') || 'indigo';
 
@@ -178,29 +158,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ==========================================
-    // 6. توليد الـ QR Code (Generator Logic)
-    // ==========================================
+    // Generator Type Selection
     const typeButtons = document.querySelectorAll('.type-item-btn');
-    
     typeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             currentSelectedType = btn.dataset.type;
             setupFormForType(currentSelectedType);
-            typesMenuView.style.display = 'none';
-            dynamicFormView.style.display = 'block';
+            if (typesMenuView) typesMenuView.style.display = 'none';
+            if (dynamicFormView) dynamicFormView.style.display = 'block';
         });
     });
 
     backToMenuBtn?.addEventListener('click', () => {
-        dynamicFormView.style.display = 'none';
-        typesMenuView.style.display = 'grid';
-        qrResult.innerHTML = '';
+        if (dynamicFormView) dynamicFormView.style.display = 'none';
+        if (typesMenuView) typesMenuView.style.display = 'block';
+        if (qrResult) qrResult.innerHTML = '';
     });
 
     function setupFormForType(type) {
+        if (!formInputsContainer) return;
         formInputsContainer.innerHTML = '';
-        qrResult.innerHTML = '';
+        if (qrResult) qrResult.innerHTML = '';
 
         const typeTitles = {
             url: 'Lien Web (URL)',
@@ -215,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clipboard: 'Presse-papiers'
         };
 
-        formTitleText.textContent = typeTitles[type] || 'Créer';
+        if (formTitleText) formTitleText.textContent = typeTitles[type] || 'Créer';
 
         let html = '';
         if (type === 'url') {
@@ -258,6 +236,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="input-group"><label>Latitude</label><input type="number" step="any" id="input-lat" placeholder="48.8566"></div>
                 <div class="input-group"><label>Longitude</label><input type="number" step="any" id="input-lng" placeholder="2.3522"></div>
             `;
+        } else if (type === 'agenda') {
+            html = `
+                <div class="input-group"><label>Titre de l'événement</label><input type="text" id="input-cal-title" placeholder="Réunion importante"></div>
+                <div class="input-group"><label>Date de début</label><input type="datetime-local" id="input-cal-start"></div>
+                <div class="input-group"><label>Date de fin</label><input type="datetime-local" id="input-cal-end"></div>
+            `;
         } else if (type === 'clipboard') {
             html = `<div class="input-group"><label>Contenu du presse-papiers</label><textarea id="input-clip" rows="3"></textarea></div>`;
             navigator.clipboard?.readText().then(text => {
@@ -277,32 +261,37 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (currentSelectedType === 'text') {
             qrContent = document.getElementById('input-text')?.value.trim();
         } else if (currentSelectedType === 'contact') {
-            const fn = document.getElementById('input-fn')?.value.trim();
-            const tel = document.getElementById('input-tel')?.value.trim();
-            const email = document.getElementById('input-email')?.value.trim();
+            const fn = document.getElementById('input-fn')?.value.trim() || '';
+            const tel = document.getElementById('input-tel')?.value.trim() || '';
+            const email = document.getElementById('input-email')?.value.trim() || '';
             qrContent = `BEGIN:VCARD\nVERSION:3.0\nN:${fn}\nTEL:${tel}\nEMAIL:${email}\nEND:VCARD`;
         } else if (currentSelectedType === 'phone') {
             qrContent = `tel:${document.getElementById('input-phone')?.value.trim()}`;
         } else if (currentSelectedType === 'email') {
-            const to = document.getElementById('input-email-to')?.value.trim();
-            const sub = encodeURIComponent(document.getElementById('input-email-sub')?.value.trim());
-            const body = encodeURIComponent(document.getElementById('input-email-body')?.value.trim());
+            const to = document.getElementById('input-email-to')?.value.trim() || '';
+            const sub = encodeURIComponent(document.getElementById('input-email-sub')?.value.trim() || '');
+            const body = encodeURIComponent(document.getElementById('input-email-body')?.value.trim() || '');
             qrContent = `mailto:${to}?subject=${sub}&body=${body}`;
         } else if (currentSelectedType === 'sms') {
-            const num = document.getElementById('input-sms-num')?.value.trim();
-            const body = encodeURIComponent(document.getElementById('input-sms-body')?.value.trim());
+            const num = document.getElementById('input-sms-num')?.value.trim() || '';
+            const body = encodeURIComponent(document.getElementById('input-sms-body')?.value.trim() || '');
             qrContent = `smsto:${num}:${body}`;
         } else if (currentSelectedType === 'wifi') {
-            const ssid = document.getElementById('input-wifi-ssid')?.value.trim();
-            const pass = document.getElementById('input-wifi-pass')?.value.trim();
-            const type = document.getElementById('input-wifi-type')?.value;
+            const ssid = document.getElementById('input-wifi-ssid')?.value.trim() || '';
+            const pass = document.getElementById('input-wifi-pass')?.value.trim() || '';
+            const type = document.getElementById('input-wifi-type')?.value || 'WPA';
             qrContent = `WIFI:S:${ssid};T:${type};P:${pass};;`;
         } else if (currentSelectedType === 'coordinates') {
-            const lat = document.getElementById('input-lat')?.value.trim();
-            const lng = document.getElementById('input-lng')?.value.trim();
+            const lat = document.getElementById('input-lat')?.value.trim() || '0';
+            const lng = document.getElementById('input-lng')?.value.trim() || '0';
             qrContent = `geo:${lat},${lng}`;
+        } else if (currentSelectedType === 'agenda') {
+            const title = document.getElementById('input-cal-title')?.value.trim() || 'Événement';
+            const start = document.getElementById('input-cal-start')?.value.replace(/[-:]/g, '') || '';
+            const end = document.getElementById('input-cal-end')?.value.replace(/[-:]/g, '') || '';
+            qrContent = `BEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${start}Z\nDTEND:${end}Z\nEND:VEVENT`;
         } else if (currentSelectedType === 'clipboard') {
-            qrContent = document.getElementById('input-clip')?.value.trim();
+            qrContent = document.getElementById('input-clip')?.value.trim() || '';
         }
 
         if (!qrContent) {
@@ -310,8 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        qrResult.innerHTML = '';
-        const size = parseInt(qrSizeSelect.value) || 300;
+        if (qrResult) qrResult.innerHTML = '';
+        const size = parseInt(qrSizeSelect?.value) || 300;
 
         new QRCode(qrResult, {
             text: qrContent,
@@ -322,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
             correctLevel: QRCode.CorrectLevel.H
         });
 
-        // حفظ العمل داخل السجل (History)
         saveToHistory({
             type: 'created',
             category: currentSelectedType.toUpperCase(),
@@ -331,12 +319,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ==========================================
-    // 7. ماسح الكود (Scanner Logic)
-    // ==========================================
+    // Scanner Logic
     function startScanner() {
         if (isScannerRunning) return;
-
         if (scannerLoading) scannerLoading.style.display = 'block';
 
         if (!html5QrCode) {
@@ -346,14 +331,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
         html5QrCode.start(
-            { facingMode: "environment" },
+            { facingMode: currentFacingMode },
             config,
             onScanSuccess
         ).then(() => {
             isScannerRunning = true;
             if (scannerLoading) scannerLoading.style.display = 'none';
         }).catch(err => {
-            console.error("Erreur d'ouverture de la caméra:", err);
+            console.error("Erreur caméra:", err);
             if (scannerLoading) scannerLoading.style.display = 'none';
         });
     }
@@ -362,9 +347,37 @@ document.addEventListener('DOMContentLoaded', () => {
         if (html5QrCode && isScannerRunning) {
             html5QrCode.stop().then(() => {
                 isScannerRunning = false;
-            }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
+            }).catch(err => console.error("Erreur arrêt scanner:", err));
         }
     }
+
+    const switchCameraBtn = document.getElementById('switch-camera-btn');
+    switchCameraBtn?.addEventListener('click', () => {
+        currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
+        stopScanner();
+        setTimeout(startScanner, 350);
+    });
+
+    const galleryInput = document.getElementById('gallery-file-input');
+    const scanGalleryBtn = document.getElementById('scan-gallery-btn');
+    
+    scanGalleryBtn?.addEventListener('click', () => galleryInput?.click());
+
+    galleryInput?.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const imageFile = e.target.files[0];
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+            html5QrCode.scanFile(imageFile, true)
+                .then(decodedText => {
+                    onScanSuccess(decodedText);
+                })
+                .catch(() => {
+                    alert("Impossible de lire un QR Code à partir de cette image.");
+                });
+        }
+    });
 
     function onScanSuccess(decodedText) {
         stopScanner();
@@ -379,62 +392,103 @@ document.addEventListener('DOMContentLoaded', () => {
         showScanModal(decodedText);
     }
 
-    // ==========================================
-    // 8. النافذة المنبثقة للنتائج (Scan Result Modal)
-    // ==========================================
     function showScanModal(text) {
-        scanResultText.textContent = text;
-        scanResultCategory.textContent = 'RÉSULTAT';
+        if (scanResultText) scanResultText.textContent = text;
+        if (scanResultCategory) scanResultCategory.textContent = 'RÉSULTAT';
 
         if (text.startsWith('http://') || text.startsWith('https://')) {
-            smartOpenLinkBtn.style.display = 'flex';
-            smartOpenLinkBtn.onclick = () => window.open(text, '_blank');
+            if (smartOpenLinkBtn) {
+                smartOpenLinkBtn.style.display = 'flex';
+                smartOpenLinkBtn.onclick = () => window.open(text, '_blank');
+            }
         } else {
-            smartOpenLinkBtn.style.display = 'none';
+            if (smartOpenLinkBtn) smartOpenLinkBtn.style.display = 'none';
         }
 
-        scanResultScreen.classList.add('active');
+        scanResultScreen?.classList.add('active');
     }
 
     closeScanResultBtn?.addEventListener('click', () => {
-        scanResultScreen.classList.remove('active');
-        if (document.getElementById('scanner-section').classList.contains('active')) {
+        scanResultScreen?.classList.remove('active');
+        if (document.getElementById('scanner-section')?.classList.contains('active')) {
             startScanner();
         }
     });
 
     scanActionCopy?.addEventListener('click', () => {
-        navigator.clipboard.writeText(scanResultText.textContent).then(() => {
-            alert('Copié dans le presse-papiers !');
-        });
+        if (scanResultText) {
+            navigator.clipboard.writeText(scanResultText.textContent).then(() => {
+                alert('Copié dans le presse-papiers !');
+            });
+        }
     });
 
     scanActionShare?.addEventListener('click', () => {
-        if (navigator.share) {
+        if (navigator.share && scanResultText) {
             navigator.share({
                 title: 'QR Code Result',
                 text: scanResultText.textContent
             });
         } else {
-            alert('Le partage n\'est pas supporté sur ce navigateur.');
+            alert('Le partage n\'est pas supporté.');
         }
     });
 
-    // ==========================================
-    // 9. إدارة السجل (History LocalStorage)
-    // ==========================================
+    // QR Code Popup Modal from History (Ouvrir le code QR + X)
+    let qrPopModal = document.getElementById('qr-pop-modal');
+    if (!qrPopModal) {
+        qrPopModal = document.createElement('div');
+        qrPopModal.id = 'qr-pop-modal';
+        qrPopModal.className = 'qr-pop-modal';
+        qrPopModal.innerHTML = `
+            <div class="qr-pop-content">
+                <button id="close-qr-pop-btn" class="icon-btn" style="position: absolute; top: 12px; right: 12px;"><i class="fa-solid fa-xmark"></i></button>
+                <h3 style="margin-bottom: 15px; font-size: 1rem;">Ouvrir le Code QR</h3>
+                <div id="qr-pop-container" style="display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: 10px;"></div>
+            </div>
+        `;
+        document.body.appendChild(qrPopModal);
+    }
+
+    const popContainer = document.getElementById('qr-pop-container');
+    const closePopBtn = document.getElementById('close-qr-pop-btn');
+
+    closePopBtn?.addEventListener('click', () => {
+        if (qrPopModal) qrPopModal.style.display = 'none';
+    });
+
+    qrPopModal?.addEventListener('click', (e) => {
+        if (e.target === qrPopModal) qrPopModal.style.display = 'none';
+    });
+
+    function showQRPopup(content) {
+        if (!popContainer) return;
+        popContainer.innerHTML = '';
+        new QRCode(popContainer, {
+            text: content,
+            width: 220,
+            height: 220,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        if (qrPopModal) qrPopModal.style.display = 'flex';
+    }
+
+    // History Management
     function getHistory() {
         return JSON.parse(localStorage.getItem('qr_history') || '[]');
     }
 
     function saveToHistory(item) {
         const history = getHistory();
-        history.unshift(item); // إضافة العنصر فـ الأول
-        if (history.length > 50) history.pop(); // الاحتفاظ بآخر 50 عنصر فقط
+        history.unshift(item);
+        if (history.length > 50) history.pop();
         localStorage.setItem('qr_history', JSON.stringify(history));
     }
 
     function renderHistory() {
+        if (!historyListContainer) return;
         const history = getHistory();
         if (history.length === 0) {
             historyListContainer.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 30px 0;">Aucun historique pour le moment.</p>`;
@@ -442,24 +496,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
-        history.forEach((item, index) => {
+        history.forEach((item) => {
             const icon = item.type === 'scanned' ? 'fa-camera' : 'fa-qrcode';
             html += `
-                <div class="history-item-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
-                    <div style="display: flex; align-items: center; gap: 12px; overflow: hidden;">
-                        <i class="fa-solid ${icon}" style="color: var(--primary); font-size: 1.2rem;"></i>
-                        <div style="overflow: hidden;">
+                <div class="history-item-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1;">
+                        <i class="fa-solid ${icon}" style="color: var(--primary); font-size: 1.2rem; flex-shrink: 0;"></i>
+                        <div style="overflow: hidden; flex: 1;">
                             <div style="font-size: 0.75rem; color: var(--text-muted);">${item.category} • ${item.date}</div>
-                            <div style="font-size: 0.9rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.content}</div>
+                            <div style="font-size: 0.9rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color);">${item.content}</div>
                         </div>
                     </div>
-                    <button class="icon-btn copy-hist-btn" data-content="${item.content}" title="Copier"><i class="fa-solid fa-copy"></i></button>
+                    <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                        <button class="icon-btn open-qr-pop-btn" data-content="${item.content}" title="Ouvrir le code QR" style="background: var(--hover-bg); color: var(--primary); width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-qrcode"></i></button>
+                        <button class="icon-btn copy-hist-btn" data-content="${item.content}" title="Copier" style="background: var(--hover-bg); color: var(--text-color); width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-copy"></i></button>
+                    </div>
                 </div>
             `;
         });
         html += '</div>';
 
         historyListContainer.innerHTML = html;
+
+        document.querySelectorAll('.open-qr-pop-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showQRPopup(btn.dataset.content);
+            });
+        });
 
         document.querySelectorAll('.copy-hist-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -476,9 +540,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ==========================================
-    // 10. باقات البريميوم والمشاركة (Premium & Share)
-    // ==========================================
     planCards.forEach(card => {
         card.addEventListener('click', () => {
             planCards.forEach(c => c.classList.remove('active-plan'));
