@@ -4,58 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique de confidentialité - QR Master Pro</title>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#4f46e5">
 </head>
 <body>
+
+    <!-- Header -->
     <header class="app-header">
         <a href="index.html" class="icon-btn" style="text-decoration: none;">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1 class="app-title">Politique de Confidentialité</h1>
-        <div style="width: 40px;"></div>
+        <div style="width: 40px;"></div> <!-- Spacer -->
     </header>
-    
-    <main class="app-main" style="padding-top: 30px;">
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px; display: flex; flex-direction: column; gap: 20px;">
+
+    <!-- Main Content Area -->
+    <main class="app-main" style="padding-bottom: 40px;">
+        <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; display: flex; flex-direction: column; gap: 20px;">
             
             <div>
-                <h2 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);"><i class="fa-solid fa-shield-halved"></i> 1. Protection de vos données</h2>
+                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">1. Introduction</h2>
                 <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    QR Master Pro respecte totalement votre vie privée. Toutes les données que vous générez ou scannez sont enregistrées localement sur votre propre appareil (via le stockage local) et ne sont jamais transmises à des serveurs externes.
+                    Bienvenue sur <strong>QR Master Pro</strong>. Votre vie privée est d'une importance capitale pour nous. Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos informations lorsque vous utilisez notre application.
                 </p>
             </div>
 
             <div>
-                <h2 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);"><i class="fa-solid fa-camera"></i> 2. Utilisation de la caméra</h2>
+                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">2. Données collectées</h2>
                 <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    L'accès à la caméra est demandé uniquement pour scanner les codes QR en temps réel. Aucune image ni flux vidéo n'est enregistré ou partagé.
+                    <strong>QR Master Pro</strong> fonctionne principalement en local sur votre appareil :
+                </p>
+                <ul style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+                    <li><strong>Caméra :</strong> Utilisée exclusivement pour scanner les QR codes en temps réel. Aucune vidéo ou image n'est stockée ou envoyée à un serveur externe.</li>
+                    <li><strong>Galerie :</strong> Utilisée uniquement lorsque vous choisissez d'importer une image contenant un QR code depuis votre appareil.</li>
+                    <li><strong>Historique :</strong> Stocké localement sur votre appareil (via LocalStorage) pour vous permettre de retrouver vos codes générés et scannés. Vous pouvez l'effacer à tout moment.</li>
+                    <li><strong>Géolocalisation (GPS) :</strong> Utilisée uniquement si vous décidez de générer un QR code de type GPS avec vos coordonnées actuelles.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">3. Partage des données</h2>
+                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+                    Nous ne vendons, n'échangeons ni ne transférons vos informations personnelles à des tiers. Toutes les données générées ou scannées restent strictement sous votre contrôle.
                 </p>
             </div>
 
             <div>
-                <h2 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);"><i class="fa-solid fa-crown"></i> 3. Abonnements et Paiements (Google Play Billing)</h2>
+                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">4. Sécurité</h2>
                 <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    L'application propose des options d'abonnements payants (un forfait mensuel à 1.99 $ / mois et un forfait annuel à 9.99 $ / an). Tous les paiements et transactions financières sont gérés et sécurisés exclusivement par le système officiel de facturation Google Play Billing. Aucune information bancaire n'est collectée ou stockée directement par l'application.
+                    Nous mettons en œuvre des mesures de sécurité rigoureuses pour protéger vos données locales et garantir une expérience sécurisée (utilisation de PWA et chiffrement local).
                 </p>
             </div>
 
             <div>
-                <h2 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);"><i class="fa-solid fa-rectangle-ad"></i> 4. Publicités</h2>
+                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">5. Contact</h2>
                 <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    Pour permettre de maintenir certaines fonctionnalités de l'application gratuites, des publicités standards et non intrusives peuvent être affichées au sein de l'interface, conformément aux politiques de Google AdMob.
-                </p>
-            </div>
-
-            <div>
-                <h2 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);"><i class="fa-solid fa-lock"></i> 5. Sécurité et Stabilité</h2>
-                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    L'application est conçue pour fonctionner de manière fluide, stable et sécurisée, garantissant une excellente expérience utilisateur sans interruption ni fermeture inopinée.
+                    Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter via les paramètres de l'application.
                 </p>
             </div>
 
         </div>
     </main>
+
 </body>
 </html>

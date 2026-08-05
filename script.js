@@ -1,5 +1,5 @@
 // ==========================================
-// QR Master Pro - Complete & Ultimate script.js
+// QR Master Pro - Final Script (script.js)
 // ==========================================
 
 if ('serviceWorker' in navigator) {
@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetTab === 'history') renderHistory();
 
         closeDrawer();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     navItems.forEach(item => {
@@ -211,9 +210,39 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else if (type === 'coordinates') {
             html = `
-                <div class="input-group"><label>Latitude (ex: 30.4278)</label><input type="number" step="any" id="input-lat" placeholder="30.4278"></div>
-                <div class="input-group"><label>Longitude (ex: -9.5981)</label><input type="number" step="any" id="input-lng" placeholder="-9.5981"></div>
+                <button type="button" id="get-current-loc-btn" class="primary-btn" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-color); margin-bottom: 15px; font-size: 0.85rem; padding: 10px;">
+                    <i class="fa-solid fa-location-crosshairs" style="color: var(--primary);"></i> Utiliser ma position GPS actuelle
+                </button>
+                <div class="input-group"><label>Latitude</label><input type="number" step="any" id="input-lat" placeholder="30.4278"></div>
+                <div class="input-group"><label>Longitude</label><input type="number" step="any" id="input-lng" placeholder="-9.5981"></div>
             `;
+            setTimeout(() => {
+                const getLocBtn = document.getElementById('get-current-loc-btn');
+                getLocBtn?.addEventListener('click', () => {
+                    if (navigator.geolocation) {
+                        getLocBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Localisation en cours...`;
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const latInput = document.getElementById('input-lat');
+                                const lngInput = document.getElementById('input-lng');
+                                if (latInput) latInput.value = position.coords.latitude;
+                                if (lngInput) lngInput.value = position.coords.longitude;
+                                getLocBtn.innerHTML = `<i class="fa-solid fa-check" style="color: #059669;"></i> Position GPS récupérée !`;
+                                setTimeout(() => {
+                                    getLocBtn.innerHTML = `<i class="fa-solid fa-location-crosshairs" style="color: var(--primary);"></i> Utiliser ma position GPS actuelle`;
+                                }, 2500);
+                            },
+                            (error) => {
+                                alert("Impossible de récupérer votre position GPS. Veuillez vérifier les autorisations.");
+                                getLocBtn.innerHTML = `<i class="fa-solid fa-location-crosshairs" style="color: var(--primary);"></i> Utiliser ma position GPS actuelle`;
+                            },
+                            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                        );
+                    } else {
+                        alert("La géolocalisation n'est pas supportée par votre navigateur.");
+                    }
+                });
+            }, 50);
         } else if (type === 'agenda') {
             html = `
                 <div class="input-group"><label>Titre de l'événement</label><input type="text" id="input-cal-title" placeholder="Réunion importante"></div>
@@ -244,8 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('input-email')?.value.trim() || '';
             qrContent = `BEGIN:VCARD\nVERSION:3.0\nN:${fn}\nTEL:${tel}\nEMAIL:${email}\nEND:VCARD`;
         } else if (currentSelectedType === 'phone') {
-            const phoneVal = document.getElementById('input-phone')?.value.trim() || '';
-            qrContent = `tel:${phoneVal}`;
+            qrContent = `tel:${document.getElementById('input-phone')?.value.trim()}`;
         } else if (currentSelectedType === 'email') {
             const to = document.getElementById('input-email-to')?.value.trim() || '';
             const sub = encodeURIComponent(document.getElementById('input-email-sub')?.value.trim() || '');
@@ -263,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (currentSelectedType === 'coordinates') {
             const lat = document.getElementById('input-lat')?.value.trim() || '0';
             const lng = document.getElementById('input-lng')?.value.trim() || '0';
-            qrContent = `geo:${lat},${lng}?q=${lat},${lng}`;
+            qrContent = `https://www.google.com/maps?q=${lat},${lng}`;
         } else if (currentSelectedType === 'agenda') {
             const title = document.getElementById('input-cal-title')?.value.trim() || 'Événement';
             const start = document.getElementById('input-cal-start')?.value.replace(/[-:]/g, '') || '';
@@ -279,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (qrResult) qrResult.innerHTML = '';
-        const size = parseInt(qrSizeSelect?.value) || 250;
+        const size = parseInt(qrSizeSelect?.value) || 300;
 
         new QRCode(qrResult, {
             text: qrContent,
@@ -380,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
             smartOpenLinkBtn.style.display = 'flex';
             
             if (text.startsWith('http://') || text.startsWith('https://')) {
-                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-globe"></i> <span>Ouvrir le lien web</span>`;
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-globe"></i> <span>Ouvrir le lien web / Carte</span>`;
                 smartOpenLinkBtn.onclick = () => window.open(text, '_blank');
             } else if (text.startsWith('tel:') || /^\+?[0-9\s\-\(\)]{7,}$/.test(text)) {
                 const phoneNum = text.startsWith('tel:') ? text : `tel:${text}`;
@@ -410,9 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     a.download = 'contact.vcf';
                     a.click();
                 };
-            } else if (text.startsWith('geo:')) {
-                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-location-dot"></i> <span>Ouvrir sur la carte GPS</span>`;
-                smartOpenLinkBtn.onclick = () => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(text.replace('geo:', ''))}`, '_blank');
             } else {
                 smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>Rechercher sur Google</span>`;
                 smartOpenLinkBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');
