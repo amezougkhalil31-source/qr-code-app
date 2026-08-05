@@ -27,7 +27,7 @@
         </button>
     </header>
 
-    <!-- Main Content Area (Takes full web layout space neatly) -->
+    <!-- Main Content Area -->
     <main class="app-main">
 
         <!-- 1. Generator Section -->
@@ -39,6 +39,7 @@
                     <p style="font-size: 0.9rem; color: var(--text-muted);">Choisissez le type de contenu à générer</p>
                 </div>
                 <div class="types-grid">
+                    <!-- Free Types -->
                     <button class="type-item-btn" data-type="url">
                         <i class="fa-solid fa-link"></i>
                         <span>Lien Web</span>
@@ -47,37 +48,45 @@
                         <i class="fa-solid fa-align-left"></i>
                         <span>Texte</span>
                     </button>
-                    <button class="type-item-btn" data-type="contact">
-                        <i class="fa-solid fa-address-book"></i>
-                        <span>Contact</span>
-                    </button>
                     <button class="type-item-btn" data-type="phone">
                         <i class="fa-solid fa-phone"></i>
                         <span>Téléphone</span>
                     </button>
-                    <button class="type-item-btn" data-type="email">
-                        <i class="fa-solid fa-envelope"></i>
-                        <span>Email</span>
-                    </button>
-                    <button class="type-item-btn" data-type="sms">
-                        <i class="fa-solid fa-comment-sms"></i>
-                        <span>SMS</span>
-                    </button>
-                    <button class="type-item-btn" data-type="wifi">
-                        <i class="fa-solid fa-wifi"></i>
-                        <span>Wi-Fi</span>
-                    </button>
-                    <button class="type-item-btn" data-type="coordinates">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <span>GPS</span>
-                    </button>
-                    <button class="type-item-btn" data-type="agenda">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <span>Agenda</span>
-                    </button>
                     <button class="type-item-btn" data-type="clipboard">
                         <i class="fa-solid fa-clipboard"></i>
                         <span>Presse-papiers</span>
+                    </button>
+
+                    <!-- Premium Locked Types (Crown Badges) -->
+                    <button class="type-item-btn premium-locked-btn" data-type="contact" data-premium="true">
+                        <i class="fa-solid fa-address-book"></i>
+                        <span>Contact</span>
+                        <span class="type-crown-badge"><i class="fa-solid fa-crown"></i></span>
+                    </button>
+                    <button class="type-item-btn premium-locked-btn" data-type="email" data-premium="true">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Email</span>
+                        <span class="type-crown-badge"><i class="fa-solid fa-crown"></i></span>
+                    </button>
+                    <button class="type-item-btn premium-locked-btn" data-type="sms" data-premium="true">
+                        <i class="fa-solid fa-comment-sms"></i>
+                        <span>SMS</span>
+                        <span class="type-crown-badge"><i class="fa-solid fa-crown"></i></span>
+                    </button>
+                    <button class="type-item-btn premium-locked-btn" data-type="wifi" data-premium="true">
+                        <i class="fa-solid fa-wifi"></i>
+                        <span>Wi-Fi</span>
+                        <span class="type-crown-badge"><i class="fa-solid fa-crown"></i></span>
+                    </button>
+                    <button class="type-item-btn premium-locked-btn" data-type="coordinates" data-premium="true">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>GPS</span>
+                        <span class="type-crown-badge"><i class="fa-solid fa-crown"></i></span>
+                    </button>
+                    <button class="type-item-btn premium-locked-btn" data-type="agenda" data-premium="true">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Agenda</span>
+                        <span class="type-crown-badge"><i class="fa-solid fa-crown"></i></span>
                     </button>
                 </div>
             </div>
@@ -155,9 +164,17 @@
                 <p style="font-size: 0.9rem; color: var(--text-muted);">Passez au niveau supérieur et débloquez tout le potentiel</p>
             </div>
 
+            <!-- In-App Notification Banner for Discounts -->
+            <div id="promo-banner-box" style="background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(217, 119, 6, 0.15)); border: 1px solid #eab308; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-bullhorn" style="color: #eab308; font-size: 1.2rem;"></i>
+                    <span style="font-size: 0.85rem; color: var(--text-color);"><strong>Offre Spéciale :</strong> -50% sur l'abonnement Annuel aujourd'hui !</span>
+                </div>
+            </div>
+
             <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
                 <!-- Abonnement Annuel -->
-                <div class="premium-plan-card active-plan" style="border: 2px solid #eab308; position: relative; padding: 20px;">
+                <div class="premium-plan-card active-plan" style="position: relative; padding: 20px;">
                     <div class="save-badge" style="background: #eab308; color: #000; font-weight: bold;">Économisez 70% - Meilleure Offre</div>
                     <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 4px; margin-top: 5px;">Abonnement Annuel</div>
                     <div class="plan-price" style="font-size: 1.4rem; color: #eab308; font-weight: 700;">10.99 $ <span style="font-size: 0.9rem; color: var(--text-muted);">/ an</span></div>
@@ -279,6 +296,37 @@
                     <i class="fa-solid fa-share-nodes"></i> Partager
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- NEW: History QR Viewer Modal (معاينة الكود من الستوريك مع زر X) -->
+    <div id="history-qr-modal" class="modal-screen">
+        <div class="modal-content" style="text-align: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span class="badge">Aperçu du QR Code</span>
+                <button id="close-history-qr-modal" class="icon-btn" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="history-qr-render-box" style="display: flex; justify-content: center; align-items: center; padding: 20px; background: #fff; border-radius: 12px; margin-bottom: 15px;"></div>
+            <p id="history-qr-text-preview" style="font-size: 0.85rem; color: var(--text-muted); word-break: break-all; max-height: 80px; overflow-y: auto;"></p>
+        </div>
+    </div>
+
+    <!-- NEW: Freemium Limit Expired Popup Modal (نافذة انتهاء رصيد الفابور مع زر X) -->
+    <div id="freemium-limit-modal" class="modal-screen">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
+                <button id="close-limit-modal-btn" class="icon-btn" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <i class="fa-solid fa-crown" style="font-size: 2.5rem; color: #eab308; margin-bottom: 12px;"></i>
+            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">Limite gratuite atteinte</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Vous avez épuisé votre quota gratuit d'utilisation. Abonnez-vous à la version Premium pour continuer à utiliser toutes les fonctionnalités sans limites !</p>
+            <button id="goto-premium-from-modal-btn" class="primary-btn" style="background: linear-gradient(135deg, #eab308, #d97706); color: #000; font-weight: bold;">
+                <i class="fa-solid fa-bolt"></i> S'abonner maintenant
+            </button>
         </div>
     </div>
 

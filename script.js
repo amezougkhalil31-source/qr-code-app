@@ -1,5 +1,5 @@
 /* ==========================================
-   QR Master Pro - Main Script (script.js)
+   QR Master Pro - Complete Main Script (script.js)
    ========================================== */
 
 // Service Worker Registration
@@ -19,6 +19,12 @@ let currentCameraId = null;
 let camerasList = [];
 let cameraIndex = 0;
 let selectedPlanType = 'annual';
+let isUserPremium = JSON.parse(localStorage.getItem('qr_is_premium')) || false;
+let freeGensCount = parseInt(localStorage.getItem('qr_free_gens_count')) || 0;
+const MAX_FREE_GENS = 3;
+
+// Locked/Premium Generator Types
+const lockedTypes = ['contact', 'wifi', 'coordinates', 'agenda', 'email', 'sms'];
 
 // DOM Elements
 const navItems = document.querySelectorAll('.nav-item');
@@ -134,6 +140,17 @@ document.querySelectorAll('.color-dot').forEach(dot => {
     });
 });
 
+// Initialize Crown Badges on Locked Generator Buttons
+document.querySelectorAll('.type-item-btn').forEach(btn => {
+    const type = btn.getAttribute('data-type');
+    if (lockedTypes.includes(type) && !btn.querySelector('.type-crown-badge')) {
+        const crown = document.createElement('div');
+        crown.className = 'type-crown-badge';
+        crown.innerHTML = '<i class="fa-solid fa-crown"></i>';
+        btn.appendChild(crown);
+    }
+});
+
 // Share App Button
 const shareAppBtn = document.getElementById('share-app-btn');
 if (shareAppBtn) {
@@ -171,6 +188,9 @@ if (subscribeNowBtn) {
         const planName = selectedPlanType === 'annual' ? 'Abonnement Annuel (9.99 $ / an)' : 'Abonnement Mensuel (1.99 $ / mois)';
         if (confirm(`Voulez-vous procéder au paiement sécurisé via Google Play Billing pour le plan : ${planName} ?`)) {
             alert('Connexion sécurisée à Google Play Billing... Redirection vers le système de paiement Google Play.');
+            // Simulation of successful activation for testing purposes
+            // isUserPremium = true;
+            // localStorage.setItem('qr_is_premium', 'true');
         }
     });
 }
@@ -186,7 +206,15 @@ const qrResultBox = document.getElementById('qr-result');
 
 document.querySelectorAll('.type-item-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        currentActiveType = btn.getAttribute('data-type');
+        const type = btn.getAttribute('data-type');
+        
+        // Check if type is locked for free users
+        if (!isUserPremium && lockedTypes.includes(type) && freeGensCount >= MAX_FREE_GENS) {
+            showLimitModal();
+            return;
+        }
+
+        currentActiveType = type;
         typesMenuView.style.display = 'none';
         dynamicFormView.style.display = 'block';
         setupDynamicForm(currentActiveType);
@@ -200,6 +228,12 @@ if (backToMenuBtn) {
         typesMenuView.style.display = 'block';
         qrResultBox.innerHTML = '';
     });
+}
+
+function showLimitModal() {
+    if (confirm('Vous avez atteint la limite gratuite de générations. Voulez-vous passer à QR Master Pro Premium pour un accès illimité ?')) {
+        switchToSection('premium');
+    }
 }
 
 function setupDynamicForm(type) {
@@ -360,7 +394,13 @@ if (generateCustomBtn) {
             return;
         }
 
-        const sizeVal = parseInt(document.getElementById('qr-size').value) || 250;
+        // Increment free generation count if not premium
+        if (!isUserPremium) {
+            freeGensCount++;
+            localStorage.setItem('qr_free_gens_count', freeGensCount);
+        }
+
+        const sizeVal = parseInt(document.getElementById('qr-size')?.value) || 250;
         qrResultBox.innerHTML = '';
         
         new QRCode(qrResultBox, {
@@ -478,7 +518,7 @@ let activeScannedText = '';
 
 function showScanResultModal(text) {
     activeScannedText = text;
-    scanResultTextElem.textContent = text;
+    if (scanResultTextElem) scanResultTextElem.textContent = text;
     
     let categoryName = 'TEXTE';
     let actionLabel = 'Ouvrir';
@@ -506,11 +546,13 @@ function showScanResultModal(text) {
         actionIcon = 'fa-wifi';
     }
 
-    scanResultCategory.textContent = categoryName;
-    smartOpenLinkBtn.querySelector('span').textContent = actionLabel;
-    smartOpenLinkBtn.querySelector('i').className = `fa-solid ${actionIcon}`;
+    if (scanResultCategory) scanResultCategory.textContent = categoryName;
+    if (smartOpenLinkBtn) {
+        smartOpenLinkBtn.querySelector('span').textContent = actionLabel;
+        smartOpenLinkBtn.querySelector('i').className = `fa-solid ${actionIcon}`;
+    }
 
-    scanResultScreen.classList.add('active');
+    if (scanResultScreen) scanResultScreen.classList.add('active');
 }
 
 if (closeScanResultBtn) {
@@ -591,7 +633,7 @@ function renderHistory() {
     let html = '';
     historyData.forEach((item, index) => {
         html += `
-            <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <div onclick="openHistoryDetail(${index})" style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; transition: border-color 0.2s;">
                 <div style="flex: 1; overflow: hidden;">
                     <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
                         <span class="badge">${item.type}</span>
@@ -599,7 +641,7 @@ function renderHistory() {
                     </div>
                     <p style="font-size: 0.85rem; color: var(--text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.text}</p>
                 </div>
-                <div style="display: flex; gap: 6px;">
+                <div style="display: flex; gap: 6px;" onclick="event.stopPropagation()">
                     <button class="icon-btn" onclick="navigator.clipboard.writeText('${item.text.replace(/'/g, "\\'")}'); alert('Copié !');" title="Copier" style="width: 32px; height: 32px; font-size: 0.9rem;">
                         <i class="fa-solid fa-copy"></i>
                     </button>
@@ -612,6 +654,13 @@ function renderHistory() {
     });
     container.innerHTML = html;
 }
+
+window.openHistoryDetail = function(index) {
+    const item = historyData[index];
+    if (item) {
+        showScanResultModal(item.text);
+    }
+};
 
 window.deleteHistoryItem = function(index) {
     historyData.splice(index, 1);
