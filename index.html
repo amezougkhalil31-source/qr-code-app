@@ -18,25 +18,25 @@
 
     <!-- Header -->
     <header class="app-header">
-        <button id="menu-toggle-btn" class="icon-btn">
+        <button id="menu-toggle-btn" class="icon-btn" aria-label="Menu">
             <i class="fa-solid fa-bars"></i>
         </button>
         <h1 class="app-title">QR Master Pro</h1>
-        <button id="header-premium-btn" class="icon-btn" style="color: #eab308;">
+        <button id="header-premium-btn" class="icon-btn" style="color: #eab308;" aria-label="Premium">
             <i class="fa-solid fa-crown"></i>
         </button>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area (Takes full web layout space neatly) -->
     <main class="app-main">
 
         <!-- 1. Generator Section -->
         <section id="generator-section" class="page-section active">
             <!-- Types Menu View -->
             <div id="types-menu-view">
-                <div style="margin-bottom: 15px;">
-                    <h2 style="font-size: 1.15rem; font-weight: 600; margin-bottom: 2px;">Créer un QR Code</h2>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Choisissez le type de contenu à générer</p>
+                <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 1.3rem; font-weight: 600; margin-bottom: 4px;">Créer un QR Code</h2>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Choisissez le type de contenu à générer</p>
                 </div>
                 <div class="types-grid">
                     <button class="type-item-btn" data-type="url">
@@ -85,16 +85,16 @@
             <!-- Dynamic Form View -->
             <div id="dynamic-form-view" style="display: none;">
                 <div class="form-header-row">
-                    <button id="back-to-menu-btn" class="icon-btn">
+                    <button id="back-to-menu-btn" class="icon-btn" aria-label="Retour">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <h2 id="form-title-text" style="font-size: 1.1rem; font-weight: 600;">Générer</h2>
+                    <h2 id="form-title-text" style="font-size: 1.2rem; font-weight: 600;">Générer</h2>
                 </div>
 
                 <div id="form-inputs-container"></div>
 
-                <div class="input-group" style="margin-bottom: 12px;">
-                    <label>Taille du QR Code</label>
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label for="qr-size">Taille du QR Code</label>
                     <select id="qr-size">
                         <option value="200">Petit (200px)</option>
                         <option value="300" selected>Moyen (300px)</option>
@@ -102,19 +102,19 @@
                     </select>
                 </div>
 
-                <button id="generate-custom-btn" class="primary-btn" style="margin-top: 8px;">
+                <button id="generate-custom-btn" class="primary-btn" style="margin-top: 10px;">
                     <i class="fa-solid fa-qrcode"></i> Générer le QR Code
                 </button>
 
-                <div id="qr-result" class="qr-result-box" style="margin-top: 20px; text-align: center;"></div>
+                <div id="qr-result" class="qr-result-box" style="margin-top: 25px; text-align: center;"></div>
             </div>
         </section>
 
         <!-- 2. Scanner Section -->
         <section id="scanner-section" class="page-section">
-            <div style="margin-bottom: 10px; text-align: center;">
-                <h2 style="font-size: 1.15rem; font-weight: 600; margin-bottom: 2px;">Scanner un QR Code</h2>
-                <p style="font-size: 0.8rem; color: var(--text-muted);">Pointez la caméra vers un code ou choisissez une image</p>
+            <div style="margin-bottom: 15px; text-align: center;">
+                <h2 style="font-size: 1.3rem; font-weight: 600; margin-bottom: 4px;">Scanner un QR Code</h2>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Pointez la caméra vers un code ou choisissez une image</p>
             </div>
             
             <div class="scanner-container">
@@ -135,12 +135,12 @@
 
         <!-- 3. History Section -->
         <section id="history-section" class="page-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div>
-                    <h2 style="font-size: 1.15rem; font-weight: 600; margin-bottom: 2px;">Historique</h2>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Vos codes générés et scannés</p>
+                    <h2 style="font-size: 1.3rem; font-weight: 600; margin-bottom: 4px;">Historique</h2>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Vos codes générés et scannés</p>
                 </div>
-                <button id="clear-history-btn" class="icon-btn" title="Effacer tout" style="color: #ef4444;">
+                <button id="clear-history-btn" class="icon-btn" title="Effacer tout" style="color: #ef4444;" aria-label="Effacer l'historique">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -149,29 +149,43 @@
 
         <!-- 4. Premium Section -->
         <section id="premium-section" class="page-section">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <i class="fa-solid fa-crown" style="font-size: 2rem; color: #eab308; margin-bottom: 6px;"></i>
-                <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">QR Master Pro VIP</h2>
-                <p style="font-size: 0.8rem; color: var(--text-muted);">Débloquez toutes les fonctionnalités avancées</p>
+            <div style="text-align: center; margin-bottom: 25px;">
+                <i class="fa-solid fa-crown" style="font-size: 2.5rem; color: #eab308; margin-bottom: 8px;"></i>
+                <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;">QR Master Pro VIP</h2>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Passez au niveau supérieur et débloquez tout le potentiel</p>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                <div class="premium-plan-card active-plan">
-                    <div class="save-badge">Populaire</div>
-                    <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 2px;">Abonnement Annuel</div>
-                    <div class="plan-price">9.99 $ / an</div>
-                    <div class="plan-desc">Accès illimité à vie, génération en masse et sans publicités.</div>
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <!-- Abonnement Annuel -->
+                <div class="premium-plan-card active-plan" style="border: 2px solid #eab308; position: relative; padding: 20px;">
+                    <div class="save-badge" style="background: #eab308; color: #000; font-weight: bold;">Économisez 70% - Meilleure Offre</div>
+                    <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 4px; margin-top: 5px;">Abonnement Annuel</div>
+                    <div class="plan-price" style="font-size: 1.4rem; color: #eab308; font-weight: 700;">10.99 $ <span style="font-size: 0.9rem; color: var(--text-muted);">/ an</span></div>
+                    <ul style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 10px; margin-bottom: 0; text-align: left; list-style-type: none;">
+                        <li>✓ Accès illimité à toutes les fonctionnalités VIP</li>
+                        <li>✓ Génération de QR Codes en masse (Batch)</li>
+                        <li>✓ Téléchargement HD (Formats PNG & SVG)</li>
+                        <li>✓ 100% Sans publicités</li>
+                        <li>✓ Support technique prioritaire 24/7</li>
+                    </ul>
                 </div>
-                <div class="premium-plan-card">
-                    <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 2px;">Abonnement Mensuel</div>
-                    <div class="plan-price">1.99 $ / mois</div>
-                    <div class="plan-desc">Idéal pour une utilisation flexible et ponctuelle.</div>
+                <!-- Abonnement Mensuel -->
+                <div class="premium-plan-card" style="padding: 20px;">
+                    <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 4px;">Abonnement Mensuel</div>
+                    <div class="plan-price" style="font-size: 1.25rem; font-weight: 600;">2.99 $ <span style="font-size: 0.9rem; color: var(--text-muted);">/ mois</span></div>
+                    <ul style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 10px; margin-bottom: 0; text-align: left; list-style-type: none;">
+                        <li>✓ Génération et scan illimités</li>
+                        <li>✓ Sans publicités</li>
+                        <li>✓ Idéal pour une utilisation flexible et ponctuelle</li>
+                    </ul>
                 </div>
             </div>
 
-            <button id="subscribe-now-btn" class="primary-btn" style="background: linear-gradient(135deg, #eab308, #d97706); color: #000;">
-                <i class="fa-solid fa-bolt"></i> S'abonner Maintenant
-            </button>
+            <div style="text-align: center;">
+                <button id="subscribe-now-btn" class="primary-btn" style="background: linear-gradient(135deg, #eab308, #d97706); color: #000; font-weight: bold; max-width: 400px; margin-left: auto; margin-right: auto;">
+                    <i class="fa-solid fa-bolt"></i> Profiter de l'offre VIP maintenant
+                </button>
+            </div>
         </section>
 
     </main>
@@ -203,7 +217,7 @@
     <div id="settings-drawer" class="settings-drawer">
         <div class="drawer-header">
             <span style="font-weight: 600;">Paramètres</span>
-            <button id="close-drawer-btn" class="icon-btn">
+            <button id="close-drawer-btn" class="icon-btn" aria-label="Fermer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -245,7 +259,7 @@
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <span id="scan-result-category" class="badge">RÉSULTAT</span>
-                <button id="close-scan-result-btn" class="icon-btn">
+                <button id="close-scan-result-btn" class="icon-btn" aria-label="Fermer">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>

@@ -11,7 +11,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// App State & Storage
+// App State & Storage (LocalStorage Integration)
 let historyData = JSON.parse(localStorage.getItem('qr_master_history')) || [];
 let currentActiveType = 'url';
 let html5QrCode = null;

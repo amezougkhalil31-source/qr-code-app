@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Master Icon Generator</title>
+    <title>QR Master Pro - App Icon Generator</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -12,43 +16,79 @@
         }
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #111;
+            background-color: #0f172a;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            gap: 20px;
         }
         .icon-box {
-            width: 512px;
-            height: 512px;
+            width: 256px; /* عرض مصغر للمعاينة، والأصل هو 512x512 */
+            height: 256px;
             background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-            border-radius: 100px;
+            border-radius: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
         .qr-symbol {
             width: 65%;
             height: 65%;
             background: #ffffff;
-            border-radius: 40px;
-            padding: 30px;
+            border-radius: 25px;
+            padding: 15px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 15px;
+            gap: 10px;
         }
         .qr-block {
             background: #1e1b4b;
-            border-radius: 15px;
+            border-radius: 10px;
         }
         .qr-block.empty {
             background: transparent;
         }
+        .actions-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .primary-btn {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .primary-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
-    <div class="icon-box">
+
+    <div style="text-align: center;">
+        <h2 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">QR Master Pro - Logo officiel</h2>
+        <p style="font-size: 0.8rem; color: #94a3b8;">Format standard 512x512 pixels pour Google Play</p>
+    </div>
+
+    <!-- اللوغو الأساسي -->
+    <div class="icon-box" id="app-icon-preview">
         <div class="qr-symbol">
             <div class="qr-block"></div>
             <div class="qr-block"></div>
@@ -61,5 +101,13 @@
             <div class="qr-block"></div>
         </div>
     </div>
+
+    <!-- أزرار التحكم والتعديل -->
+    <div class="actions-container">
+        <button class="primary-btn" onclick="alert('قم بأخذ لقطة شاشة (Screenshot) بدقة عالية أو استخدم أداة التصميم لحفظه كـ PNG بحجم 512x512')">
+            <i class="fa-solid fa-download"></i> Télécharger l'icône
+        </button>
+    </div>
+
 </body>
 </html>
