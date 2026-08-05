@@ -1,5 +1,5 @@
 // ==========================================
-// QR Master Pro - Final Script (script.js)
+// QR Master Pro - Complete & Ultimate script.js
 // ==========================================
 
 if ('serviceWorker' in navigator) {
@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetTab === 'history') renderHistory();
 
         closeDrawer();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     navItems.forEach(item => {
@@ -210,8 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else if (type === 'coordinates') {
             html = `
-                <div class="input-group"><label>Latitude</label><input type="number" step="any" id="input-lat" placeholder="30.4278"></div>
-                <div class="input-group"><label>Longitude</label><input type="number" step="any" id="input-lng" placeholder="-9.5981"></div>
+                <div class="input-group"><label>Latitude (ex: 30.4278)</label><input type="number" step="any" id="input-lat" placeholder="30.4278"></div>
+                <div class="input-group"><label>Longitude (ex: -9.5981)</label><input type="number" step="any" id="input-lng" placeholder="-9.5981"></div>
             `;
         } else if (type === 'agenda') {
             html = `
@@ -243,7 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('input-email')?.value.trim() || '';
             qrContent = `BEGIN:VCARD\nVERSION:3.0\nN:${fn}\nTEL:${tel}\nEMAIL:${email}\nEND:VCARD`;
         } else if (currentSelectedType === 'phone') {
-            qrContent = `tel:${document.getElementById('input-phone')?.value.trim()}`;
+            const phoneVal = document.getElementById('input-phone')?.value.trim() || '';
+            qrContent = `tel:${phoneVal}`;
         } else if (currentSelectedType === 'email') {
             const to = document.getElementById('input-email-to')?.value.trim() || '';
             const sub = encodeURIComponent(document.getElementById('input-email-sub')?.value.trim() || '');
@@ -261,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (currentSelectedType === 'coordinates') {
             const lat = document.getElementById('input-lat')?.value.trim() || '0';
             const lng = document.getElementById('input-lng')?.value.trim() || '0';
-            qrContent = `geo:${lat},${lng}`;
+            qrContent = `geo:${lat},${lng}?q=${lat},${lng}`;
         } else if (currentSelectedType === 'agenda') {
             const title = document.getElementById('input-cal-title')?.value.trim() || 'Événement';
             const start = document.getElementById('input-cal-start')?.value.replace(/[-:]/g, '') || '';
@@ -277,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (qrResult) qrResult.innerHTML = '';
-        const size = parseInt(qrSizeSelect?.value) || 300;
+        const size = parseInt(qrSizeSelect?.value) || 250;
 
         new QRCode(qrResult, {
             text: qrContent,
@@ -369,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showScanModal(decodedText);
     }
 
-    // الزر الذكي المطور (يتفاعل ديناميكياً مع نوع المحتوى المسكون)
     function showScanModal(text) {
         if (!text) text = "";
         if (scanResultText) scanResultText.textContent = text;
@@ -409,6 +410,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     a.download = 'contact.vcf';
                     a.click();
                 };
+            } else if (text.startsWith('geo:')) {
+                smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-location-dot"></i> <span>Ouvrir sur la carte GPS</span>`;
+                smartOpenLinkBtn.onclick = () => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(text.replace('geo:', ''))}`, '_blank');
             } else {
                 smartOpenLinkBtn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>Rechercher sur Google</span>`;
                 smartOpenLinkBtn.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`, '_blank');

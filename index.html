@@ -2,185 +2,227 @@
 <html lang="fr" data-theme="dark" data-theme-color="indigo">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>QR Master Pro</title>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Manifest PWA -->
+    
+    <!-- PWA Manifest & Meta -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- External Libraries: QRCode & Html5-qrcode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- App Header -->
     <header class="app-header">
-        <button id="menu-toggle-btn" class="icon-btn">
+        <button id="menu-toggle-btn" class="icon-btn" aria-label="Menu">
             <i class="fa-solid fa-bars"></i>
         </button>
-        <h1 class="app-title">QR Master Pro</h1>
-        <button id="header-premium-btn" class="icon-btn" style="color: #eab308;">
+        <h1 class="app-logo">QR Master <span class="pro-badge">PRO</span></h1>
+        <button id="header-premium-btn" class="icon-btn premium-crown-btn" aria-label="Premium">
             <i class="fa-solid fa-crown"></i>
         </button>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="app-main">
+    <!-- Main Content Container -->
+    <main class="app-container">
 
         <!-- 1. Generator Section -->
         <section id="generator-section" class="page-section active">
-            <!-- Types Menu View -->
-            <div id="types-menu-view">
-                <div style="margin-bottom: 16px;">
-                    <h2 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 4px;">Créer un QR Code</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Choisissez le type de contenu à générer</p>
-                </div>
-                <div class="types-grid">
-                    <button class="type-item-btn" data-type="url">
-                        <i class="fa-solid fa-link"></i>
-                        <span>Lien Web</span>
-                    </button>
-                    <button class="type-item-btn" data-type="text">
-                        <i class="fa-solid fa-align-left"></i>
-                        <span>Texte</span>
-                    </button>
-                    <button class="type-item-btn" data-type="contact">
-                        <i class="fa-solid fa-address-book"></i>
-                        <span>Contact</span>
-                    </button>
-                    <button class="type-item-btn" data-type="phone">
-                        <i class="fa-solid fa-phone"></i>
-                        <span>Téléphone</span>
-                    </button>
-                    <button class="type-item-btn" data-type="email">
-                        <i class="fa-solid fa-envelope"></i>
-                        <span>Email</span>
-                    </button>
-                    <button class="type-item-btn" data-type="sms">
-                        <i class="fa-solid fa-comment-sms"></i>
-                        <span>SMS</span>
-                    </button>
-                    <button class="type-item-btn" data-type="wifi">
-                        <i class="fa-solid fa-wifi"></i>
-                        <span>Wi-Fi</span>
-                    </button>
-                    <button class="type-item-btn" data-type="coordinates">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <span>GPS</span>
-                    </button>
-                    <button class="type-item-btn" data-type="agenda">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <span>Agenda</span>
-                    </button>
-                    <button class="type-item-btn" data-type="clipboard">
-                        <i class="fa-solid fa-clipboard"></i>
-                        <span>Presse-papiers</span>
-                    </button>
-                </div>
+            <div class="section-header">
+                <h2>Générateur de QR Code</h2>
+                <p>Sélectionnez un type pour créer votre code instantanément</p>
+            </div>
+
+            <!-- Types Grid Menu -->
+            <div id="types-menu-view" class="types-grid">
+                <button class="type-item-btn" data-type="url">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Lien Web</span>
+                </button>
+                <button class="type-item-btn" data-type="text">
+                    <i class="fa-solid fa-align-left"></i>
+                    <span>Texte</span>
+                </button>
+                <button class="type-item-btn" data-type="contact">
+                    <i class="fa-solid fa-address-book"></i>
+                    <span>Contact</span>
+                </button>
+                <button class="type-item-btn" data-type="phone">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>Téléphone</span>
+                </button>
+                <button class="type-item-btn" data-type="email">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Email</span>
+                </button>
+                <button class="type-item-btn" data-type="sms">
+                    <i class="fa-solid fa-comment-sms"></i>
+                    <span>SMS</span>
+                </button>
+                <button class="type-item-btn" data-type="wifi">
+                    <i class="fa-solid fa-wifi"></i>
+                    <span>Wi-Fi</span>
+                </button>
+                <button class="type-item-btn" data-type="coordinates">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>GPS</span>
+                </button>
+                <button class="type-item-btn" data-type="agenda">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Agenda</span>
+                </button>
+                <button class="type-item-btn" data-type="clipboard">
+                    <i class="fa-solid fa-clipboard"></i>
+                    <span>Presse-papiers</span>
+                </button>
             </div>
 
             <!-- Dynamic Form View -->
-            <div id="dynamic-form-view" style="display: none;">
-                <div class="form-header-row">
+            <div id="dynamic-form-view" class="dynamic-form-card" style="display: none;">
+                <div class="form-card-header">
                     <button id="back-to-menu-btn" class="icon-btn">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <h2 id="form-title-text" style="font-size: 1.1rem; font-weight: 600;">Générer</h2>
+                    <h3 id="form-title-text">Créer</h3>
                 </div>
 
-                <div id="form-inputs-container"></div>
+                <div class="form-body">
+                    <div id="form-inputs-container">
+                        <!-- Dynamic inputs injected via JS -->
+                    </div>
 
-                <div class="input-group">
-                    <label>Taille du QR Code</label>
-                    <select id="qr-size">
-                        <option value="200">Petit (200px)</option>
-                        <option value="300" selected>Moyen (300px)</option>
-                        <option value="400">Grand (400px)</option>
-                    </select>
+                    <div class="input-group size-select-group">
+                        <label for="qr-size">Taille du QR Code</label>
+                        <select id="qr-size">
+                            <option value="200">Petit (200px)</option>
+                            <option value="250" selected>Moyen (250px)</option>
+                            <option value="350">Grand (350px)</option>
+                        </select>
+                    </div>
+
+                    <button id="generate-custom-btn" class="primary-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Générer le QR Code
+                    </button>
+
+                    <!-- QR Result Container -->
+                    <div id="qr-result" class="qr-result-box"></div>
                 </div>
-
-                <button id="generate-custom-btn" class="primary-btn" style="margin-top: 10px;">
-                    <i class="fa-solid fa-qrcode"></i> Générer le QR Code
-                </button>
-
-                <div id="qr-result" class="qr-result-box" style="margin-top: 25px; text-align: center;"></div>
             </div>
         </section>
 
         <!-- 2. Scanner Section -->
         <section id="scanner-section" class="page-section">
-            <div style="margin-bottom: 16px; text-align: center;">
-                <h2 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 4px;">Scanner un QR Code</h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Pointez la caméra vers un code ou choisissez une image</p>
+            <div class="section-header">
+                <h2>Scanner un QR Code</h2>
+                <p>Pointez votre caméra vers un code ou importez une image</p>
             </div>
-            
-            <div class="scanner-container">
-                <div id="scanner-loading" style="text-align: center; padding: 20px; color: var(--text-muted); display: none;">Chargement de la caméra...</div>
+
+            <div class="scanner-wrapper">
                 <div id="reader"></div>
-                
-                <div class="scanner-controls-responsive">
-                    <button id="switch-camera-btn" class="scanner-action-btn">
-                        <i class="fa-solid fa-camera-rotate"></i> <span>Changer Caméra</span>
+                <div id="scanner-loading" class="scanner-loading" style="display: none;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Initialisation de la caméra...
+                </div>
+            </div>
+
+            <div class="scanner-actions">
+                <button id="switch-camera-btn" class="secondary-btn">
+                    <i class="fa-solid fa-camera-rotate"></i> Changer de caméra
+                </button>
+                <button id="scan-gallery-btn" class="secondary-btn">
+                    <i class="fa-solid fa-image"></i> Importer une image
+                </button>
+                <input type="file" id="gallery-file-input" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Scan Result Modal/Screen Overlay -->
+            <div id="scan-result-screen" class="scan-result-screen">
+                <div class="scan-result-card">
+                    <button id="close-scan-result-btn" class="icon-btn close-modal-btn">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
-                    <button id="scan-gallery-btn" class="scanner-action-btn" style="background: var(--bg-card); color: var(--text-color); border: 1px solid var(--border-color);">
-                        <i class="fa-solid fa-image" style="color: var(--primary);"></i> <span>Galerie</span>
-                    </button>
-                    <input type="file" id="gallery-file-input" accept="image/*" style="display: none;">
+                    <span id="scan-result-category" class="badge-category">RÉSULTAT</span>
+                    <div id="scan-result-text" class="scan-result-content"></div>
+                    
+                    <div class="scan-action-buttons">
+                        <button id="smart-open-link-btn" class="primary-btn">
+                            <i class="fa-solid fa-globe"></i> <span>Ouvrir</span>
+                        </button>
+                        <div class="secondary-actions-row">
+                            <button id="scan-action-copy" class="action-sub-btn">
+                                <i class="fa-solid fa-copy"></i> Copier
+                            </button>
+                            <button id="scan-action-share" class="action-sub-btn">
+                                <i class="fa-solid fa-share-nodes"></i> Partager
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- 3. History Section -->
         <section id="history-section" class="page-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="section-header history-header">
                 <div>
-                    <h2 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 4px;">Historique</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Vos codes générés et scannés</p>
+                    <h2>Historique</h2>
+                    <p>Vos codes générés et scannés récents</p>
                 </div>
-                <button id="clear-history-btn" class="icon-btn" title="Effacer tout" style="color: #ef4444;">
+                <button id="clear-history-btn" class="icon-btn text-danger" title="Tout effacer">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
-            <div id="history-list-container"></div>
+
+            <div id="history-list-container" class="history-list">
+                <!-- History items injected via JS -->
+            </div>
         </section>
 
         <!-- 4. Premium Section -->
         <section id="premium-section" class="page-section">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <i class="fa-solid fa-crown" style="font-size: 2.5rem; color: #eab308; margin-bottom: 10px;"></i>
-                <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 6px;">QR Master Pro VIP</h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Débloquez toutes les fonctionnalités avancées</p>
+            <div class="premium-hero">
+                <div class="crown-icon-wrapper">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <h2>Passez à QR Master PRO</h2>
+                <p>Débloquez des styles illimités, des codes dynamiques et l'absence de publicités.</p>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
-                <div class="premium-plan-card active-plan">
-                    <div class="save-badge">Populaire</div>
-                    <div style="font-weight: 600; margin-bottom: 4px;">Abonnement Annuel</div>
-                    <div class="plan-price">9.99 $ / an</div>
-                    <div class="plan-desc">Accès illimité à vie, génération en masse et sans publicités.</div>
+            <div class="premium-plans-container">
+                <div class="premium-plan-card active-plan" data-plan="yearly">
+                    <div class="plan-badge">POPULAIRE (-50%)</div>
+                    <div class="plan-title">Annuel</div>
+                    <div class="plan-price">10.99 $ <span>/ an</span></div>
+                    <div class="plan-desc">Soit environ 0.91 $ par mois. Facturé annuellement.</div>
                 </div>
-                <div class="premium-plan-card">
-                    <div style="font-weight: 600; margin-bottom: 4px;">Abonnement Mensuel</div>
-                    <div class="plan-price">1.99 $ / mois</div>
-                    <div class="plan-desc">Idéal pour une utilisation flexible et ponctuelle.</div>
+
+                <div class="premium-plan-card" data-plan="monthly">
+                    <div class="plan-title">Mensuel</div>
+                    <div class="plan-price">2.99 $ <span>/ mois</span></div>
+                    <div class="plan-desc">Facturé chaque mois. Résiliable à tout moment.</div>
                 </div>
             </div>
 
-            <button id="subscribe-now-btn" class="primary-btn" style="background: linear-gradient(135deg, #eab308, #d97706); color: #000;">
-                <i class="fa-solid fa-bolt"></i> S'abonner Maintenant
+            <button id="subscribe-now-btn" class="primary-btn premium-cta-btn">
+                <i class="fa-solid fa-bolt"></i> S'abonner maintenant
             </button>
         </section>
 
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-target="generator">
             <i class="fa-solid fa-qrcode"></i>
-            <span>Générer</span>
+            <span>Créer</span>
         </button>
         <button class="nav-item" data-target="scanner">
             <i class="fa-solid fa-camera"></i>
@@ -191,88 +233,63 @@
             <span>Historique</span>
         </button>
         <button class="nav-item" data-target="premium">
-            <i class="fa-solid fa-crown" style="color: #eab308;"></i>
-            <span>Premium</span>
+            <i class="fa-solid fa-crown"></i>
+            <span>PRO</span>
         </button>
     </nav>
 
-    <!-- Settings Drawer Overlay -->
+    <!-- Settings Drawer (Sidebar) -->
     <div id="drawer-overlay" class="drawer-overlay"></div>
-
-    <!-- Settings Drawer -->
-    <div id="settings-drawer" class="settings-drawer">
+    <aside id="settings-drawer" class="settings-drawer">
         <div class="drawer-header">
-            <span style="font-weight: 600;">Paramètres</span>
+            <h3>Paramètres</h3>
             <button id="close-drawer-btn" class="icon-btn">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
+
         <div class="drawer-body">
-            <div class="setting-item">
-                <span>Thème de l'application</span>
-                <div class="theme-switch-btns">
-                    <button id="light-mode-btn" class="theme-btn">Clair</button>
-                    <button id="dark-mode-btn" class="theme-btn active">Sombre</button>
+            <div class="setting-group">
+                <label>Thème de l'application</label>
+                <div class="theme-switch-container">
+                    <button id="light-mode-btn" class="theme-opt-btn">
+                        <i class="fa-solid fa-sun"></i> Clair
+                    </button>
+                    <button id="dark-mode-btn" class="theme-opt-btn active">
+                        <i class="fa-solid fa-moon"></i> Sombre
+                    </button>
                 </div>
             </div>
 
-            <div class="setting-item">
-                <span>Couleur principale</span>
-                <div class="color-picker-group">
-                    <div class="color-dot" data-color="indigo" style="background: #4f46e5;"></div>
-                    <div class="color-dot" data-color="blue" style="background: #0284c7;"></div>
-                    <div class="color-dot" data-color="emerald" style="background: #059669;"></div>
-                    <div class="color-dot" data-color="rose" style="background: #e11d48;"></div>
+            <div class="setting-group">
+                <label>Couleur principale</label>
+                <div class="color-dots-container">
+                    <span class="color-dot" data-color="indigo" style="background: #4f46e5;"></span>
+                    <span class="color-dot" data-color="emerald" style="background: #10b981;"></span>
+                    <span class="color-dot" data-color="rose" style="background: #f43f5e;"></span>
+                    <span class="color-dot" data-color="amber" style="background: #f59e0b;"></span>
+                    <span class="color-dot" data-color="cyan" style="background: #06b6d4;"></span>
                 </div>
             </div>
 
-            <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 15px; display: flex; flex-direction: column; gap: 8px;">
-                <button id="goto-premium-drawer-btn" class="drawer-link" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
-                    <i class="fa-solid fa-crown" style="color: #eab308;"></i> Version Premium
-                </button>
-                <button id="share-app-btn" class="drawer-link" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
-                    <i class="fa-solid fa-share-nodes"></i> Partager l'application
-                </button>
-                <a href="privacy.html" class="drawer-link">
-                    <i class="fa-solid fa-shield-halved"></i> Politique de confidentialité
-                </a>
-            </div>
-        </div>
-    </div>
+            <hr class="drawer-divider">
 
-    <!-- Scan Result Screen Modal -->
-    <div id="scan-result-screen" class="modal-screen">
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <span id="scan-result-category" class="badge">RÉSULTAT</span>
-                <button id="close-scan-result-btn" class="icon-btn">
-                    <i class="fa-solid fa-xmark"></i>
+            <div class="drawer-menu-links">
+                <button id="goto-premium-drawer-btn" class="drawer-link-item">
+                    <i class="fa-solid fa-crown" style="color: #f59e0b;"></i>
+                    <span>Version PRO</span>
+                    <i class="fa-solid fa-chevron-right arrow-icon"></i>
                 </button>
-            </div>
-            <div style="background-color: var(--bg-main); padding: 15px; border-radius: 10px; word-break: break-all; max-height: 150px; overflow-y: auto; margin-bottom: 15px;">
-                <p id="scan-result-text" style="font-size: 0.95rem;"></p>
-            </div>
-            
-            <!-- زر الإجراء الذكي في الموضع البارز للأعلى -->
-            <button id="smart-open-link-btn" class="primary-btn" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: #fff;">
-                <i class="fa-solid fa-bolt"></i> <span>Action</span>
-            </button>
-
-            <div class="history-custom-actions">
-                <button id="scan-action-copy" class="history-custom-btn">
-                    <i class="fa-solid fa-copy"></i> Copier
-                </button>
-                <button id="scan-action-share" class="history-custom-btn">
-                    <i class="fa-solid fa-share-nodes"></i> Partager
+                <button id="share-app-btn" class="drawer-link-item">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Partager l'application</span>
+                    <i class="fa-solid fa-chevron-right arrow-icon"></i>
                 </button>
             </div>
         </div>
-    </div>
+    </aside>
 
-    <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <!-- App Script -->
+    <!-- Script Principal -->
     <script src="script.js"></script>
 </body>
 </html>
