@@ -1,31 +1,45 @@
 {
-  "name": "QR Master Pro",
-  "short_name": "QR Master",
-  "description": "Application professionnelle et complète pour générer et scanner des codes QR et codes-barres en toute simplicité.",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0f172a",
-  "theme_color": "#4f46e5",
-  "categories": [
-    "utilities",
-    "productivity",
-    "tools"
-  ],
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "prefer_related_applications": false
+    "id": "com.qrmasterpro.app",
+    "name": "QR Master Pro",
+    "short_name": "QR Master",
+    "description": "Application professionnelle pour créer et scanner des QR codes. Inclut des fonctionnalités Premium et des abonnements via Google Play Billing.",
+    "lang": "fr",
+    "dir": "ltr",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#4f46e5",
+    "orientation": "portrait-primary",
+    "categories": ["productivity", "utilities", "business"],
+    "icons": [
+        {
+            "src": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/qrcode.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Scanner un QR Code",
+            "short_name": "Scanner",
+            "description": "Ouvrir directement la caméra pour scanner",
+            "url": "./index.html?action=scan",
+            "icons": [
+                {
+                    "src": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/camera.svg",
+                    "sizes": "96x96",
+                    "type": "image/svg+xml"
+                }
+            ]
+        }
+    ],
+    "related_applications": [
+        {
+            "platform": "play",
+            "url": "https://play.google.com/store/apps/details?id=com.qrmasterpro.app",
+            "id": "com.qrmasterpro.app"
+        }
+    ],
+    "prefer_related_applications": false
 }

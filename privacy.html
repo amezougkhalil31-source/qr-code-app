@@ -10,63 +10,61 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
-    <meta name="theme-color" content="#4f46e5">
 </head>
 <body>
 
     <!-- Header -->
     <header class="app-header">
-        <a href="index.html" class="icon-btn" style="text-decoration: none;">
+        <a href="index.html" class="icon-btn" title="Retour">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h1 class="app-title">Politique de Confidentialité</h1>
-        <div style="width: 40px;"></div> <!-- Spacer -->
+        <h1 class="app-title">Politique de confidentialité</h1>
+        <div style="width: 38px;"></div>
     </header>
 
     <!-- Main Content Area -->
     <main class="app-main" style="padding-bottom: 40px;">
-        <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; display: flex; flex-direction: column; gap: 20px;">
+        <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; line-height: 1.6;">
             
-            <div>
-                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">1. Introduction</h2>
-                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    Bienvenue sur <strong>QR Master Pro</strong>. Votre vie privée est d'une importance capitale pour nous. Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos informations lorsque vous utilisez notre application.
-                </p>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 10px;"></i>
+                <h2 style="font-size: 1.2rem; font-weight: 700;">QR Master Pro</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Dernière mise à jour : Août 2026</p>
             </div>
 
-            <div>
-                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">2. Données collectées</h2>
-                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    <strong>QR Master Pro</strong> fonctionne principalement en local sur votre appareil :
-                </p>
-                <ul style="font-size: 0.9rem; color: var(--text-muted); padding-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
-                    <li><strong>Caméra :</strong> Utilisée exclusivement pour scanner les QR codes en temps réel. Aucune vidéo ou image n'est stockée ou envoyée à un serveur externe.</li>
-                    <li><strong>Galerie :</strong> Utilisée uniquement lorsque vous choisissez d'importer une image contenant un QR code depuis votre appareil.</li>
-                    <li><strong>Historique :</strong> Stocké localement sur votre appareil (via LocalStorage) pour vous permettre de retrouver vos codes générés et scannés. Vous pouvez l'effacer à tout moment.</li>
-                    <li><strong>Géolocalisation (GPS) :</strong> Utilisée uniquement si vous décidez de générer un QR code de type GPS avec vos coordonnées actuelles.</li>
-                </ul>
-            </div>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                Bienvenue sur <strong>QR Master Pro</strong>. Nous accordons une importance capitale à la protection de votre vie privée. Cette politique de confidentialité explique comment notre application gère vos informations conformément aux exigences de Google Play.
+            </p>
 
-            <div>
-                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">3. Partage des données</h2>
-                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    Nous ne vendons, n'échangeons ni ne transférons vos informations personnelles à des tiers. Toutes les données générées ou scannées restent strictement sous votre contrôle.
-                </p>
-            </div>
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-top: 15px; margin-bottom: 6px;">1. Collecte et utilisation des données</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                Notre application fonctionne principalement en local sur votre appareil. L'historique des QR codes générés ou scannés est stocké localement sur votre téléphone (via localStorage) et n'est en aucun cas envoyé vers des serveurs externes.
+            </p>
 
-            <div>
-                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">4. Sécurité</h2>
-                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    Nous mettons en œuvre des mesures de sécurité rigoureuses pour protéger vos données locales et garantir une expérience sécurisée (utilisation de PWA et chiffrement local).
-                </p>
-            </div>
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-top: 15px; margin-bottom: 6px;">2. Utilisation de la Caméra</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                L'application nécessite l'accès à la caméra de votre appareil uniquement dans le but de scanner les QR codes en temps réel. Aucune image ou flux vidéo n'est enregistré ou partagé.
+            </p>
 
-            <div>
-                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--primary); margin-bottom: 8px;">5. Contact</h2>
-                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-                    Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter via les paramètres de l'application.
-                </p>
-            </div>
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-top: 15px; margin-bottom: 6px;">3. Publicités (Google AdMob)</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                QR Master Pro intègre des services publicitaires (tels que Google AdMob) pour afficher des annonces. Ces régies publicitaires peuvent utiliser des identifiants publicitaires pour diffuser des annonces pertinentes. Les utilisateurs de la version Premium bénéficient d'une expérience sans publicité.
+            </p>
+
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-top: 15px; margin-bottom: 6px;">4. Abonnements et Paiements (Google Play Billing)</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                L'application propose des options d'abonnement payant (formules mensuelles et annuelles) pour débloquer des fonctionnalités avancées et supprimer les publicités. Toutes les transactions financières, les paiements et la gestion des abonnements sont entièrement traités et sécurisés par le système officiel de facturation <strong>Google Play Billing</strong>. Nous ne stockons aucune information relative à vos cartes bancaires ou données de paiement.
+            </p>
+
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-top: 15px; margin-bottom: 6px;">5. Sécurité</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                Nous mettons en œuvre des mesures de sécurité conformes aux standards de l'industrie pour protéger vos données contre tout accès non autorisé, modification ou divulgation.
+            </p>
+
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--primary); margin-top: 15px; margin-bottom: 6px;">6. Contact</h3>
+            <p style="font-size: 0.85rem;">
+                Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter directement via notre support sur le Google Play Store.
+            </p>
 
         </div>
     </main>
