@@ -1,17 +1,31 @@
 {
   "name": "QR Master Pro",
   "short_name": "QR Master",
-  "description": "Application professionnelle pour créer et scanner des QR codes en toute simplicité.",
+  "description": "Application professionnelle et complète pour générer et scanner des codes QR et codes-barres en toute simplicité.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f172a",
   "theme_color": "#4f46e5",
+  "categories": [
+    "utilities",
+    "productivity",
+    "tools"
+  ],
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1048/1048953.png",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
