@@ -35,14 +35,28 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// 3. مرحلة جلب الطلبات (Fetch): تشغيل التطبيق بدون إنترنت واعتماد الكاش أو جلب البيانات من الشبكة
+// 3. مرحلة جلب الطلبات (Fetch): تشغيل التطبيق بدون إنترنت ومعالجة الملفات المحلية والخارجية بكفاءة
 self.addEventListener('fetch', (event) => {
+    if (event.request.method !== 'GET') return;
+
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
             if (cachedResponse) {
                 return cachedResponse;
             }
             return fetch(event.request).then((networkResponse) => {
+                // التأكد من صحة الاستجابة قبل تخزينها ديناميكياً
+                if (!networkResponse || networkResponse.status !== 200) {
+                    return networkResponse;
+                }
+                
+                const responseToCache = networkResponse.clone();
+                caches.open(CACHE_NAME).then((cache) => {
+                    if (event.request.url.startsWith('http')) {
+                        cache.put(event.request, responseToCache);
+                    }
+                });
+                
                 return networkResponse;
             }).catch(() => {
                 if (event.request.mode === 'navigate') {
