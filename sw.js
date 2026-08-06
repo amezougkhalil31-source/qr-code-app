@@ -7,6 +7,9 @@ const ASSETS_TO_CACHE = [
   './style.css',
   './script.js',
   './manifest.json',
+  './privacy.html',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
   'https://unpkg.com/html5-qrcode'

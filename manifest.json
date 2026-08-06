@@ -1,6 +1,14 @@
 {
   "short_name": "QR Master Pro",
   "name": "QR Master Pro - Scanner & Generator",
+  "description": "Générez et scannez vos QR Codes rapidement avec QR Master Pro.",
+  "lang": "fr-FR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1117",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -14,13 +22,5 @@
       "sizes": "512x512",
       "purpose": "any maskable"
     }
-  ],
-  "start_url": "./index.html",
-  "background_color": "#0d1117",
-  "theme_color": "#2563eb",
-  "display": "standalone",
-  "orientation": "portrait",
-  "scope": "./",
-  "lang": "fr-FR",
-  "description": "Générez et scannez vos QR Codes rapidement avec QR Master Pro."
+  ]
 }

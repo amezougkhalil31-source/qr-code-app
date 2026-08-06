@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHistory();
     setupPWAInstall();
     selectQRType('url');
+    initTheme();
 });
 
 // ==========================================
@@ -62,6 +63,9 @@ function updateVIPUI() {
             card.classList.remove('premium-locked');
             const crown = card.querySelector('.crown-icon');
             if (crown) crown.remove();
+            
+            const type = card.getAttribute('data-type');
+            card.setAttribute('onclick', `selectQRType('${type}')`);
         });
     }
 }
@@ -411,6 +415,15 @@ function scanImageFile(event) {
         return;
     }
 
+    // Création d'un élément temporaire si introuvable
+    let tempReader = document.getElementById('reader-file-temp');
+    if (!tempReader) {
+        tempReader = document.createElement('div');
+        tempReader.id = 'reader-file-temp';
+        tempReader.style.display = 'none';
+        document.body.appendChild(tempReader);
+    }
+
     const scanner = new Html5Qrcode("reader-file-temp", false);
     scanner.scanFile(file, true)
         .then(decodedText => {
@@ -601,7 +614,7 @@ function startGooglePlayBilling() {
 }
 
 // ==========================================
-// 11. Utilitaires Divers & Fallback Copie
+// 11. Utilitaires Divers, Theme & Fallback Copie
 // ==========================================
 function copyToClipboard(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -632,10 +645,19 @@ function fallbackCopyText(text) {
     document.body.removeChild(textArea);
 }
 
+function initTheme() {
+    const savedTheme = localStorage.getItem('qr_app_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const toggle = document.getElementById('theme-toggle');
+    if (toggle) toggle.checked = (savedTheme === 'dark');
+}
+
 function toggleTheme() {
     const toggle = document.getElementById('theme-toggle');
     const isChecked = toggle ? toggle.checked : false;
-    document.documentElement.setAttribute('data-theme', isChecked ? 'dark' : 'light');
+    const themeName = isChecked ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', themeName);
+    localStorage.setItem('qr_app_theme', themeName);
 }
 
 function setupPWAInstall() {

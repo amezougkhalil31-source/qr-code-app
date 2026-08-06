@@ -19,13 +19,15 @@
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     background-color: var(--bg-main);
     color: var(--text-main);
     min-height: 100vh;
-    padding-bottom: 75px;
+    padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+    overflow-x: hidden;
 }
 
 /* Header */
@@ -63,6 +65,12 @@ body {
     font-weight: 700;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .vip-status-badge {
     background: rgba(234, 179, 8, 0.15);
     color: var(--accent-yellow);
@@ -71,6 +79,19 @@ body {
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
+    cursor: pointer;
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
 }
 
@@ -191,9 +212,10 @@ body {
     color: var(--text-main);
     font-size: 0.95rem;
     outline: none;
+    width: 100%;
 }
 
-.input-group input:focus {
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
     border-color: var(--primary);
 }
 
@@ -241,9 +263,21 @@ body {
     padding: 10px 16px;
     font-size: 0.85rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
-/* QR Code Display Box */
+.file-upload-btn {
+    margin: 0;
+}
+
+/* QR Code Display Box & Results */
+.result-card {
+    text-align: center;
+}
+
 .qrcode-wrapper {
     background: #fff;
     padding: 15px;
@@ -255,12 +289,57 @@ body {
 .qrcode-wrapper img, .qrcode-wrapper canvas {
     display: block;
     margin: 0 auto;
+    max-width: 100%;
+    height: auto;
 }
 
 .result-actions {
     display: flex;
     gap: 10px;
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Scanner Viewport (تجميع وتحديد الكاميرا لكي تظهر بالكامل دون سكرول) */
+.scanner-viewport {
+    width: 100%;
+    max-width: 100%;
+    height: 260px;
+    max-height: 45vh;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+.scanner-viewport video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+.scan-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.scan-result-card {
+    text-align: center;
+}
+
+.scan-text-output {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 10px;
+    word-break: break-all;
+    font-size: 0.9rem;
+    margin: 15px 0;
+    max-height: 120px;
+    overflow-y: auto;
 }
 
 /* Modal View for History QR Preview */
@@ -271,7 +350,7 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10000;
@@ -509,7 +588,7 @@ body {
     text-decoration: underline;
 }
 
-/* Settings View */
+/* Settings View & Switch Component */
 .settings-card .setting-item {
     display: flex;
     justify-content: space-between;
@@ -534,13 +613,65 @@ body {
     color: var(--text-muted);
 }
 
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-card-hover);
+    transition: .3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
 /* Bottom Navigation */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 65px;
+    height: calc(65px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     background: var(--bg-card);
     border-top: 1px solid var(--border-color);
     display: flex;
@@ -560,6 +691,7 @@ body {
     font-size: 0.75rem;
     cursor: pointer;
     width: 20%;
+    touch-action: manipulation;
 }
 
 .nav-item i {
@@ -591,4 +723,24 @@ body {
     align-items: center;
     justify-content: center;
     gap: 6px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 360px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .grid-card {
+        padding: 12px 8px;
+    }
+
+    .app-title {
+        font-size: 1rem;
+    }
+
+    .scanner-viewport {
+        height: 220px;
+    }
 }
