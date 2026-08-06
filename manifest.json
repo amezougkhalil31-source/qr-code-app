@@ -1,21 +1,26 @@
 {
-  "name": "QR Master Pro",
-  "short_name": "QR Master",
-  "description": "Application professionnelle pour créer et scanner des QR codes. Inclut des fonctionnalités Premium et des abonnements via Google Play Billing.",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#4f46e5",
+  "short_name": "QR Master Pro",
+  "name": "QR Master Pro - Scanner & Generator",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "icons/icon-192.png",
+      "type": "image/png",
       "sizes": "192x192",
-      "type": "image/png"
+      "purpose": "any maskable"
     },
     {
-      "src": "./icon-512.png",
+      "src": "icons/icon-512.png",
+      "type": "image/png",
       "sizes": "512x512",
-      "type": "image/png"
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0d1117",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "./",
+  "lang": "fr-FR",
+  "description": "Générez et scannez vos QR Codes rapidement avec QR Master Pro."
 }
