@@ -13,13 +13,36 @@
     --radius: 16px;
 }
 
-/* Base Resets */
+/* Thème Clair (Light Mode) */
+[data-theme="light"] {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Base Resets & Text Selection Prevention */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
     -webkit-tap-highlight-color: transparent;
+    /* منع تحديد النصوص في كامل التطبيق للمظهر الاحترافي */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* السماح بتحديد النصوص في الخانات المدخلة ونتائج السكان فقط */
+input, textarea, .scan-text-output, .modal-qr-caption {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 body {
@@ -28,6 +51,7 @@ body {
     min-height: 100vh;
     padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
     overflow-x: hidden;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Header */
@@ -403,11 +427,12 @@ body {
     overflow-y: auto;
 }
 
-/* History List Items */
+/* History Container & Fixed Scrollable List */
 .history-header-flex {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 12px;
 }
 
 .clear-btn {
@@ -416,6 +441,22 @@ body {
     color: var(--danger);
     font-size: 1.1rem;
     cursor: pointer;
+}
+
+#history-list {
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* تخصيص شريط التمرير للسجل */
+#history-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+#history-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
 }
 
 .history-item {
@@ -433,7 +474,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    max-width: 70%;
+    max-width: 65%;
 }
 
 .history-info .badge {
@@ -456,7 +497,7 @@ body {
 
 .history-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .history-actions button {
@@ -470,6 +511,25 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+}
+
+/* Color Theme Selector (في الإعدادات) */
+.color-picker-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.color-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.color-btn.active {
+    border-color: var(--text-main);
 }
 
 /* Premium VIP View */

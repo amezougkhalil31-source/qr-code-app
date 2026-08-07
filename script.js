@@ -5,6 +5,8 @@ let isPremiumUser = localStorage.getItem('qr_vip_user') === 'true';
 let currentQRType = 'url';
 let html5QrCode = null;
 let selectedPlan = 'yearly';
+let currentSmartActionPayload = '';
+let currentSmartActionType = '';
 
 // ==========================================
 // 2. Initialisation au Chargement du DOM
@@ -369,7 +371,7 @@ function shareQRCode() {
 }
 
 // ==========================================
-// 8. Scanner de QR Code (Caméra & Image)
+// 8. Scanner de QR Code (Caméra Rapidifiée)
 // ==========================================
 function startScanner() {
     if (typeof Html5Qrcode === 'undefined') {
@@ -387,9 +389,10 @@ function startScanner() {
         html5QrCode = new Html5Qrcode("reader");
     }
 
+    // تسريع الاستجابة والكاميرا إلى 30 FPS مع ضبط الحجم
     html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
+        { fps: 30, qrbox: { width: 250, height: 250 } },
         (decodedText) => {
             onScanSuccess(decodedText);
             stopScanner();
@@ -450,38 +453,78 @@ function scanImageFile(event) {
         });
 }
 
+// المعالجة الذكية لنتائج السكان وإظهار الأزرار المخصصة
 function onScanSuccess(text) {
     const card = document.getElementById('scan-result-card');
     const textElement = document.getElementById('scan-result-text');
-    const btnOpen = document.getElementById('btn-open-link');
+    const smartBtn = document.getElementById('btn-action-smart');
+    const smartIcon = document.getElementById('btn-action-smart-icon');
+    const smartText = document.getElementById('btn-action-smart-text');
 
     if (card) card.style.display = 'block';
     if (textElement) textElement.innerText = text;
 
-    if (btnOpen) {
+    currentSmartActionPayload = text;
+    currentSmartActionType = 'text';
+
+    if (smartBtn) {
         if (text.startsWith('http://') || text.startsWith('https://')) {
-            btnOpen.style.display = 'inline-flex';
+            currentSmartActionType = 'url';
+            smartIcon.className = 'fa-solid fa-arrow-up-right-from-square';
+            smartText.innerText = 'Ouvrir le lien';
+            smartBtn.style.display = 'inline-flex';
+        } else if (text.startsWith('tel:') || /^\+?[0-9\s\-]{7,15}$/.test(text.trim())) {
+            currentSmartActionType = 'phone';
+            currentSmartActionPayload = text.startsWith('tel:') ? text : `tel:${text.trim()}`;
+            smartIcon.className = 'fa-solid fa-phone';
+            smartText.innerText = 'Appeler ce numéro';
+            smartBtn.style.display = 'inline-flex';
+        } else if (text.startsWith('mailto:') || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text.trim())) {
+            currentSmartActionType = 'email';
+            currentSmartActionPayload = text.startsWith('mailto:') ? text : `mailto:${text.trim()}`;
+            smartIcon.className = 'fa-solid fa-envelope';
+            smartText.innerText = 'Envoyer un Email';
+            smartBtn.style.display = 'inline-flex';
+        } else if (text.startsWith('SMSTO:') || text.startsWith('sms:')) {
+            currentSmartActionType = 'sms';
+            smartIcon.className = 'fa-solid fa-comment-sms';
+            smartText.innerText = 'Envoyer un SMS';
+            smartBtn.style.display = 'inline-flex';
+        } else if (text.includes('BEGIN:VCARD')) {
+            currentSmartActionType = 'vcard';
+            smartIcon.className = 'fa-solid fa-address-card';
+            smartText.innerText = 'Télécharger le contact';
+            smartBtn.style.display = 'inline-flex';
         } else {
-            btnOpen.style.display = 'none';
+            smartBtn.style.display = 'none';
         }
     }
 
     saveToHistory('SCAN', text);
 }
 
+function executeSmartAction() {
+    if (!currentSmartActionPayload) return;
+
+    if (currentSmartActionType === 'url') {
+        window.open(currentSmartActionPayload, '_blank');
+    } else if (currentSmartActionType === 'phone' || currentSmartActionType === 'email' || currentSmartActionType === 'sms') {
+        window.location.href = currentSmartActionPayload;
+    } else if (currentSmartActionType === 'vcard') {
+        const blob = new Blob([currentSmartActionPayload], { type: 'text/vcard;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'contact.vcf');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+
 function copyScanResult() {
     const textElement = document.getElementById('scan-result-text');
     if (textElement) copyToClipboard(textElement.innerText);
-}
-
-function openScanResultLink() {
-    const textElement = document.getElementById('scan-result-text');
-    if (textElement) {
-        const text = textElement.innerText;
-        if (text.startsWith('http://') || text.startsWith('https://')) {
-            window.open(text, '_blank');
-        }
-    }
 }
 
 // ==========================================
@@ -517,7 +560,7 @@ function renderHistory() {
         <div class="history-item">
             <div class="history-info">
                 <span class="badge">${item.type}</span>
-                <span class="text">${escapeHtml(item.text)}</span>
+                <span class="text" title="${escapeHtml(item.text)}">${escapeHtml(item.text)}</span>
             </div>
             <div class="history-actions">
                 <button onclick="openQRFromHistoryIndex(${index})" title="Aperçu QR">
@@ -661,6 +704,7 @@ function fallbackCopyText(text) {
     document.body.removeChild(textArea);
 }
 
+// إصلاح المظهر الداكن وتثبيته دائماً
 function initTheme() {
     const savedTheme = localStorage.getItem('qr_app_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
