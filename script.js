@@ -10,11 +10,11 @@ let selectedPlan = 'yearly';
 // 2. Initialisation au Chargement du DOM
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     updateVIPUI();
     renderHistory();
     setupPWAInstall();
     selectQRType('url');
-    initTheme();
 });
 
 // ==========================================
@@ -119,6 +119,14 @@ function selectQRType(type) {
                 <div class="input-group">
                     <label for="input-contact-email"><i class="fa-solid fa-envelope"></i> Email</label>
                     <input type="email" id="input-contact-email" placeholder="john@example.com">
+                </div>`;
+            break;
+
+        case 'phone':
+            html = `
+                <div class="input-group">
+                    <label for="input-phone-num"><i class="fa-solid fa-phone"></i> Numéro de téléphone</label>
+                    <input type="tel" id="input-phone-num" placeholder="+212 600 000 000">
                 </div>`;
             break;
 
@@ -232,6 +240,15 @@ function generateQRCode() {
                 return;
             }
             payload = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
+            break;
+        }
+        case 'phone': {
+            const phone = document.getElementById('input-phone-num').value.trim();
+            if (!phone) {
+                alert('Veuillez entrer un numéro de téléphone.');
+                return;
+            }
+            payload = `tel:${phone}`;
             break;
         }
         case 'email': {
@@ -415,7 +432,6 @@ function scanImageFile(event) {
         return;
     }
 
-    // Création d'un élément temporaire si introuvable
     let tempReader = document.getElementById('reader-file-temp');
     if (!tempReader) {
         tempReader = document.createElement('div');
@@ -469,7 +485,7 @@ function openScanResultLink() {
 }
 
 // ==========================================
-// 9. Gestion de l'Historique & Modale QR (Sécurisé)
+// 9. Gestion de l'Historique & Modale QR
 // ==========================================
 function saveToHistory(type, content) {
     let history = JSON.parse(localStorage.getItem('qr_history') || '[]');
@@ -614,7 +630,7 @@ function startGooglePlayBilling() {
 }
 
 // ==========================================
-// 11. Utilitaires Divers, Theme & Fallback Copie
+// 11. Utilitaires Divers, Theme & Couleurs
 // ==========================================
 function copyToClipboard(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -650,6 +666,13 @@ function initTheme() {
     document.documentElement.setAttribute('data-theme', savedTheme);
     const toggle = document.getElementById('theme-toggle');
     if (toggle) toggle.checked = (savedTheme === 'dark');
+
+    const savedPrimary = localStorage.getItem('qr_primary_color');
+    const savedHover = localStorage.getItem('qr_primary_hover');
+    if (savedPrimary && savedHover) {
+        document.documentElement.style.setProperty('--primary', savedPrimary);
+        document.documentElement.style.setProperty('--primary-hover', savedHover);
+    }
 }
 
 function toggleTheme() {
@@ -658,6 +681,18 @@ function toggleTheme() {
     const themeName = isChecked ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', themeName);
     localStorage.setItem('qr_app_theme', themeName);
+}
+
+function changeThemeColor(primary, primaryHover) {
+    document.documentElement.style.setProperty('--primary', primary);
+    document.documentElement.style.setProperty('--primary-hover', primaryHover);
+    localStorage.setItem('qr_primary_color', primary);
+    localStorage.setItem('qr_primary_hover', primaryHover);
+    
+    document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+    if (window.event && window.event.target) {
+        window.event.target.classList.add('active');
+    }
 }
 
 function setupPWAInstall() {

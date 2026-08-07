@@ -82,11 +82,17 @@
                     <span>Texte</span>
                 </div>
 
-                <!-- Premium: Contact -->
-                <div class="grid-card premium-locked" data-type="contact" onclick="handleFeatureClick('contact', true)">
-                    <i class="fa-solid fa-crown crown-icon"></i>
+                <!-- Gratuit: Contact -->
+                <div class="grid-card" data-type="contact" onclick="selectQRType('contact')">
                     <i class="fa-solid fa-address-book icon"></i>
                     <span>Contact</span>
+                </div>
+
+                <!-- Premium: Appel -->
+                <div class="grid-card premium-locked" data-type="phone" onclick="handleFeatureClick('phone', true)">
+                    <i class="fa-solid fa-crown crown-icon"></i>
+                    <i class="fa-solid fa-phone icon"></i>
+                    <span>Appel</span>
                 </div>
 
                 <!-- Premium: Email -->
@@ -173,9 +179,15 @@
                     <button id="btn-stop-scan" class="danger-btn" onclick="stopScanner()" style="display: none;">
                         <i class="fa-solid fa-stop"></i> Arrêter
                     </button>
-                    <label for="file-input-scan" class="secondary-btn file-upload-btn">
-                        <i class="fa-solid fa-image"></i> Importer une Image
-                    </label>
+                    
+                    <div class="scan-actions-row">
+                        <label for="file-input-scan" class="secondary-btn file-upload-btn">
+                            <i class="fa-solid fa-image"></i> Importer
+                        </label>
+                        <button id="btn-switch-cam" class="secondary-btn" onclick="switchCamera()" style="display: none;">
+                            <i class="fa-solid fa-camera-rotate"></i> Changer
+                        </button>
+                    </div>
                     <input type="file" id="file-input-scan" accept="image/*" onchange="scanImageFile(event)" style="display: none;">
                 </div>
             </div>
@@ -223,7 +235,7 @@
                 <p class="subtitle">Débloquez la puissance maximale sans aucune restriction.</p>
 
                 <ul class="premium-features-list">
-                    <li><i class="fa-solid fa-check-circle"></i> Déblocage complet des QR Codes Contact, Email, SMS, WiFi, GPS & Agenda</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Déblocage complet des QR Codes Appel, Email, SMS, WiFi, GPS & Agenda</li>
                     <li><i class="fa-solid fa-check-circle"></i> Expérience 100% Sans Publicité</li>
                     <li><i class="fa-solid fa-check-circle"></i> Exportation Haute Résolution HD</li>
                     <li><i class="fa-solid fa-check-circle"></i> Historique Illimité & Sauvegarde Cloud Local</li>
@@ -272,6 +284,7 @@
             </div>
 
             <div class="card settings-card">
+                <!-- Theme Switcher -->
                 <div class="setting-item">
                     <div class="setting-info">
                         <i class="fa-solid fa-moon"></i>
@@ -281,6 +294,21 @@
                         <input type="checkbox" id="theme-toggle" checked onchange="toggleTheme()">
                         <span class="slider round"></span>
                     </label>
+                </div>
+
+                <!-- Theme Accent Color Selection -->
+                <div class="setting-item color-picker-item">
+                    <div class="setting-info">
+                        <i class="fa-solid fa-palette"></i>
+                        <span>Couleur d'accentuation</span>
+                    </div>
+                    <div class="color-options">
+                        <button class="color-btn active" style="background: #4f46e5;" onclick="changeThemeColor('#4f46e5', '#4338ca')"></button>
+                        <button class="color-btn" style="background: #10b981;" onclick="changeThemeColor('#10b981', '#059669')"></button>
+                        <button class="color-btn" style="background: #ef4444;" onclick="changeThemeColor('#ef4444', '#dc2626')"></button>
+                        <button class="color-btn" style="background: #8b5cf6;" onclick="changeThemeColor('#8b5cf6', '#7c3aed')"></button>
+                        <button class="color-btn" style="background: #f59e0b;" onclick="changeThemeColor('#f59e0b', '#d97706')"></button>
+                    </div>
                 </div>
 
                 <div class="setting-item" onclick="window.open('privacy.html', '_blank')">

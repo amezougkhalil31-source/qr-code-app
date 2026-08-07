@@ -9,50 +9,55 @@
 </head>
 <body>
     <header class="app-header">
-        <div class="logo">
-            <i class="fa-solid fa-qrcode"></i>
-            <h1>QR Master Pro</h1>
+        <div class="header-brand">
+            <div class="app-logo-small">
+                <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <h1 class="app-title">QR Master Pro</h1>
         </div>
     </header>
 
-    <main class="main-container" style="max-width: 800px; padding: 20px;">
+    <main class="app-main" style="max-width: 800px;">
         <article class="card" style="padding: 24px; line-height: 1.7;">
-            <h2 style="margin-bottom: 20px; color: var(--primary-color);">Politique de Confidentialité</h2>
-            <p><strong>Dernière mise à jour :</strong> 6 Août 2026</p>
+            <h2 style="margin-bottom: 20px; color: var(--primary);">Politique de Confidentialité</h2>
+            <p><strong>Dernière mise à jour :</strong> 7 Août 2026</p>
 
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
 
-            <h3>1. Collecte des Données</h3>
-            <p><strong>QR Master Pro</strong> respecte votre vie privée. Nous ne collectons, ne stockons ni ne vendons aucune donnée personnelle identifiable sur nos serveurs. Toutes les informations générées (textes, liens, vCards, etc.) ou scannées sont traitées localement sur votre appareil.</p>
+            <h3>1. Collecte et Traitement des Données</h3>
+            <p><strong>QR Master Pro</strong> respecte votre vie privée. Nous ne collectons, ne stockons ni ne vendons aucune donnée personnelle identifiable sur nos serveurs. Toutes les informations générées (textes, liens, vCards, Wi-Fi, etc.) ou scannées sont traitées exclusivement en local sur votre appareil.</p>
 
             <h3 style="margin-top: 20px;">2. Utilisation de la Caméra</h3>
-            <p>L'application demande l'accès à la caméra de votre appareil uniquement pour scanner les codes QR. La caméra n'est activée que lorsque vous utilisez l'onglet "Scan", et aucune image ou flux vidéo n'est enregistré ni transmis vers des serveurs externes.</p>
+            <p>L'application demande l'accès à la caméra de votre appareil uniquement pour scanner les codes QR. La caméra n'est activée que lorsque vous utilisez le scanner, et aucune image ou flux vidéo n'est enregistré ni transmis vers des serveurs externes.</p>
 
             <h3 style="margin-top: 20px;">3. Stockage Local (LocalStorage)</h3>
-            <p>Vos données d'historique de scan et de création ainsi que vos préférences (comme le mode sombre) sont sauvegardées exclusivement dans la mémoire interne de votre navigateur ou appareil via <code>localStorage</code>. Vous pouvez effacer cet historique à tout moment depuis l'application.</p>
+            <p>Vos données d'historique de scan, vos créations ainsi que vos préférences d'application sont sauvegardées exclusivement dans la mémoire interne de votre appareil via <code>localStorage</code>. Vous pouvez effacer cet historique à tout moment depuis l'application.</p>
 
-            <h3 style="margin-top: 20px;">4. Services Tiers et Publicités</h3>
-            <p>Nous pouvons intégrer des services tiers pour afficher des publicités (ex. Google AdSense / AdMob) afin de financer la version gratuite :</p>
-            <ul>
-                <li>Ces régies publicitaires peuvent utiliser des cookies anonymes pour diffuser des annonces adaptées à vos centres d'intérêt.</li>
-                <li>Pour plus d'informations sur la gestion de vos préférences publicitaires, vous pouvez consulter la politique de confidentialité de Google.</li>
+            <h3 style="margin-top: 20px;">4. Publicités (Version Gratuite)</h3>
+            <p>Nous intégrons des services tiers comme <strong>Google AdMob / AdSense</strong> pour afficher des publicités afin de financer la version gratuite de l'application :</p>
+            <ul style="margin-left: 20px; margin-top: 8px;">
+                <li>Ces régies publicitaires peuvent utiliser des identifiants publicitaires anonymes pour diffuser des annonces pertinentes.</li>
+                <li>Ces publicités sont automatiquement désactivées pour les utilisateurs ayant souscrit à un abonnement VIP Premium.</li>
             </ul>
 
-            <h3 style="margin-top: 20px;">5. Autorisations de l'App</h3>
+            <h3 style="margin-top: 20px;">5. Abonnements VIP & Achats In-App</h3>
+            <p>L'application propose des options d'abonnement payant (Mensuel, Annuel ou Accès à vie) offrant des fonctionnalités exclusives et la suppression des publicités :</p>
+
+            <h3 style="margin-top: 20px;">6. Autorisations Requises</h3>
             <p>L'application ne demande que les permissions strictement nécessaires à son fonctionnement :</p>
-            <ul>
-                <li><strong>Accès Caméra :</strong> Pour la lecture des QR codes.</li>
-                <li><strong>Stockage / Fichiers :</strong> Pour enregistrer les images des QR codes générés.</li>
+            <ul style="margin-left: 20px; margin-top: 8px;">
+                <li><strong>Caméra :</strong> Pour la lecture et le scan des codes QR.</li>
+                <li><strong>Stockage :</strong> Pour enregistrer et exporter les images des QR codes générés.</li>
             </ul>
 
-            <h3 style="margin-top: 20px;">6. Modifications de cette Politique</h3>
-            <p>Nous nous réservons le droit de mettre à jour cette politique de confidentialité si nécessaire. Toute modification sera publiée sur cette page.</p>
+            <h3 style="margin-top: 20px;">7. Modifications de cette Politique</h3>
+            <p>Nous nous réservons le droit de mettre à jour cette politique de confidentialité à tout moment. Toute modification sera publiée directement sur cette page.</p>
 
-            <h3 style="margin-top: 20px;">7. Contact</h3>
-            <p>Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter via la page principale de l'application.</p>
+            <h3 style="margin-top: 20px;">8. Contact</h3>
+            <p>Pour toute question concernant cette politique de confidentialité ou l'application, vous pouvez nous contacter via la page d'assistance de l'application.</p>
 
             <div style="margin-top: 30px; text-align: center;">
-                <a href="index.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+                <a href="index.html" class="primary-btn" style="display: inline-flex; width: auto; padding: 12px 24px; text-decoration: none;">
                     <i class="fa-solid fa-arrow-left"></i> Retour à l'application
                 </a>
             </div>

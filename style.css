@@ -300,7 +300,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Scanner Viewport (تجميع وتحديد الكاميرا لكي تظهر بالكامل دون سكرول) */
+/* Scanner Viewport */
 .scanner-viewport {
     width: 100%;
     max-width: 100%;

@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Master Pro - App Icon Generator</title>
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -24,24 +22,46 @@
             font-family: 'Poppins', sans-serif;
             color: #fff;
             gap: 20px;
+            padding: 20px;
+        }
+        .header-title {
+            text-align: center;
+        }
+        .header-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #818cf8;
+        }
+        .header-title p {
+            font-size: 0.85rem;
+            color: #94a3b8;
         }
         .icon-box {
             width: 256px;
             height: 256px;
             background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-            border-radius: 50px;
+            border-radius: 56px;
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             position: relative;
+            overflow: hidden;
+        }
+        .crown-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            color: #fbbf24;
+            font-size: 1.2rem;
         }
         .qr-symbol {
-            width: 65%;
-            height: 65%;
+            width: 60%;
+            height: 60%;
             background: #ffffff;
-            border-radius: 25px;
-            padding: 15px;
+            border-radius: 28px;
+            padding: 16px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
@@ -49,46 +69,41 @@
         }
         .qr-block {
             background: #1e1b4b;
-            border-radius: 10px;
+            border-radius: 8px;
         }
         .qr-block.empty {
             background: transparent;
-        }
-        .actions-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
         }
         .primary-btn {
             background: linear-gradient(135deg, #4f46e5, #3b82f6);
             color: #fff;
             border: none;
-            padding: 12px 24px;
-            font-size: 0.95rem;
+            padding: 14px 28px;
+            font-size: 1rem;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
-            transition: transform 0.2s, opacity 0.2s;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
         }
-        .primary-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+        #hd-canvas {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <div style="text-align: center;">
-        <h2 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">QR Master Pro - Logo officiel</h2>
-        <p style="font-size: 0.8rem; color: #94a3b8;">Format standard 512x512 pixels pour Google Play</p>
+    <div class="header-title">
+        <h2>QR Master Pro - Logo Officiel</h2>
+        <p>Format Google Play Store (512x512 PNG HD)</p>
     </div>
 
-    <!-- اللوغو الأساسي -->
-    <div class="icon-box" id="app-icon-preview">
+    <div class="icon-box">
+        <div class="crown-badge">
+            <i class="fa-solid fa-crown"></i>
+        </div>
         <div class="qr-symbol">
             <div class="qr-block"></div>
             <div class="qr-block"></div>
@@ -102,12 +117,70 @@
         </div>
     </div>
 
-    <!-- أزرار التحكم والتحميل -->
-    <div class="actions-container">
-        <button class="primary-btn" onclick="alert('قم بأخذ لقطة شاشة (Screenshot) بدقة عالية أو استخدم أداة التصميم لحفظه كـ PNG بحجم 512x512')">
-            <i class="fa-solid fa-download"></i> Télécharger l'icône
-        </button>
-    </div>
+    <button class="primary-btn" onclick="generateAndDownloadHD()">
+        <i class="fa-solid fa-file-arrow-down"></i> Télécharger 512x512 HD
+    </button>
 
+    <canvas id="hd-canvas" width="512" height="512"></canvas>
+
+    <script>
+        function generateAndDownloadHD() {
+            const canvas = document.getElementById('hd-canvas');
+            const ctx = canvas.getContext('2d');
+
+            const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+            gradient.addColorStop(0, '#4f46e5');
+            gradient.addColorStop(1, '#3b82f6');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, 512, 512, 112);
+            ctx.fill();
+
+            const qrSize = 300;
+            const qrX = (512 - qrSize) / 2;
+            const qrY = (512 - qrSize) / 2;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.roundRect(qrX, qrY, qrSize, qrSize, 56);
+            ctx.fill();
+
+            const padding = 30;
+            const gridAreaSize = qrSize - (padding * 2);
+            const gap = 18;
+            const blockSize = (gridAreaSize - (gap * 2)) / 3;
+
+            ctx.fillStyle = '#1e1b4b';
+
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    if (row === 1 && col === 1) continue;
+                    const bx = qrX + padding + col * (blockSize + gap);
+                    const by = qrY + padding + row * (blockSize + gap);
+                    ctx.beginPath();
+                    ctx.roundRect(bx, by, blockSize, blockSize, 16);
+                    ctx.fill();
+                }
+            }
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.moveTo(400, 60);
+            ctx.lineTo(410, 85);
+            ctx.lineTo(430, 65);
+            ctx.lineTo(435, 95);
+            ctx.lineTo(385, 95);
+            ctx.lineTo(390, 65);
+            ctx.closePath();
+            ctx.fill();
+
+            const image = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'icon-512.png';
+            link.href = image;
+            link.click();
+        }
+    </script>
 </body>
 </html>
